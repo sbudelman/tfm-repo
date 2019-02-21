@@ -100,9 +100,9 @@ server <- function(input, output, session) {
     observeEvent(input$solve, {
       output$solve <- renderPrint({
 
-        model <- currentModel()$res
+        solution <- readLines(currentModel()$res)
 
-        return(model)
+        return(solution)
 
       })
     })

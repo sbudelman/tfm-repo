@@ -28,7 +28,6 @@ return <- mplPostsolveGLPK(jsp, mip, GLP_MIP)
 filename <- "solution.txt"
 printMIPGLPK(mip, filename)
 
-# Alternative to the code below the comment is to rquest the values directly by calling
 # Constraints
 # for (i in 1:numrows){
 #   print(getRowNameGLPK(mip, i))
@@ -114,7 +113,7 @@ machinesVis <- timevis(machinesView,
 )
 
 
-results <- list("res" = startValues, 
+results <- list("res" = filename, 
                 "jobsView" = jobsView,
                 "jobsViewGroups" = jobsViewGroups,  
                 "machinesVis" = machinesVis)

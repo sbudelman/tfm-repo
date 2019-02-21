@@ -1,4 +1,6 @@
+# --------------------------------------
 # Generate and display mathprog model
+# --------------------------------------
 displayMod <- function(excelFile){
   # Extract data from excel spreadsheets
   
@@ -31,23 +33,26 @@ displayMod <- function(excelFile){
         idx <- match(pred, tasks$`Task ID`)
         predecesors <- c(
           predecesors,
-          (paste(tasks$`Job ID`[i], tasks$`Machine ID`[i],
-                 tasks$`Job ID`[idx], tasks$`Machine ID`[idx])))
+          (paste(tasks$`Task ID`[i], tasks$`Job ID`[i], tasks$`Machine ID`[i],
+                 tasks$`Task ID`[idx], tasks$`Job ID`[idx], tasks$`Machine ID`[idx])))
       }
     }
   }
   
-  modelFile <- readLines("JSP.mod")
-  
   modelData<- c("# -----------------------------------------------------------------",
+                "",
                 "data;",
+                "",
                 "param: TASKS: p :=",
-                paste(tasks$`Job ID`, tasks$`Machine ID`, tasks$`Task Runtime`),
+                "",
+                paste(tasks$`Task ID`, tasks$`Job ID`, tasks$`Machine ID`, tasks$`Task Runtime`),
                 ";",
                 "set TASKORDER :=",
                 predecesors,
                 ";",
                 "end;")
+  
+  modelFile <- readLines("model.mod")
   
   modelContent <- c(modelFile,modelData)
   
@@ -55,7 +60,9 @@ displayMod <- function(excelFile){
   
 }
 
+# --------------------------------------
 # Generate and solve mathprog model
+# --------------------------------------
 solveMod <- function(excelFile){
   
   # Extract data from excel spreadsheets
@@ -89,26 +96,30 @@ solveMod <- function(excelFile){
         idx <- match(pred, tasks$`Task ID`)
         predecesors <- c(
           predecesors,
-          (paste(tasks$`Job ID`[i], tasks$`Machine ID`[i],
-                 tasks$`Job ID`[idx], tasks$`Machine ID`[idx])))
+          (paste(tasks$`Task ID`[i], tasks$`Job ID`[i], tasks$`Machine ID`[i],
+                 tasks$`Task ID`[idx], tasks$`Job ID`[idx], tasks$`Machine ID`[idx])))
       }
     }
   }
   
-  modelFile <- readLines("JSP.mod")
-  
   modelData<- c("# -----------------------------------------------------------------",
+                "",
                 "data;",
+                "",
                 "param: TASKS: p :=",
-                paste(tasks$`Job ID`, tasks$`Machine ID`, tasks$`Task Runtime`),
+                "",
+                paste(tasks$`Task ID`, tasks$`Job ID`, tasks$`Machine ID`, tasks$`Task Runtime`),
                 ";",
                 "set TASKORDER :=",
                 predecesors,
                 ";",
                 "end;")
   
+  modelFile <- readLines("model.mod")
+  
   modelContent <- c(modelFile,modelData)
   
+  # Open file connection
   model <- tempfile(fileext = '.mod')
   write(modelContent, file=model)
   
@@ -117,9 +128,15 @@ solveMod <- function(excelFile){
   setProbNameGLPK(mip, "JSP")
   jsp <- mplAllocWkspGLPK()
   result <- mplReadModelGLPK(jsp,model, skip = 0)
+  
+  # Closing file connection
+  unlink(model)
+  
+  # Generate the model
   result <- mplGenerateGLPK(jsp)
   result <- mplBuildProbGLPK(jsp, mip)
   
+  # Get number of rows and cols
   numrows <- getNumRowsGLPK(mip)
   numcols <- getNumColsGLPK(mip)
   
@@ -129,95 +146,94 @@ solveMod <- function(excelFile){
   # Set time limit
   setMIPParmGLPK(106, 30000)
   
+  # Solve problem
   return <- solveMIPGLPK(mip)
   return <- mplPostsolveGLPK(jsp, mip, GLP_MIP)
   
+  # Output solution file
   filename <- "solution.txt"
   printMIPGLPK(mip, filename)
   
-  # Alternative to the code below the comment is to rquest the values directly by calling
+  
   # Constraints
   # for (i in 1:numrows){
   #   print(getRowNameGLPK(mip, i))
   #   print(getRowPrimGLPK(mip, i))
   # }
-  # 
+  
   # Variables
-  # for (j in 1:numcols){
-  #   print(getColNameGLPK(mip, j))
-  #   print(getColPrimGLPK(mip, j))
-  # }
+  # Get list of variable names
+  varNames <- numeric(numcols)
+  for (j in 1:numcols){
+    varNames[j] <- getColNameGLPK(mip, j)
+  }
+  # Retrive index of start time variables
+  startIdxList <- which(grepl("start", varNames))
   
-  lines <- readLines(filename) 
-  solutionLines <- grep("start", lines, fixed = TRUE) 
-  
-  tmp <- tempfile("startValues")
-  write.table(lines[solutionLines],
-              file=tmp,
-              quote = FALSE, col.names = FALSE, row.names = FALSE)
-  sample <- read.table(tmp)
-  unlink(tmp)
-  
-  colnames(sample)<-c("a","ID","start","Null")
-  sample<-sample %>% select( c("ID","start")) %>% mutate("Job ID"=1000, "Machine ID"=1000)
-  rawIDs <-strsplit(gsub("[^0-9.]", " ",  sample$ID)," ")
-  
-  idx <- 1
-  for(element in rawIDs){
-    sample$`Job ID`[idx] <- as.numeric(tail(element,n=2)[1])
-    sample$`Machine ID`[idx] <- as.numeric(tail(element,n=2)[2])
-    idx <- idx + 1 
+  # Create results table for starting times
+  startValues <- data.frame(matrix(0, ncol = 4, nrow = length(startIdxList)))
+  colnames(startValues)<- c("Task ID","Job ID","Machine ID","Task Starting Time")
+  idx<-1
+  for(j in startIdxList){
+    
+    # Retrieve task, job and machine id from string
+    tmp <- strsplit(gsub("[^0-9.]", " ",  getColNameGLPK(mip, j))," ")
+    
+    # Recurrently build startValues data frame
+    startValues$`Task ID`[idx] <- as.numeric(tail(tmp[[1]],n=3)[1])
+    startValues$`Job ID`[idx] <- as.numeric(tail(tmp[[1]],n=3)[2])
+    startValues$`Machine ID`[idx] <- as.numeric(tail(tmp[[1]],n=3)[3])
+    
+    # Get starting time value and add to startValues data frame
+    startValues$`Task Starting Time`[idx] <- mipColValGLPK(mip, j)
+    
+    idx<-idx+1
   }
   
-  sample <- inner_join(sample,tasks,by=c("Job ID","Machine ID"))
+  # Add remaining data to results table
+  startValues <- startValues %>% inner_join(tasks)
   
-  # Visualize results
-  
-  # Retrieve parameters
-  params <- sample %>% select(`Job ID`,`Machine ID`,`Task Runtime`)
+  # Visualisation
   
   # Set plan's starting date
   startDate <- Sys.time()
   
-  start<- startDate + as.difftime(tim = as.numeric(sample$`start`), 
-                                  format = "%M", units = "mins")
+  # Change start time format
+  startValues <- startValues %>%
+    mutate(`Task Starting Time`= 
+             startDate + as.difftime(tim = as.numeric(`Task Starting Time`), 
+                                     format = "%M", units = "mins")) 
   
-  end <- start + as.difftime(tim = as.numeric(params$`Task Runtime`),
-                             format = "%M", units = "mins")
   
-  # Set names to be displayed on timeline
-  tasksNames <- sprintf("Task %s %s", params$`Job ID`, params$`Machine ID`)
-  
-  jobsNames <- sprintf("Job %s", params$`Job ID`)
-  
-  machinesNames <- sprintf("Machine %s", params$`Machine ID`)
+  # Add end time
+  startValues <- startValues %>%
+    mutate("Task Ending Time"=
+             `Task Starting Time` + as.difftime(tim = as.numeric(`Task Runtime`),
+                                                format = "%M", units = "mins"))
   
   # Generate data frame for a Job-based timeline
-  jobsView <- data.frame("start" = start,
-                         "end" = end,
-                         "content" = tasksNames,
-                         "group" = params$`Job ID`)
-  head(jobsView)
+  jobsView <- data.frame("start" = startValues$`Task Starting Time`,
+                         "end" = startValues$`Task Ending Time`,
+                         "content" = startValues$`Task Name`,
+                         "group" = startValues$`Job ID`)
   
-  jobsViewGroups <- data.frame(id = unique(params$`Job ID`), 
-                               content = c(sprintf(paste("Job %s"),seq(1:n_distinct(params$`Job ID`))))
+  jobsViewGroups <- data.frame(id = unique(startValues$`Job ID`), 
+                               content = c(sprintf(paste("Job %s"),seq(1:n_distinct(startValues$`Job ID`))))
   )
   
-  
   # Generate data frame for a Machine-based timeline
-  machinesView <- data.frame("start" = start,
-                             "end" = end,
-                             "content" = tasksNames,
-                             "group" = params$`Machine ID`)
+  machinesView <- data.frame("start" = startValues$`Task Starting Time`,
+                             "end" = startValues$`Task Ending Time`,
+                             "content" = startValues$`Task Name`,
+                             "group" = startValues$`Machine ID`)
   
-  machinesViewGroups <- data.frame(id = unique(params$`Machine ID`), 
-                                   content = c(sprintf(paste("Machine %s"), seq(1:n_distinct(params$`Machine ID`))))
-                                   )
+  machinesViewGroups <- data.frame(id = sort(unique(startValues$`Machine ID`)), 
+                                   content = c(sprintf(paste("Machine %s"), sort(unique(startValues$`Machine ID`))))
+  )
   
-  
-  results <- list("res" = writeLines(lines), 
+  results <- list("res" = filename, 
                   "jobsView" = jobsView,
-                  "jobsViewGroups" = jobsViewGroups,  
+                  "jobsViewGroups" = jobsViewGroups,
                   "machinesView" = machinesView,
                   "machinesViewGroups" = machinesViewGroups)
   
@@ -225,13 +241,5 @@ solveMod <- function(excelFile){
   
 }
 
-
-data <- data.frame(
-  id = 1:3,
-  start = c("2015-04-04", "2015-04-05 11:00:00", "2015-04-06 15:00:00"),
-  end = c("2015-04-08", NA, NA),
-  content = c("<h2>Vacation!!!</h2>", "Acupuncture", "Massage"),
-  style = c("color: red;", NA, NA)
-)
 
 
