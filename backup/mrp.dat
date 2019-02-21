@@ -1,0 +1,47 @@
+# mrp.dat 
+# AMPL: Data for mrp 
+
+param M := 10000 ;              # Large number
+ 
+param: PP: LT := AJ8172 2       # Items with Lead Times
+                 LQ8811 3
+                 RN0098 4
+                 NN1100 1
+                 WN7342 12;
+
+set TT := 1jan04                # Time Buckets
+          2jan04
+          3jan04
+          4jan04
+          5jan04
+          6jan04
+          7jan04
+          8jan04 ;
+
+param R :                      # Number of i to produce one j
+        AJ8172 LQ8811 RN0098 NN1100 WN7342  :=
+AJ8172  0      0      0      0      0
+LQ8811  2      0      0      0      0
+RN0098  1      0      0      0      0
+NN1100  0      1      0      0      0
+WN7342  0      1      0      0      0  ;
+
+param D:                       # external demand for i in t
+        1jan04 2jan04 3jan04 4jan04 5jan04 6jan04 7jan04 8jan04 :=
+AJ8172  20     30     10     20     30     20     30     40
+LQ8811  0      0      0      0      0      0      0      0
+RN0098  0      0      0      0      0      0      0      0
+NN1100  0      0      0      0      0      0      0      0
+WN7342  0      0      0      0      0      0      0      0;
+
+param I := AJ8172 90           # Beginning Inventory of SKU i
+           LQ8811 300
+           RN0098 100
+           NN1100 0
+           WN7342 900;
+
+param LS := AJ8172 100         # Lot Size
+            LQ8811 400
+            RN0098 100
+            NN1100 1
+            WN7342 1000;
