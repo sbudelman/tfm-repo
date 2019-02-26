@@ -22,6 +22,12 @@ ui <- navbarPage("Shiny JSP",
                   multiple = FALSE,
                   accept = c(".xlsx")),
         
+        selectInput("optimizeFor", label = "Optimize for:", 
+                    choices = list("Makespan" = 1, "Tardiness" = 2), 
+                    selected = 1),
+        
+        dateInput("startingDate", label = "Plan starting date"),
+        
         uiOutput('ui.plan'),
         
         uiOutput('ui.solve'),
@@ -90,7 +96,7 @@ ui <- navbarPage("Shiny JSP",
              position = "right",
              
              sidebarPanel(
-               p("other dummy text")
+               actionButton("defineShifts", label = "Define Shifts")
              ),
              
              mainPanel(
