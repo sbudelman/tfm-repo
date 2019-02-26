@@ -71,18 +71,17 @@ startValues <- startValues %>% inner_join(tasks)
 # Set plan's starting date
 startDate <- Sys.time()
 
-# Change start time format
+# Change start time format, Add end time and Change Task Runtime format
 startValues <- startValues %>%
   mutate(`Task Starting Time`= 
            startDate + as.difftime(tim = as.numeric(`Task Starting Time`), 
-                                   format = "%M", units = "mins")) 
-
-
-# Add end time
-startValues <- startValues %>%
-  mutate("Task Ending Time"=
-          `Task Starting Time` + as.difftime(tim = as.numeric(`Task Runtime`),
-                       format = "%M", units = "mins"))
+                                   format = "%M", units = "mins"),
+         "Task Ending Time"=
+           `Task Starting Time` + as.difftime(tim = as.numeric(`Task Runtime`),
+                                              format = "%M", units = "mins"),
+         `Task Runtime`= 
+           as.difftime(tim = as.numeric(`Task Runtime`),
+                       format = "%M", units = "mins")) 
 
 # Generate data frame for a Job-based timeline
 jobsView <- data.frame("start" = startValues$`Task Starting Time`,
