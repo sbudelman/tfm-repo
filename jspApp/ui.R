@@ -4,13 +4,13 @@ library(timevis)
 
 # Define UI for data upload app ----
 ui <- navbarPage("Shiny JSP",
+                 
+  tabPanel("Home"),
   
   tabPanel("Data",
   
     # Sidebar layout with input and output definitions ----
     sidebarLayout(
-      
-      position = "right",
       
       # Sidebar panel for inputs ----
       sidebarPanel(
@@ -18,7 +18,7 @@ ui <- navbarPage("Shiny JSP",
   
         
         # Input: Select a file ----
-        fileInput("file1", "Choose .XLSX File",
+        fileInput("file1", "Upload .XLSX File",
                   multiple = FALSE,
                   accept = c(".xlsx")),
         
