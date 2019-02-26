@@ -3,1191 +3,1191 @@ Rows:       541
 Columns:    276 (225 integer, 225 binary)
 Non-zeros:  1531
 Status:     INTEGER NON-OPTIMAL
-Objective:  objective = 736 (MINimum)
+Objective:  objective = 738 (MINimum)
 
    No.   Row name        Activity     Lower bound   Upper bound
 ------ ------------    ------------- ------------- -------------
-     1 objective                 736                             
+     1 objective                 738                             
      2 TechnologicalSequence[3,1,0,2,1,2]
-                                 -55                         -53 
+                                 -63                         -53 
      3 TechnologicalSequence[2,1,2,1,1,1]
-                                -125                         -34 
+                                 -61                         -34 
      4 TechnologicalSequence[4,1,3,3,1,0]
-                                -118                         -55 
+                                -284                         -55 
      5 TechnologicalSequence[5,1,4,4,1,3]
-                                -157                         -95 
+                                -147                         -95 
      6 TechnologicalSequence[7,2,0,6,2,4]
                                  -21                         -21 
      7 TechnologicalSequence[10,2,1,9,2,3]
-                                -125                         -71 
+                                -110                         -71 
      8 TechnologicalSequence[8,2,2,7,2,0]
-                                 -32                         -26 
+                                -308                         -26 
      9 TechnologicalSequence[9,2,3,8,2,2]
-                                -542                         -52 
+                                -136                         -52 
     10 TechnologicalSequence[14,3,1,13,3,3]
-                                -156                         -42 
+                                 -91                         -42 
     11 TechnologicalSequence[12,3,2,11,3,0]
-                                -186                         -31 
+                                 -37                         -31 
     12 TechnologicalSequence[13,3,3,12,3,2]
-                                 -83                         -39 
+                                 -39                         -39 
     13 TechnologicalSequence[15,3,4,14,3,1]
-                                 -98                         -98 
+                                -157                         -98 
     14 TechnologicalSequence[18,4,1,17,4,2]
-                                -101                         -77 
+                                 -77                         -77 
     15 TechnologicalSequence[17,4,2,16,4,0]
-                                -100                         -66 
+                                -319                         -66 
     16 TechnologicalSequence[19,4,3,18,4,1]
-                                 -90                         -77 
+                                 -77                         -77 
     17 TechnologicalSequence[20,4,4,19,4,3]
-                                 -79                         -79 
+                                 -90                         -79 
     18 TechnologicalSequence[25,5,0,24,5,2]
-                                -131                         -83 
+                                -263                         -83 
     19 TechnologicalSequence[24,5,2,23,5,4]
-                                 -64                         -64 
+                                -196                         -64 
     20 TechnologicalSequence[22,5,3,21,5,1]
-                                 -77                         -34 
+                                 -96                         -34 
     21 TechnologicalSequence[23,5,4,22,5,3]
-                                 -80                         -37 
+                                -135                         -37 
     22 TechnologicalSequence[30,6,0,29,6,4]
-                                -268                         -92 
+                                -179                         -92 
     23 TechnologicalSequence[27,6,1,26,6,2]
-                                 -60                         -54 
+                                -104                         -54 
     24 TechnologicalSequence[28,6,3,27,6,1]
-                                 -68                         -62 
+                                 -66                         -62 
     25 TechnologicalSequence[29,6,4,28,6,3]
-                                -135                         -79 
+                                 -88                         -79 
     26 TechnologicalSequence[35,7,0,34,7,2]
                                  -93                         -93 
     27 TechnologicalSequence[33,7,1,32,7,4]
-                                -393                         -87 
+                                -265                         -87 
     28 TechnologicalSequence[34,7,2,33,7,1]
-                                 -87                         -87 
+                                -151                         -87 
     29 TechnologicalSequence[32,7,4,31,7,3]
                                  -77                         -77 
     30 TechnologicalSequence[39,8,0,38,8,1]
-                                -112                         -60 
+                                 -60                         -60 
     31 TechnologicalSequence[38,8,1,37,8,2]
-                                 -41                         -41 
+                                -107                         -41 
     32 TechnologicalSequence[37,8,2,36,8,3]
-                                 -38                         -38 
+                                 -53                         -38 
     33 TechnologicalSequence[40,8,4,39,8,0]
-                                -104                         -83 
+                                -408                         -83 
     34 TechnologicalSequence[43,9,0,42,9,4]
-                                -270                         -44 
+                                 -70                         -44 
     35 TechnologicalSequence[44,9,1,43,9,0]
-                                 -80                         -49 
+                                -266                         -49 
     36 TechnologicalSequence[45,9,2,44,9,1]
-                                -105                         -98 
+                                 -98                         -98 
     37 TechnologicalSequence[42,9,4,41,9,3]
-                                 -25                         -25 
+                                -218                         -25 
     38 TechnologicalSequence[50,10,0,49,10,3]
-                                -108                         -96 
+                                 -96                         -96 
     39 TechnologicalSequence[47,10,1,46,10,2]
                                  -75                         -75 
     40 TechnologicalSequence[49,10,3,48,10,4]
-                                -147                         -79 
+                                -132                         -79 
     41 TechnologicalSequence[48,10,4,47,10,1]
-                                -178                         -96 
+                                -119                         -96 
     42 MachineConflictA[3,1,0,7,2]
-                                2705                        2816 
+                                2761                        2816 
     43 MachineConflictA[3,1,0,11,3]
                                   12                        2816 
     44 MachineConflictA[3,1,0,16,4]
-                                  67                        2816 
+                                2816                        2816 
     45 MachineConflictA[3,1,0,25,5]
-                                 194                        2816 
+                                 593                        2816 
     46 MachineConflictA[3,1,0,30,6]
-                                 442                        2816 
+                                 417                        2816 
     47 MachineConflictA[3,1,0,35,7]
-                                 535                        2816 
+                                 510                        2816 
     48 MachineConflictA[3,1,0,39,8]
-                                 254                        2816 
+                                 185                        2816 
     49 MachineConflictA[3,1,0,43,9]
-                                 111                        2816 
+                                 229                        2816 
     50 MachineConflictA[3,1,0,50,10]
-                                 350                        2816 
+                                 325                        2816 
     51 MachineConflictA[1,1,1,10,2]
-                                 715                        2848 
+                                 570                        2848 
     52 MachineConflictA[1,1,1,14,3]
-                                 617                        2848 
+                                 303                        2848 
     53 MachineConflictA[1,1,1,18,4]
-                                 448                        2848 
+                                 467                        2848 
     54 MachineConflictA[1,1,1,21,5]
-                                  22                        2848 
+                                  27                        2848 
     55 MachineConflictA[1,1,1,27,6]
-                                 151                        2848 
+                                 208                        2848 
     56 MachineConflictA[1,1,1,33,7]
-                                 535                        2848 
+                                 390                        2848 
     57 MachineConflictA[1,1,1,38,8]
-                                 322                        2848 
+                                 249                        2848 
     58 MachineConflictA[1,1,1,44,9]
-                                 371                        2848 
+                                 619                        2848 
     59 MachineConflictA[1,1,1,47,10]
-                                  97                        2848 
+                                 102                        2848 
     60 MachineConflictA[2,1,2,8,2]
-                                2792                        2835 
+                                 263                        2835 
     61 MachineConflictA[2,1,2,12,3]
-                                 253                        2835 
+                                 112                        2835 
     62 MachineConflictA[2,1,2,17,4]
-                                 222                        2835 
+                                 329                        2835 
     63 MachineConflictA[2,1,2,24,5]
-                                 118                        2835 
+                                 393                        2835 
     64 MachineConflictA[2,1,2,26,6]
-                                2835                        2835 
+                                  43                        2835 
     65 MachineConflictA[2,1,2,34,7]
-                                 497                        2835 
+                                 480                        2835 
     66 MachineConflictA[2,1,2,37,8]
-                                 156                        2835 
+                                  81                        2835 
     67 MachineConflictA[2,1,2,45,9]
-                                 351                        2835 
+                                 656                        2835 
     68 MachineConflictA[2,1,2,46,10]
-                                2766                        2835 
+                                2835                        2835 
     69 MachineConflictA[4,1,3,9,2]
-                                 292                        2814 
+                                  52                        2814 
     70 MachineConflictA[4,1,3,13,3]
-                                 163                        2814 
+                                2673                        2814 
     71 MachineConflictA[4,1,3,19,4]
-                                 240                        2814 
+                                 136                        2814 
     72 MachineConflictA[4,1,3,22,5]
-                                2670                        2814 
+                                2584                        2814 
     73 MachineConflictA[4,1,3,28,6]
-                                2790                        2814 
+                                2735                        2814 
     74 MachineConflictA[4,1,3,31,7]
-                                2636                        2814 
+                                2509                        2814 
     75 MachineConflictA[4,1,3,36,8]
-                                2814                        2814 
+                                2550                        2814 
     76 MachineConflictA[4,1,3,41,9]
-                                2567                        2814 
+                                2526                        2814 
     77 MachineConflictA[4,1,3,49,10]
-                                 124                        2814 
+                                2814                        2814 
     78 MachineConflictA[5,1,4,6,2]
-                                2409                        2774 
+                                2309                        2774 
     79 MachineConflictA[5,1,4,15,3]
-                                 260                        2774 
+                                2774                        2774 
     80 MachineConflictA[5,1,4,20,4]
-                                 162                        2774 
+                                  79                        2774 
     81 MachineConflictA[5,1,4,23,5]
-                                2593                        2774 
+                                2572                        2774 
     82 MachineConflictA[5,1,4,29,6]
-                                2768                        2774 
+                                2676                        2774 
     83 MachineConflictA[5,1,4,32,7]
-                                2556                        2774 
+                                2439                        2774 
     84 MachineConflictA[5,1,4,40,8]
-                                  83                        2774 
+                                 162                        2774 
     85 MachineConflictA[5,1,4,42,9]
-                                2435                        2774 
+                                2597                        2774 
     86 MachineConflictA[5,1,4,48,10]
-                                2689                        2774 
+                                2535                        2774 
     87 MachineConflictA[7,2,0,11,3]
-                                 176                        2848 
+                                 120                        2848 
     88 MachineConflictA[7,2,0,16,4]
-                                 231                        2848 
+                                  55                        2848 
     89 MachineConflictA[7,2,0,25,5]
-                                 358                        2848 
+                                 701                        2848 
     90 MachineConflictA[7,2,0,30,6]
-                                 606                        2848 
+                                 525                        2848 
     91 MachineConflictA[7,2,0,35,7]
-                                 699                        2848 
+                                 618                        2848 
     92 MachineConflictA[7,2,0,39,8]
-                                 418                        2848 
+                                 293                        2848 
     93 MachineConflictA[7,2,0,43,9]
-                                 275                        2848 
+                                 337                        2848 
     94 MachineConflictA[7,2,0,50,10]
-                                 514                        2848 
+                                 433                        2848 
     95 MachineConflictA[10,2,1,14,3]
-                                2771                        2798 
-    96 MachineConflictA[10,2,1,18,4]
                                 2602                        2798 
+    96 MachineConflictA[10,2,1,18,4]
+                                2766                        2798 
     97 MachineConflictA[10,2,1,21,5]
-                                2176                        2798 
+                                2326                        2798 
     98 MachineConflictA[10,2,1,27,6]
-                                2305                        2798 
+                                2507                        2798 
     99 MachineConflictA[10,2,1,33,7]
                                 2689                        2798 
    100 MachineConflictA[10,2,1,38,8]
-                                2476                        2798 
+                                2548                        2798 
    101 MachineConflictA[10,2,1,44,9]
-                                2525                        2798 
+                                  49                        2798 
    102 MachineConflictA[10,2,1,47,10]
-                                2251                        2798 
+                                2401                        2798 
    103 MachineConflictA[8,2,2,12,3]
-                                 330                        2843 
+                                2718                        2843 
    104 MachineConflictA[8,2,2,17,4]
-                                 299                        2843 
+                                  66                        2843 
    105 MachineConflictA[8,2,2,24,5]
-                                 195                        2843 
+                                 130                        2843 
    106 MachineConflictA[8,2,2,26,6]
-                                  43                        2843 
+                                2649                        2843 
    107 MachineConflictA[8,2,2,34,7]
-                                 574                        2843 
+                                 217                        2843 
    108 MachineConflictA[8,2,2,37,8]
-                                 233                        2843 
+                                2687                        2843 
    109 MachineConflictA[8,2,2,45,9]
-                                 428                        2843 
+                                 393                        2843 
    110 MachineConflictA[8,2,2,46,10]
-                                2843                        2843 
+                                2572                        2843 
    111 MachineConflictA[9,2,3,13,3]
-                                2740                        2817 
+                                2621                        2817 
    112 MachineConflictA[9,2,3,19,4]
-                                2817                        2817 
+                                  84                        2817 
    113 MachineConflictA[9,2,3,22,5]
-                                2378                        2817 
+                                2532                        2817 
    114 MachineConflictA[9,2,3,28,6]
-                                2498                        2817 
+                                2683                        2817 
    115 MachineConflictA[9,2,3,31,7]
-                                2344                        2817 
+                                2457                        2817 
    116 MachineConflictA[9,2,3,36,8]
-                                2522                        2817 
+                                2498                        2817 
    117 MachineConflictA[9,2,3,41,9]
-                                2275                        2817 
+                                2474                        2817 
    118 MachineConflictA[9,2,3,49,10]
-                                2701                        2817 
+                                2762                        2817 
    119 MachineConflictA[6,2,4,15,3]
-                                 720                        2853 
+                                 465                        2853 
    120 MachineConflictA[6,2,4,20,4]
-                                 622                        2853 
+                                 639                        2853 
    121 MachineConflictA[6,2,4,23,5]
-                                 184                        2853 
+                                 263                        2853 
    122 MachineConflictA[6,2,4,29,6]
-                                 359                        2853 
+                                 367                        2853 
    123 MachineConflictA[6,2,4,32,7]
-                                 147                        2853 
+                                 130                        2853 
    124 MachineConflictA[6,2,4,40,8]
-                                 543                        2853 
+                                 722                        2853 
    125 MachineConflictA[6,2,4,42,9]
-                                  26                        2853 
+                                 288                        2853 
    126 MachineConflictA[6,2,4,48,10]
-                                 280                        2853 
+                                 226                        2853 
    127 MachineConflictA[11,3,0,16,4]
-                                  55                        2857 
+                                2804                        2857 
    128 MachineConflictA[11,3,0,25,5]
-                                 182                        2857 
+                                 581                        2857 
    129 MachineConflictA[11,3,0,30,6]
-                                 430                        2857 
+                                 405                        2857 
    130 MachineConflictA[11,3,0,35,7]
-                                 523                        2857 
+                                 498                        2857 
    131 MachineConflictA[11,3,0,39,8]
-                                 242                        2857 
+                                 173                        2857 
    132 MachineConflictA[11,3,0,43,9]
-                                  99                        2857 
+                                 217                        2857 
    133 MachineConflictA[11,3,0,50,10]
-                                 338                        2857 
+                                 313                        2857 
    134 MachineConflictA[14,3,1,18,4]
-                                2700                        2827 
+                                 164                        2827 
    135 MachineConflictA[14,3,1,21,5]
-                                2274                        2827 
+                                2593                        2827 
    136 MachineConflictA[14,3,1,27,6]
-                                2403                        2827 
+                                2774                        2827 
    137 MachineConflictA[14,3,1,33,7]
-                                2787                        2827 
+                                  87                        2827 
    138 MachineConflictA[14,3,1,38,8]
-                                2574                        2827 
+                                2815                        2827 
    139 MachineConflictA[14,3,1,44,9]
-                                2623                        2827 
+                                 316                        2827 
    140 MachineConflictA[14,3,1,47,10]
-                                2349                        2827 
+                                2668                        2827 
    141 MachineConflictA[12,3,2,17,4]
-                                2838                        2838 
+                                 217                        2838 
    142 MachineConflictA[12,3,2,24,5]
-                                2734                        2838 
+                                 281                        2838 
    143 MachineConflictA[12,3,2,26,6]
-                                2582                        2838 
+                                2800                        2838 
    144 MachineConflictA[12,3,2,34,7]
-                                 244                        2838 
+                                 368                        2838 
    145 MachineConflictA[12,3,2,37,8]
-                                2772                        2838 
+                                2838                        2838 
    146 MachineConflictA[12,3,2,45,9]
-                                  98                        2838 
+                                 544                        2838 
    147 MachineConflictA[12,3,2,46,10]
-                                2513                        2838 
+                                2723                        2838 
    148 MachineConflictA[13,3,3,19,4]
-                                  77                        2830 
+                                 332                        2830 
    149 MachineConflictA[13,3,3,22,5]
-                                2507                        2830 
+                                2780                        2830 
    150 MachineConflictA[13,3,3,28,6]
-                                2627                        2830 
+                                  62                        2830 
    151 MachineConflictA[13,3,3,31,7]
-                                2473                        2830 
+                                2705                        2830 
    152 MachineConflictA[13,3,3,36,8]
-                                2651                        2830 
+                                2746                        2830 
    153 MachineConflictA[13,3,3,41,9]
-                                2404                        2830 
+                                2722                        2830 
    154 MachineConflictA[13,3,3,49,10]
-                                2830                        2830 
+                                 141                        2830 
    155 MachineConflictA[15,3,4,20,4]
-                                2771                        2771 
+                                 174                        2771 
    156 MachineConflictA[15,3,4,23,5]
-                                2333                        2771 
+                                2667                        2771 
    157 MachineConflictA[15,3,4,29,6]
-                                2508                        2771 
+                                2771                        2771 
    158 MachineConflictA[15,3,4,32,7]
-                                2296                        2771 
+                                2534                        2771 
    159 MachineConflictA[15,3,4,40,8]
-                                2692                        2771 
+                                 257                        2771 
    160 MachineConflictA[15,3,4,42,9]
-                                2175                        2771 
+                                2692                        2771 
    161 MachineConflictA[15,3,4,48,10]
-                                2429                        2771 
+                                2630                        2771 
    162 MachineConflictA[16,4,0,25,5]
-                                 127                        2814 
+                                 646                        2814 
    163 MachineConflictA[16,4,0,30,6]
-                                 375                        2814 
+                                 470                        2814 
    164 MachineConflictA[16,4,0,35,7]
-                                 468                        2814 
+                                 563                        2814 
    165 MachineConflictA[16,4,0,39,8]
-                                 187                        2814 
+                                 238                        2814 
    166 MachineConflictA[16,4,0,43,9]
-                                  44                        2814 
+                                 282                        2814 
    167 MachineConflictA[16,4,0,50,10]
-                                 283                        2814 
+                                 378                        2814 
    168 MachineConflictA[18,4,1,21,5]
-                                2443                        2792 
+                                2429                        2792 
    169 MachineConflictA[18,4,1,27,6]
-                                2572                        2792 
+                                2610                        2792 
    170 MachineConflictA[18,4,1,33,7]
-                                  87                        2792 
-   171 MachineConflictA[18,4,1,38,8]
-                                2743                        2792 
-   172 MachineConflictA[18,4,1,44,9]
                                 2792                        2792 
+   171 MachineConflictA[18,4,1,38,8]
+                                2651                        2792 
+   172 MachineConflictA[18,4,1,44,9]
+                                 152                        2792 
    173 MachineConflictA[18,4,1,47,10]
-                                2518                        2792 
+                                2504                        2792 
    174 MachineConflictA[17,4,2,24,5]
-                                2765                        2803 
+                                  64                        2803 
    175 MachineConflictA[17,4,2,26,6]
-                                2613                        2803 
+                                2583                        2803 
    176 MachineConflictA[17,4,2,34,7]
-                                 275                        2803 
+                                 151                        2803 
    177 MachineConflictA[17,4,2,37,8]
-                                2803                        2803 
+                                2621                        2803 
    178 MachineConflictA[17,4,2,45,9]
-                                 129                        2803 
+                                 327                        2803 
    179 MachineConflictA[17,4,2,46,10]
-                                2544                        2803 
+                                2506                        2803 
    180 MachineConflictA[19,4,3,22,5]
-                                2430                        2792 
+                                2448                        2792 
    181 MachineConflictA[19,4,3,28,6]
-                                2550                        2792 
+                                2599                        2792 
    182 MachineConflictA[19,4,3,31,7]
-                                2396                        2792 
+                                2373                        2792 
    183 MachineConflictA[19,4,3,36,8]
-                                2574                        2792 
+                                2414                        2792 
    184 MachineConflictA[19,4,3,41,9]
-                                2327                        2792 
+                                2390                        2792 
    185 MachineConflictA[19,4,3,49,10]
-                                2753                        2792 
+                                2678                        2792 
    186 MachineConflictA[20,4,4,23,5]
-                                2431                        2790 
+                                2493                        2790 
    187 MachineConflictA[20,4,4,29,6]
-                                2606                        2790 
+                                2597                        2790 
    188 MachineConflictA[20,4,4,32,7]
-                                2394                        2790 
+                                2360                        2790 
    189 MachineConflictA[20,4,4,40,8]
-                                2790                        2790 
+                                  83                        2790 
    190 MachineConflictA[20,4,4,42,9]
-                                2273                        2790 
+                                2518                        2790 
    191 MachineConflictA[20,4,4,48,10]
-                                2527                        2790 
+                                2456                        2790 
    192 MachineConflictA[25,5,0,30,6]
-                                 248                        2786 
+                                2693                        2786 
    193 MachineConflictA[25,5,0,35,7]
-                                 341                        2786 
-   194 MachineConflictA[25,5,0,39,8]
-                                  60                        2786 
-   195 MachineConflictA[25,5,0,43,9]
                                 2786                        2786 
+   194 MachineConflictA[25,5,0,39,8]
+                                2461                        2786 
+   195 MachineConflictA[25,5,0,43,9]
+                                2505                        2786 
    196 MachineConflictA[25,5,0,50,10]
-                                 156                        2786 
+                                2601                        2786 
    197 MachineConflictA[21,5,1,27,6]
-                                 129                        2850 
+                                 181                        2850 
    198 MachineConflictA[21,5,1,33,7]
-                                 513                        2850 
+                                 363                        2850 
    199 MachineConflictA[21,5,1,38,8]
-                                 300                        2850 
+                                 222                        2850 
    200 MachineConflictA[21,5,1,44,9]
-                                 349                        2850 
+                                 592                        2850 
    201 MachineConflictA[21,5,1,47,10]
                                   75                        2850 
    202 MachineConflictA[24,5,2,26,6]
-                                2717                        2805 
+                                2519                        2805 
    203 MachineConflictA[24,5,2,34,7]
-                                 379                        2805 
+                                  87                        2805 
    204 MachineConflictA[24,5,2,37,8]
-                                  38                        2805 
+                                2557                        2805 
    205 MachineConflictA[24,5,2,45,9]
-                                 233                        2805 
+                                 263                        2805 
    206 MachineConflictA[24,5,2,46,10]
-                                2648                        2805 
+                                2442                        2805 
    207 MachineConflictA[22,5,3,28,6]
-                                 120                        2835 
+                                 151                        2835 
    208 MachineConflictA[22,5,3,31,7]
-                                2835                        2835 
+                                2794                        2835 
    209 MachineConflictA[22,5,3,36,8]
-                                 144                        2835 
+                                2835                        2835 
    210 MachineConflictA[22,5,3,41,9]
-                                2766                        2835 
+                                2811                        2835 
    211 MachineConflictA[22,5,3,49,10]
-                                 323                        2835 
+                                 230                        2835 
    212 MachineConflictA[23,5,4,29,6]
-                                 175                        2832 
+                                 104                        2832 
    213 MachineConflictA[23,5,4,32,7]
-                                2832                        2832 
+                                2736                        2832 
    214 MachineConflictA[23,5,4,40,8]
-                                 359                        2832 
+                                 459                        2832 
    215 MachineConflictA[23,5,4,42,9]
-                                2711                        2832 
+                                  25                        2832 
    216 MachineConflictA[23,5,4,48,10]
-                                  96                        2832 
+                                2832                        2832 
    217 MachineConflictA[30,6,0,35,7]
                                   93                        2777 
    218 MachineConflictA[30,6,0,39,8]
-                                2681                        2777 
+                                2637                        2777 
    219 MachineConflictA[30,6,0,43,9]
-                                2538                        2777 
+                                2681                        2777 
    220 MachineConflictA[30,6,0,50,10]
                                 2777                        2777 
    221 MachineConflictA[27,6,1,33,7]
-                                 384                        2815 
+                                 182                        2815 
    222 MachineConflictA[27,6,1,38,8]
-                                 171                        2815 
+                                  41                        2815 
    223 MachineConflictA[27,6,1,44,9]
-                                 220                        2815 
+                                 411                        2815 
    224 MachineConflictA[27,6,1,47,10]
-                                2815                        2815 
+                                2763                        2815 
    225 MachineConflictA[26,6,2,34,7]
-                                 531                        2826 
+                                 437                        2826 
    226 MachineConflictA[26,6,2,37,8]
-                                 190                        2826 
+                                  38                        2826 
    227 MachineConflictA[26,6,2,45,9]
-                                 385                        2826 
+                                 613                        2826 
    228 MachineConflictA[26,6,2,46,10]
-                                2800                        2826 
+                                2792                        2826 
    229 MachineConflictA[28,6,3,31,7]
-                                2715                        2807 
+                                2643                        2807 
    230 MachineConflictA[28,6,3,36,8]
-                                  24                        2807 
+                                2684                        2807 
    231 MachineConflictA[28,6,3,41,9]
-                                2646                        2807 
+                                2660                        2807 
    232 MachineConflictA[28,6,3,49,10]
-                                 203                        2807 
+                                  79                        2807 
    233 MachineConflictA[29,6,4,32,7]
-                                2657                        2790 
+                                2632                        2790 
    234 MachineConflictA[29,6,4,40,8]
-                                 184                        2790 
+                                 355                        2790 
    235 MachineConflictA[29,6,4,42,9]
-                                2536                        2790 
-   236 MachineConflictA[29,6,4,48,10]
                                 2790                        2790 
+   236 MachineConflictA[29,6,4,48,10]
+                                2728                        2790 
    237 MachineConflictA[35,7,0,39,8]
-                                2588                        2776 
+                                2544                        2776 
    238 MachineConflictA[35,7,0,43,9]
-                                2445                        2776 
+                                2588                        2776 
    239 MachineConflictA[35,7,0,50,10]
                                 2684                        2776 
    240 MachineConflictA[33,7,1,38,8]
-                                2656                        2782 
+                                2728                        2782 
    241 MachineConflictA[33,7,1,44,9]
-                                2705                        2782 
+                                 229                        2782 
    242 MachineConflictA[33,7,1,47,10]
-                                2431                        2782 
+                                2581                        2782 
    243 MachineConflictA[34,7,2,37,8]
-                                2528                        2782 
+                                2470                        2782 
    244 MachineConflictA[34,7,2,45,9]
-                                2723                        2782 
+                                 176                        2782 
    245 MachineConflictA[34,7,2,46,10]
-                                2269                        2782 
+                                2355                        2782 
    246 MachineConflictA[31,7,3,36,8]
-                                 178                        2800 
+                                  41                        2800 
    247 MachineConflictA[31,7,3,41,9]
-                                2800                        2800 
+                                  17                        2800 
    248 MachineConflictA[31,7,3,49,10]
-                                 357                        2800 
+                                 305                        2800 
    249 MachineConflictA[32,7,4,40,8]
-                                 396                        2792 
+                                 592                        2792 
    250 MachineConflictA[32,7,4,42,9]
-                                2748                        2792 
+                                 158                        2792 
    251 MachineConflictA[32,7,4,48,10]
-                                 133                        2792 
+                                  96                        2792 
    252 MachineConflictA[39,8,0,43,9]
-                                2726                        2809 
+                                  44                        2809 
    253 MachineConflictA[39,8,0,50,10]
-                                  96                        2809 
+                                 140                        2809 
    254 MachineConflictA[38,8,1,44,9]
-                                  49                        2828 
+                                 370                        2828 
    255 MachineConflictA[38,8,1,47,10]
-                                2644                        2828 
+                                2722                        2828 
    256 MachineConflictA[37,8,2,45,9]
-                                 195                        2831 
+                                 575                        2831 
    257 MachineConflictA[37,8,2,46,10]
-                                2610                        2831 
+                                2754                        2831 
    258 MachineConflictA[36,8,3,41,9]
-                                2622                        2845 
+                                2845                        2845 
    259 MachineConflictA[36,8,3,49,10]
-                                 179                        2845 
+                                 264                        2845 
    260 MachineConflictA[40,8,4,42,9]
-                                2352                        2786 
+                                2435                        2786 
    261 MachineConflictA[40,8,4,48,10]
-                                2606                        2786 
+                                2373                        2786 
    262 MachineConflictA[43,9,0,50,10]
-                                 239                        2825 
+                                  96                        2825 
    263 MachineConflictA[44,9,1,47,10]
-                                2595                        2820 
+                                2352                        2820 
    264 MachineConflictA[45,9,2,46,10]
-                                2415                        2771 
+                                2179                        2771 
    265 MachineConflictA[41,9,3,49,10]
-                                 426                        2852 
+                                 288                        2852 
    266 MachineConflictA[42,9,4,48,10]
-                                 254                        2844 
+                                2807                        2844 
    267 MachineConflictB[3,1,0,7,2]
-                               -2705                         -21 
+                               -2761                         -21 
    268 MachineConflictB[3,1,0,11,3]
                                  -12                         -12 
    269 MachineConflictB[3,1,0,16,4]
-                                 -67                         -55 
+                               -2816                         -55 
    270 MachineConflictB[3,1,0,25,5]
-                                -194                         -83 
+                                -593                         -83 
    271 MachineConflictB[3,1,0,30,6]
-                                -442                         -92 
+                                -417                         -92 
    272 MachineConflictB[3,1,0,35,7]
-                                -535                         -93 
+                                -510                         -93 
    273 MachineConflictB[3,1,0,39,8]
-                                -254                         -60 
+                                -185                         -60 
    274 MachineConflictB[3,1,0,43,9]
-                                -111                         -44 
+                                -229                         -44 
    275 MachineConflictB[3,1,0,50,10]
-                                -350                         -96 
+                                -325                         -96 
    276 MachineConflictB[1,1,1,10,2]
-                                -715                         -71 
+                                -570                         -71 
    277 MachineConflictB[1,1,1,14,3]
-                                -617                         -42 
+                                -303                         -42 
    278 MachineConflictB[1,1,1,18,4]
-                                -448                         -77 
+                                -467                         -77 
    279 MachineConflictB[1,1,1,21,5]
-                                 -22                         -19 
+                                 -27                         -19 
    280 MachineConflictB[1,1,1,27,6]
-                                -151                         -54 
+                                -208                         -54 
    281 MachineConflictB[1,1,1,33,7]
-                                -535                         -87 
+                                -390                         -87 
    282 MachineConflictB[1,1,1,38,8]
-                                -322                         -41 
+                                -249                         -41 
    283 MachineConflictB[1,1,1,44,9]
-                                -371                         -49 
+                                -619                         -49 
    284 MachineConflictB[1,1,1,47,10]
-                                 -97                         -75 
+                                -102                         -75 
    285 MachineConflictB[2,1,2,8,2]
-                               -2792                         -26 
+                                -263                         -26 
    286 MachineConflictB[2,1,2,12,3]
-                                -253                         -31 
+                                -112                         -31 
    287 MachineConflictB[2,1,2,17,4]
-                                -222                         -66 
+                                -329                         -66 
    288 MachineConflictB[2,1,2,24,5]
-                                -118                         -64 
+                                -393                         -64 
    289 MachineConflictB[2,1,2,26,6]
-                               -2835                         -43 
+                                 -43                         -43 
    290 MachineConflictB[2,1,2,34,7]
-                                -497                         -87 
+                                -480                         -87 
    291 MachineConflictB[2,1,2,37,8]
-                                -156                         -38 
+                                 -81                         -38 
    292 MachineConflictB[2,1,2,45,9]
-                                -351                         -98 
+                                -656                         -98 
    293 MachineConflictB[2,1,2,46,10]
-                               -2766                         -43 
+                               -2835                         -43 
    294 MachineConflictB[4,1,3,9,2]
-                                -292                         -52 
+                                 -52                         -52 
    295 MachineConflictB[4,1,3,13,3]
-                                -163                         -39 
+                               -2673                         -39 
    296 MachineConflictB[4,1,3,19,4]
-                                -240                         -77 
+                                -136                         -77 
    297 MachineConflictB[4,1,3,22,5]
-                               -2670                         -34 
+                               -2584                         -34 
    298 MachineConflictB[4,1,3,28,6]
-                               -2790                         -62 
+                               -2735                         -62 
    299 MachineConflictB[4,1,3,31,7]
-                               -2636                         -69 
+                               -2509                         -69 
    300 MachineConflictB[4,1,3,36,8]
-                               -2814                         -24 
+                               -2550                         -24 
    301 MachineConflictB[4,1,3,41,9]
-                               -2567                         -17 
+                               -2526                         -17 
    302 MachineConflictB[4,1,3,49,10]
-                                -124                         -79 
+                               -2814                         -79 
    303 MachineConflictB[5,1,4,6,2]
-                               -2409                         -16 
+                               -2309                         -16 
    304 MachineConflictB[5,1,4,15,3]
-                                -260                         -98 
+                               -2774                         -98 
    305 MachineConflictB[5,1,4,20,4]
-                                -162                         -79 
+                                 -79                         -79 
    306 MachineConflictB[5,1,4,23,5]
-                               -2593                         -37 
+                               -2572                         -37 
    307 MachineConflictB[5,1,4,29,6]
-                               -2768                         -79 
+                               -2676                         -79 
    308 MachineConflictB[5,1,4,32,7]
-                               -2556                         -77 
+                               -2439                         -77 
    309 MachineConflictB[5,1,4,40,8]
-                                 -83                         -83 
+                                -162                         -83 
    310 MachineConflictB[5,1,4,42,9]
-                               -2435                         -25 
+                               -2597                         -25 
    311 MachineConflictB[5,1,4,48,10]
-                               -2689                         -96 
+                               -2535                         -96 
    312 MachineConflictB[7,2,0,11,3]
-                                -176                         -12 
+                                -120                         -12 
    313 MachineConflictB[7,2,0,16,4]
-                                -231                         -55 
+                                 -55                         -55 
    314 MachineConflictB[7,2,0,25,5]
-                                -358                         -83 
+                                -701                         -83 
    315 MachineConflictB[7,2,0,30,6]
-                                -606                         -92 
+                                -525                         -92 
    316 MachineConflictB[7,2,0,35,7]
-                                -699                         -93 
+                                -618                         -93 
    317 MachineConflictB[7,2,0,39,8]
-                                -418                         -60 
+                                -293                         -60 
    318 MachineConflictB[7,2,0,43,9]
-                                -275                         -44 
+                                -337                         -44 
    319 MachineConflictB[7,2,0,50,10]
-                                -514                         -96 
+                                -433                         -96 
    320 MachineConflictB[10,2,1,14,3]
-                               -2771                         -42 
+                               -2602                         -42 
    321 MachineConflictB[10,2,1,18,4]
-                               -2602                         -77 
+                               -2766                         -77 
    322 MachineConflictB[10,2,1,21,5]
-                               -2176                         -19 
+                               -2326                         -19 
    323 MachineConflictB[10,2,1,27,6]
-                               -2305                         -54 
+                               -2507                         -54 
    324 MachineConflictB[10,2,1,33,7]
                                -2689                         -87 
    325 MachineConflictB[10,2,1,38,8]
-                               -2476                         -41 
+                               -2548                         -41 
    326 MachineConflictB[10,2,1,44,9]
-                               -2525                         -49 
+                                 -49                         -49 
    327 MachineConflictB[10,2,1,47,10]
-                               -2251                         -75 
+                               -2401                         -75 
    328 MachineConflictB[8,2,2,12,3]
-                                -330                         -31 
+                               -2718                         -31 
    329 MachineConflictB[8,2,2,17,4]
-                                -299                         -66 
+                                 -66                         -66 
    330 MachineConflictB[8,2,2,24,5]
-                                -195                         -64 
+                                -130                         -64 
    331 MachineConflictB[8,2,2,26,6]
-                                 -43                         -43 
+                               -2649                         -43 
    332 MachineConflictB[8,2,2,34,7]
-                                -574                         -87 
+                                -217                         -87 
    333 MachineConflictB[8,2,2,37,8]
-                                -233                         -38 
+                               -2687                         -38 
    334 MachineConflictB[8,2,2,45,9]
-                                -428                         -98 
+                                -393                         -98 
    335 MachineConflictB[8,2,2,46,10]
-                               -2843                         -43 
+                               -2572                         -43 
    336 MachineConflictB[9,2,3,13,3]
-                               -2740                         -39 
+                               -2621                         -39 
    337 MachineConflictB[9,2,3,19,4]
-                               -2817                         -77 
+                                 -84                         -77 
    338 MachineConflictB[9,2,3,22,5]
-                               -2378                         -34 
+                               -2532                         -34 
    339 MachineConflictB[9,2,3,28,6]
-                               -2498                         -62 
+                               -2683                         -62 
    340 MachineConflictB[9,2,3,31,7]
-                               -2344                         -69 
+                               -2457                         -69 
    341 MachineConflictB[9,2,3,36,8]
-                               -2522                         -24 
+                               -2498                         -24 
    342 MachineConflictB[9,2,3,41,9]
-                               -2275                         -17 
+                               -2474                         -17 
    343 MachineConflictB[9,2,3,49,10]
-                               -2701                         -79 
+                               -2762                         -79 
    344 MachineConflictB[6,2,4,15,3]
-                                -720                         -98 
+                                -465                         -98 
    345 MachineConflictB[6,2,4,20,4]
-                                -622                         -79 
+                                -639                         -79 
    346 MachineConflictB[6,2,4,23,5]
-                                -184                         -37 
+                                -263                         -37 
    347 MachineConflictB[6,2,4,29,6]
-                                -359                         -79 
+                                -367                         -79 
    348 MachineConflictB[6,2,4,32,7]
-                                -147                         -77 
+                                -130                         -77 
    349 MachineConflictB[6,2,4,40,8]
-                                -543                         -83 
+                                -722                         -83 
    350 MachineConflictB[6,2,4,42,9]
-                                 -26                         -25 
+                                -288                         -25 
    351 MachineConflictB[6,2,4,48,10]
-                                -280                         -96 
+                                -226                         -96 
    352 MachineConflictB[11,3,0,16,4]
-                                 -55                         -55 
+                               -2804                         -55 
    353 MachineConflictB[11,3,0,25,5]
-                                -182                         -83 
+                                -581                         -83 
    354 MachineConflictB[11,3,0,30,6]
-                                -430                         -92 
+                                -405                         -92 
    355 MachineConflictB[11,3,0,35,7]
-                                -523                         -93 
+                                -498                         -93 
    356 MachineConflictB[11,3,0,39,8]
-                                -242                         -60 
+                                -173                         -60 
    357 MachineConflictB[11,3,0,43,9]
-                                 -99                         -44 
+                                -217                         -44 
    358 MachineConflictB[11,3,0,50,10]
-                                -338                         -96 
+                                -313                         -96 
    359 MachineConflictB[14,3,1,18,4]
-                               -2700                         -77 
+                                -164                         -77 
    360 MachineConflictB[14,3,1,21,5]
-                               -2274                         -19 
+                               -2593                         -19 
    361 MachineConflictB[14,3,1,27,6]
-                               -2403                         -54 
+                               -2774                         -54 
    362 MachineConflictB[14,3,1,33,7]
-                               -2787                         -87 
-   363 MachineConflictB[14,3,1,38,8]
-                               -2574                         -41 
-   364 MachineConflictB[14,3,1,44,9]
-                               -2623                         -49 
-   365 MachineConflictB[14,3,1,47,10]
-                               -2349                         -75 
-   366 MachineConflictB[12,3,2,17,4]
-                               -2838                         -66 
-   367 MachineConflictB[12,3,2,24,5]
-                               -2734                         -64 
-   368 MachineConflictB[12,3,2,26,6]
-                               -2582                         -43 
-   369 MachineConflictB[12,3,2,34,7]
-                                -244                         -87 
-   370 MachineConflictB[12,3,2,37,8]
-                               -2772                         -38 
-   371 MachineConflictB[12,3,2,45,9]
-                                 -98                         -98 
-   372 MachineConflictB[12,3,2,46,10]
-                               -2513                         -43 
-   373 MachineConflictB[13,3,3,19,4]
-                                 -77                         -77 
-   374 MachineConflictB[13,3,3,22,5]
-                               -2507                         -34 
-   375 MachineConflictB[13,3,3,28,6]
-                               -2627                         -62 
-   376 MachineConflictB[13,3,3,31,7]
-                               -2473                         -69 
-   377 MachineConflictB[13,3,3,36,8]
-                               -2651                         -24 
-   378 MachineConflictB[13,3,3,41,9]
-                               -2404                         -17 
-   379 MachineConflictB[13,3,3,49,10]
-                               -2830                         -79 
-   380 MachineConflictB[15,3,4,20,4]
-                               -2771                         -79 
-   381 MachineConflictB[15,3,4,23,5]
-                               -2333                         -37 
-   382 MachineConflictB[15,3,4,29,6]
-                               -2508                         -79 
-   383 MachineConflictB[15,3,4,32,7]
-                               -2296                         -77 
-   384 MachineConflictB[15,3,4,40,8]
-                               -2692                         -83 
-   385 MachineConflictB[15,3,4,42,9]
-                               -2175                         -25 
-   386 MachineConflictB[15,3,4,48,10]
-                               -2429                         -96 
-   387 MachineConflictB[16,4,0,25,5]
-                                -127                         -83 
-   388 MachineConflictB[16,4,0,30,6]
-                                -375                         -92 
-   389 MachineConflictB[16,4,0,35,7]
-                                -468                         -93 
-   390 MachineConflictB[16,4,0,39,8]
-                                -187                         -60 
-   391 MachineConflictB[16,4,0,43,9]
-                                 -44                         -44 
-   392 MachineConflictB[16,4,0,50,10]
-                                -283                         -96 
-   393 MachineConflictB[18,4,1,21,5]
-                               -2443                         -19 
-   394 MachineConflictB[18,4,1,27,6]
-                               -2572                         -54 
-   395 MachineConflictB[18,4,1,33,7]
                                  -87                         -87 
+   363 MachineConflictB[14,3,1,38,8]
+                               -2815                         -41 
+   364 MachineConflictB[14,3,1,44,9]
+                                -316                         -49 
+   365 MachineConflictB[14,3,1,47,10]
+                               -2668                         -75 
+   366 MachineConflictB[12,3,2,17,4]
+                                -217                         -66 
+   367 MachineConflictB[12,3,2,24,5]
+                                -281                         -64 
+   368 MachineConflictB[12,3,2,26,6]
+                               -2800                         -43 
+   369 MachineConflictB[12,3,2,34,7]
+                                -368                         -87 
+   370 MachineConflictB[12,3,2,37,8]
+                               -2838                         -38 
+   371 MachineConflictB[12,3,2,45,9]
+                                -544                         -98 
+   372 MachineConflictB[12,3,2,46,10]
+                               -2723                         -43 
+   373 MachineConflictB[13,3,3,19,4]
+                                -332                         -77 
+   374 MachineConflictB[13,3,3,22,5]
+                               -2780                         -34 
+   375 MachineConflictB[13,3,3,28,6]
+                                 -62                         -62 
+   376 MachineConflictB[13,3,3,31,7]
+                               -2705                         -69 
+   377 MachineConflictB[13,3,3,36,8]
+                               -2746                         -24 
+   378 MachineConflictB[13,3,3,41,9]
+                               -2722                         -17 
+   379 MachineConflictB[13,3,3,49,10]
+                                -141                         -79 
+   380 MachineConflictB[15,3,4,20,4]
+                                -174                         -79 
+   381 MachineConflictB[15,3,4,23,5]
+                               -2667                         -37 
+   382 MachineConflictB[15,3,4,29,6]
+                               -2771                         -79 
+   383 MachineConflictB[15,3,4,32,7]
+                               -2534                         -77 
+   384 MachineConflictB[15,3,4,40,8]
+                                -257                         -83 
+   385 MachineConflictB[15,3,4,42,9]
+                               -2692                         -25 
+   386 MachineConflictB[15,3,4,48,10]
+                               -2630                         -96 
+   387 MachineConflictB[16,4,0,25,5]
+                                -646                         -83 
+   388 MachineConflictB[16,4,0,30,6]
+                                -470                         -92 
+   389 MachineConflictB[16,4,0,35,7]
+                                -563                         -93 
+   390 MachineConflictB[16,4,0,39,8]
+                                -238                         -60 
+   391 MachineConflictB[16,4,0,43,9]
+                                -282                         -44 
+   392 MachineConflictB[16,4,0,50,10]
+                                -378                         -96 
+   393 MachineConflictB[18,4,1,21,5]
+                               -2429                         -19 
+   394 MachineConflictB[18,4,1,27,6]
+                               -2610                         -54 
+   395 MachineConflictB[18,4,1,33,7]
+                               -2792                         -87 
    396 MachineConflictB[18,4,1,38,8]
-                               -2743                         -41 
+                               -2651                         -41 
    397 MachineConflictB[18,4,1,44,9]
-                               -2792                         -49 
+                                -152                         -49 
    398 MachineConflictB[18,4,1,47,10]
-                               -2518                         -75 
+                               -2504                         -75 
    399 MachineConflictB[17,4,2,24,5]
-                               -2765                         -64 
+                                 -64                         -64 
    400 MachineConflictB[17,4,2,26,6]
-                               -2613                         -43 
+                               -2583                         -43 
    401 MachineConflictB[17,4,2,34,7]
-                                -275                         -87 
+                                -151                         -87 
    402 MachineConflictB[17,4,2,37,8]
-                               -2803                         -38 
+                               -2621                         -38 
    403 MachineConflictB[17,4,2,45,9]
-                                -129                         -98 
+                                -327                         -98 
    404 MachineConflictB[17,4,2,46,10]
-                               -2544                         -43 
+                               -2506                         -43 
    405 MachineConflictB[19,4,3,22,5]
-                               -2430                         -34 
+                               -2448                         -34 
    406 MachineConflictB[19,4,3,28,6]
-                               -2550                         -62 
+                               -2599                         -62 
    407 MachineConflictB[19,4,3,31,7]
-                               -2396                         -69 
+                               -2373                         -69 
    408 MachineConflictB[19,4,3,36,8]
-                               -2574                         -24 
+                               -2414                         -24 
    409 MachineConflictB[19,4,3,41,9]
-                               -2327                         -17 
+                               -2390                         -17 
    410 MachineConflictB[19,4,3,49,10]
-                               -2753                         -79 
+                               -2678                         -79 
    411 MachineConflictB[20,4,4,23,5]
-                               -2431                         -37 
+                               -2493                         -37 
    412 MachineConflictB[20,4,4,29,6]
-                               -2606                         -79 
+                               -2597                         -79 
    413 MachineConflictB[20,4,4,32,7]
-                               -2394                         -77 
+                               -2360                         -77 
    414 MachineConflictB[20,4,4,40,8]
-                               -2790                         -83 
+                                 -83                         -83 
    415 MachineConflictB[20,4,4,42,9]
-                               -2273                         -25 
+                               -2518                         -25 
    416 MachineConflictB[20,4,4,48,10]
-                               -2527                         -96 
+                               -2456                         -96 
    417 MachineConflictB[25,5,0,30,6]
-                                -248                         -92 
+                               -2693                         -92 
    418 MachineConflictB[25,5,0,35,7]
-                                -341                         -93 
+                               -2786                         -93 
    419 MachineConflictB[25,5,0,39,8]
-                                 -60                         -60 
+                               -2461                         -60 
    420 MachineConflictB[25,5,0,43,9]
-                               -2786                         -44 
+                               -2505                         -44 
    421 MachineConflictB[25,5,0,50,10]
-                                -156                         -96 
+                               -2601                         -96 
    422 MachineConflictB[21,5,1,27,6]
-                                -129                         -54 
+                                -181                         -54 
    423 MachineConflictB[21,5,1,33,7]
-                                -513                         -87 
+                                -363                         -87 
    424 MachineConflictB[21,5,1,38,8]
-                                -300                         -41 
+                                -222                         -41 
    425 MachineConflictB[21,5,1,44,9]
-                                -349                         -49 
+                                -592                         -49 
    426 MachineConflictB[21,5,1,47,10]
                                  -75                         -75 
    427 MachineConflictB[24,5,2,26,6]
-                               -2717                         -43 
+                               -2519                         -43 
    428 MachineConflictB[24,5,2,34,7]
-                                -379                         -87 
+                                 -87                         -87 
    429 MachineConflictB[24,5,2,37,8]
-                                 -38                         -38 
+                               -2557                         -38 
    430 MachineConflictB[24,5,2,45,9]
-                                -233                         -98 
+                                -263                         -98 
    431 MachineConflictB[24,5,2,46,10]
-                               -2648                         -43 
+                               -2442                         -43 
    432 MachineConflictB[22,5,3,28,6]
-                                -120                         -62 
+                                -151                         -62 
    433 MachineConflictB[22,5,3,31,7]
-                               -2835                         -69 
+                               -2794                         -69 
    434 MachineConflictB[22,5,3,36,8]
-                                -144                         -24 
+                               -2835                         -24 
    435 MachineConflictB[22,5,3,41,9]
-                               -2766                         -17 
+                               -2811                         -17 
    436 MachineConflictB[22,5,3,49,10]
-                                -323                         -79 
+                                -230                         -79 
    437 MachineConflictB[23,5,4,29,6]
-                                -175                         -79 
+                                -104                         -79 
    438 MachineConflictB[23,5,4,32,7]
-                               -2832                         -77 
+                               -2736                         -77 
    439 MachineConflictB[23,5,4,40,8]
-                                -359                         -83 
+                                -459                         -83 
    440 MachineConflictB[23,5,4,42,9]
-                               -2711                         -25 
+                                 -25                         -25 
    441 MachineConflictB[23,5,4,48,10]
-                                 -96                         -96 
+                               -2832                         -96 
    442 MachineConflictB[30,6,0,35,7]
                                  -93                         -93 
    443 MachineConflictB[30,6,0,39,8]
-                               -2681                         -60 
+                               -2637                         -60 
    444 MachineConflictB[30,6,0,43,9]
-                               -2538                         -44 
+                               -2681                         -44 
    445 MachineConflictB[30,6,0,50,10]
                                -2777                         -96 
    446 MachineConflictB[27,6,1,33,7]
-                                -384                         -87 
+                                -182                         -87 
    447 MachineConflictB[27,6,1,38,8]
-                                -171                         -41 
+                                 -41                         -41 
    448 MachineConflictB[27,6,1,44,9]
-                                -220                         -49 
+                                -411                         -49 
    449 MachineConflictB[27,6,1,47,10]
-                               -2815                         -75 
+                               -2763                         -75 
    450 MachineConflictB[26,6,2,34,7]
-                                -531                         -87 
+                                -437                         -87 
    451 MachineConflictB[26,6,2,37,8]
-                                -190                         -38 
+                                 -38                         -38 
    452 MachineConflictB[26,6,2,45,9]
-                                -385                         -98 
+                                -613                         -98 
    453 MachineConflictB[26,6,2,46,10]
-                               -2800                         -43 
+                               -2792                         -43 
    454 MachineConflictB[28,6,3,31,7]
-                               -2715                         -69 
+                               -2643                         -69 
    455 MachineConflictB[28,6,3,36,8]
-                                 -24                         -24 
+                               -2684                         -24 
    456 MachineConflictB[28,6,3,41,9]
-                               -2646                         -17 
+                               -2660                         -17 
    457 MachineConflictB[28,6,3,49,10]
-                                -203                         -79 
+                                 -79                         -79 
    458 MachineConflictB[29,6,4,32,7]
-                               -2657                         -77 
+                               -2632                         -77 
    459 MachineConflictB[29,6,4,40,8]
-                                -184                         -83 
+                                -355                         -83 
    460 MachineConflictB[29,6,4,42,9]
-                               -2536                         -25 
+                               -2790                         -25 
    461 MachineConflictB[29,6,4,48,10]
-                               -2790                         -96 
+                               -2728                         -96 
    462 MachineConflictB[35,7,0,39,8]
-                               -2588                         -60 
+                               -2544                         -60 
    463 MachineConflictB[35,7,0,43,9]
-                               -2445                         -44 
+                               -2588                         -44 
    464 MachineConflictB[35,7,0,50,10]
                                -2684                         -96 
    465 MachineConflictB[33,7,1,38,8]
-                               -2656                         -41 
+                               -2728                         -41 
    466 MachineConflictB[33,7,1,44,9]
-                               -2705                         -49 
+                                -229                         -49 
    467 MachineConflictB[33,7,1,47,10]
-                               -2431                         -75 
+                               -2581                         -75 
    468 MachineConflictB[34,7,2,37,8]
-                               -2528                         -38 
+                               -2470                         -38 
    469 MachineConflictB[34,7,2,45,9]
-                               -2723                         -98 
+                                -176                         -98 
    470 MachineConflictB[34,7,2,46,10]
-                               -2269                         -43 
+                               -2355                         -43 
    471 MachineConflictB[31,7,3,36,8]
-                                -178                         -24 
+                                 -41                         -24 
    472 MachineConflictB[31,7,3,41,9]
-                               -2800                         -17 
+                                 -17                         -17 
    473 MachineConflictB[31,7,3,49,10]
-                                -357                         -79 
+                                -305                         -79 
    474 MachineConflictB[32,7,4,40,8]
-                                -396                         -83 
+                                -592                         -83 
    475 MachineConflictB[32,7,4,42,9]
-                               -2748                         -25 
+                                -158                         -25 
    476 MachineConflictB[32,7,4,48,10]
-                                -133                         -96 
-   477 MachineConflictB[39,8,0,43,9]
-                               -2726                         -44 
-   478 MachineConflictB[39,8,0,50,10]
                                  -96                         -96 
+   477 MachineConflictB[39,8,0,43,9]
+                                 -44                         -44 
+   478 MachineConflictB[39,8,0,50,10]
+                                -140                         -96 
    479 MachineConflictB[38,8,1,44,9]
-                                 -49                         -49 
+                                -370                         -49 
    480 MachineConflictB[38,8,1,47,10]
-                               -2644                         -75 
+                               -2722                         -75 
    481 MachineConflictB[37,8,2,45,9]
-                                -195                         -98 
+                                -575                         -98 
    482 MachineConflictB[37,8,2,46,10]
-                               -2610                         -43 
+                               -2754                         -43 
    483 MachineConflictB[36,8,3,41,9]
-                               -2622                         -17 
+                               -2845                         -17 
    484 MachineConflictB[36,8,3,49,10]
-                                -179                         -79 
+                                -264                         -79 
    485 MachineConflictB[40,8,4,42,9]
-                               -2352                         -25 
+                               -2435                         -25 
    486 MachineConflictB[40,8,4,48,10]
-                               -2606                         -96 
+                               -2373                         -96 
    487 MachineConflictB[43,9,0,50,10]
-                                -239                         -96 
+                                 -96                         -96 
    488 MachineConflictB[44,9,1,47,10]
-                               -2595                         -75 
+                               -2352                         -75 
    489 MachineConflictB[45,9,2,46,10]
-                               -2415                         -43 
+                               -2179                         -43 
    490 MachineConflictB[41,9,3,49,10]
-                                -426                         -79 
+                                -288                         -79 
    491 MachineConflictB[42,9,4,48,10]
-                                -254                         -96 
+                               -2807                         -96 
    492 Makespan[3,1,0]
-                                 201            53               
+                                 145            53               
    493 Makespan[1,1,1]
                                   21            21               
    494 Makespan[2,1,2]
-                                 146            34               
+                                  82            34               
    495 Makespan[4,1,3]
-                                 319            55               
+                                 429            55               
    496 Makespan[5,1,4]
-                                 476            95               
+                                 576            95               
    497 Makespan[7,2,0]
                                   37            21               
    498 Makespan[10,2,1]
-                                 736            71               
+                                 591            71               
    499 Makespan[8,2,2]
-                                  69            26               
+                                 345            26               
    500 Makespan[9,2,3]
-                                 611            52               
+                                 481            52               
    501 Makespan[6,2,4]
                                   16            16               
    502 Makespan[11,3,0]
-                                 213            12               
+                                 157            12               
    503 Makespan[14,3,1]
-                                 638            42               
+                                 324            42               
    504 Makespan[12,3,2]
-                                 399            31               
+                                 194            31               
    505 Makespan[13,3,3]
-                                 482            39               
+                                 233            39               
    506 Makespan[15,3,4]
-                                 736            98               
+                                 481            98               
    507 Makespan[16,4,0]
-                                 268            55               
+                                  92            55               
    508 Makespan[18,4,1]
-                                 469            77               
+                                 488            77               
    509 Makespan[17,4,2]
-                                 368            66               
+                                 411            66               
    510 Makespan[19,4,3]
-                                 559            77               
+                                 565            77               
    511 Makespan[20,4,4]
-                                 638            79               
+                                 655            79               
    512 Makespan[25,5,0]
-                                 395            83               
+                                 738            83               
    513 Makespan[21,5,1]
-                                  43            19               
+                                  48            19               
    514 Makespan[24,5,2]
-                                 264            64               
+                                 475            64               
    515 Makespan[22,5,3]
-                                 120            34               
+                                 144            34               
    516 Makespan[23,5,4]
-                                 200            37               
+                                 279            37               
    517 Makespan[30,6,0]
-                                 643            92               
+                                 562            92               
    518 Makespan[27,6,1]
-                                 172            54               
+                                 229            54               
    519 Makespan[26,6,2]
-                                 112            43               
+                                 125            43               
    520 Makespan[28,6,3]
-                                 240            62               
+                                 295            62               
    521 Makespan[29,6,4]
-                                 375            79               
+                                 383            79               
    522 Makespan[35,7,0]
-                                 736            93               
+                                 655            93               
    523 Makespan[33,7,1]
-                                 556            87               
+                                 411            87               
    524 Makespan[34,7,2]
-                                 643            87               
+                                 562            87               
    525 Makespan[31,7,3]
-                                  86            69               
+                                  69            69               
    526 Makespan[32,7,4]
-                                 163            77               
+                                 146            77               
    527 Makespan[39,8,0]
-                                 455            60               
+                                 330            60               
    528 Makespan[38,8,1]
-                                 343            41               
+                                 270            41               
    529 Makespan[37,8,2]
-                                 302            38               
+                                 163            38               
    530 Makespan[36,8,3]
-                                 264            24               
+                                 110            24               
    531 Makespan[40,8,4]
-                                 559            83               
+                                 738            83               
    532 Makespan[43,9,0]
-                                 312            44               
+                                 374            44               
    533 Makespan[44,9,1]
-                                 392            49               
+                                 640            49               
    534 Makespan[45,9,2]
-                                 497            98               
+                                 738            98               
    535 Makespan[41,9,3]
-                                  17            17               
+                                  86            17               
    536 Makespan[42,9,4]
-                                  42            25               
+                                 304            25               
    537 Makespan[50,10,0]
-                                 551            96               
+                                 470            96               
    538 Makespan[47,10,1]
-                                 118            75               
+                                 123            75               
    539 Makespan[46,10,2]
-                                  43            43               
+                                  48            43               
    540 Makespan[49,10,3]
-                                 443            79               
+                                 374            79               
    541 Makespan[48,10,4]
-                                 296            96               
+                                 242            96               
 
    No. Column name       Activity     Lower bound   Upper bound
 ------ ------------    ------------- ------------- -------------
-     1 start[3,1,0]              535             0               
-     2 start[2,1,2]              590             0               
-     3 start[1,1,1]              715             0               
-     4 start[4,1,3]              417             0               
-     5 start[5,1,4]              260             0               
-     6 start[7,2,0]              699             0               
-     7 start[6,2,4]              720             0               
+     1 start[3,1,0]              593             0               
+     2 start[2,1,2]              656             0               
+     3 start[1,1,1]              717             0               
+     4 start[4,1,3]              309             0               
+     5 start[5,1,4]              162             0               
+     6 start[7,2,0]              701             0               
+     7 start[6,2,4]              722             0               
      8 start[10,2,1]
-                                   0             0               
-     9 start[9,2,3]              125             0               
-    10 start[8,2,2]              667             0               
+                                 147             0               
+     9 start[9,2,3]              257             0               
+    10 start[8,2,2]              393             0               
     11 start[14,3,1]
-                                  98             0               
+                                 414             0               
     12 start[13,3,3]
-                                 254             0               
+                                 505             0               
     13 start[12,3,2]
-                                 337             0               
+                                 544             0               
     14 start[11,3,0]
-                                 523             0               
+                                 581             0               
     15 start[15,3,4]
-                                   0             0               
+                                 257             0               
     16 start[18,4,1]
-                                 267             0               
+                                 250             0               
     17 start[17,4,2]
-                                 368             0               
+                                 327             0               
     18 start[16,4,0]
-                                 468             0               
+                                 646             0               
     19 start[19,4,3]
-                                 177             0               
+                                 173             0               
     20 start[20,4,4]
-                                  98             0               
+                                  83             0               
     21 start[25,5,0]
-                                 341             0               
-    22 start[24,5,2]
-                                 472             0               
-    23 start[23,5,4]
-                                 536             0               
-    24 start[22,5,3]
-                                 616             0               
-    25 start[21,5,1]
-                                 693             0               
-    26 start[30,6,0]
-                                  93             0               
-    27 start[29,6,4]
-                                 361             0               
-    28 start[27,6,1]
-                                 564             0               
-    29 start[26,6,2]
-                                 624             0               
-    30 start[28,6,3]
-                                 496             0               
-    31 start[35,7,0]
                                    0             0               
+    22 start[24,5,2]
+                                 263             0               
+    23 start[23,5,4]
+                                 459             0               
+    24 start[22,5,3]
+                                 594             0               
+    25 start[21,5,1]
+                                 690             0               
+    26 start[30,6,0]
+                                 176             0               
+    27 start[29,6,4]
+                                 355             0               
+    28 start[27,6,1]
+                                 509             0               
+    29 start[26,6,2]
+                                 613             0               
+    30 start[28,6,3]
+                                 443             0               
+    31 start[35,7,0]
+                                  83             0               
     32 start[34,7,2]
-                                  93             0               
+                                 176             0               
     33 start[33,7,1]
-                                 180             0               
+                                 327             0               
     34 start[32,7,4]
-                                 573             0               
+                                 592             0               
     35 start[31,7,3]
-                                 650             0               
+                                 669             0               
     36 start[39,8,0]
-                                 281             0               
+                                 408             0               
     37 start[38,8,1]
-                                 393             0               
+                                 468             0               
     38 start[37,8,2]
-                                 434             0               
+                                 575             0               
     39 start[36,8,3]
-                                 472             0               
+                                 628             0               
     40 start[40,8,4]
-                                 177             0               
+                                   0             0               
     41 start[43,9,0]
-                                 424             0               
+                                 364             0               
     42 start[42,9,4]
-                                 694             0               
+                                 434             0               
     43 start[44,9,1]
-                                 344             0               
+                                  98             0               
     44 start[45,9,2]
-                                 239             0               
+                                   0             0               
     45 start[41,9,3]
-                                 719             0               
+                                 652             0               
     46 start[50,10,0]
-                                 185             0               
+                                 268             0               
     47 start[49,10,3]
-                                 293             0               
+                                 364             0               
     48 start[47,10,1]
-                                 618             0               
+                                 615             0               
     49 start[46,10,2]
-                                 693             0               
+                                 690             0               
     50 start[48,10,4]
-                                 440             0               
-    51 makespan                  736             0               
+                                 496             0               
+    51 makespan                  738             0               
     52 y[3,1,0,7,2] *              1             0             1 
     53 y[3,1,0,11,3]
                     *              0             0             1 
     54 y[3,1,0,16,4]
-                    *              0             0             1 
+                    *              1             0             1 
     55 y[3,1,0,25,5]
                     *              0             0             1 
     56 y[3,1,0,30,6]
@@ -1218,7 +1218,7 @@ Objective:  objective = 736 (MINimum)
                     *              0             0             1 
     69 y[1,1,1,47,10]
                     *              0             0             1 
-    70 y[2,1,2,8,2] *              1             0             1 
+    70 y[2,1,2,8,2] *              0             0             1 
     71 y[2,1,2,12,3]
                     *              0             0             1 
     72 y[2,1,2,17,4]
@@ -1226,7 +1226,7 @@ Objective:  objective = 736 (MINimum)
     73 y[2,1,2,24,5]
                     *              0             0             1 
     74 y[2,1,2,26,6]
-                    *              1             0             1 
+                    *              0             0             1 
     75 y[2,1,2,34,7]
                     *              0             0             1 
     76 y[2,1,2,37,8]
@@ -1237,7 +1237,7 @@ Objective:  objective = 736 (MINimum)
                     *              1             0             1 
     79 y[4,1,3,9,2] *              0             0             1 
     80 y[4,1,3,13,3]
-                    *              0             0             1 
+                    *              1             0             1 
     81 y[4,1,3,19,4]
                     *              0             0             1 
     82 y[4,1,3,22,5]
@@ -1251,10 +1251,10 @@ Objective:  objective = 736 (MINimum)
     86 y[4,1,3,41,9]
                     *              1             0             1 
     87 y[4,1,3,49,10]
-                    *              0             0             1 
+                    *              1             0             1 
     88 y[5,1,4,6,2] *              1             0             1 
     89 y[5,1,4,15,3]
-                    *              0             0             1 
+                    *              1             0             1 
     90 y[5,1,4,20,4]
                     *              0             0             1 
     91 y[5,1,4,23,5]
@@ -1298,21 +1298,21 @@ Objective:  objective = 736 (MINimum)
    110 y[10,2,1,38,8]
                     *              1             0             1 
    111 y[10,2,1,44,9]
-                    *              1             0             1 
+                    *              0             0             1 
    112 y[10,2,1,47,10]
                     *              1             0             1 
    113 y[8,2,2,12,3]
-                    *              0             0             1 
+                    *              1             0             1 
    114 y[8,2,2,17,4]
                     *              0             0             1 
    115 y[8,2,2,24,5]
                     *              0             0             1 
    116 y[8,2,2,26,6]
-                    *              0             0             1 
+                    *              1             0             1 
    117 y[8,2,2,34,7]
                     *              0             0             1 
    118 y[8,2,2,37,8]
-                    *              0             0             1 
+                    *              1             0             1 
    119 y[8,2,2,45,9]
                     *              0             0             1 
    120 y[8,2,2,46,10]
@@ -1320,7 +1320,7 @@ Objective:  objective = 736 (MINimum)
    121 y[9,2,3,13,3]
                     *              1             0             1 
    122 y[9,2,3,19,4]
-                    *              1             0             1 
+                    *              0             0             1 
    123 y[9,2,3,22,5]
                     *              1             0             1 
    124 y[9,2,3,28,6]
@@ -1350,7 +1350,7 @@ Objective:  objective = 736 (MINimum)
    136 y[6,2,4,48,10]
                     *              0             0             1 
    137 y[11,3,0,16,4]
-                    *              0             0             1 
+                    *              1             0             1 
    138 y[11,3,0,25,5]
                     *              0             0             1 
    139 y[11,3,0,30,6]
@@ -1364,23 +1364,23 @@ Objective:  objective = 736 (MINimum)
    143 y[11,3,0,50,10]
                     *              0             0             1 
    144 y[14,3,1,18,4]
-                    *              1             0             1 
+                    *              0             0             1 
    145 y[14,3,1,21,5]
                     *              1             0             1 
    146 y[14,3,1,27,6]
                     *              1             0             1 
    147 y[14,3,1,33,7]
-                    *              1             0             1 
+                    *              0             0             1 
    148 y[14,3,1,38,8]
                     *              1             0             1 
    149 y[14,3,1,44,9]
-                    *              1             0             1 
+                    *              0             0             1 
    150 y[14,3,1,47,10]
                     *              1             0             1 
    151 y[12,3,2,17,4]
-                    *              1             0             1 
+                    *              0             0             1 
    152 y[12,3,2,24,5]
-                    *              1             0             1 
+                    *              0             0             1 
    153 y[12,3,2,26,6]
                     *              1             0             1 
    154 y[12,3,2,34,7]
@@ -1396,7 +1396,7 @@ Objective:  objective = 736 (MINimum)
    159 y[13,3,3,22,5]
                     *              1             0             1 
    160 y[13,3,3,28,6]
-                    *              1             0             1 
+                    *              0             0             1 
    161 y[13,3,3,31,7]
                     *              1             0             1 
    162 y[13,3,3,36,8]
@@ -1404,9 +1404,9 @@ Objective:  objective = 736 (MINimum)
    163 y[13,3,3,41,9]
                     *              1             0             1 
    164 y[13,3,3,49,10]
-                    *              1             0             1 
+                    *              0             0             1 
    165 y[15,3,4,20,4]
-                    *              1             0             1 
+                    *              0             0             1 
    166 y[15,3,4,23,5]
                     *              1             0             1 
    167 y[15,3,4,29,6]
@@ -1414,7 +1414,7 @@ Objective:  objective = 736 (MINimum)
    168 y[15,3,4,32,7]
                     *              1             0             1 
    169 y[15,3,4,40,8]
-                    *              1             0             1 
+                    *              0             0             1 
    170 y[15,3,4,42,9]
                     *              1             0             1 
    171 y[15,3,4,48,10]
@@ -1436,15 +1436,15 @@ Objective:  objective = 736 (MINimum)
    179 y[18,4,1,27,6]
                     *              1             0             1 
    180 y[18,4,1,33,7]
-                    *              0             0             1 
+                    *              1             0             1 
    181 y[18,4,1,38,8]
                     *              1             0             1 
    182 y[18,4,1,44,9]
-                    *              1             0             1 
+                    *              0             0             1 
    183 y[18,4,1,47,10]
                     *              1             0             1 
    184 y[17,4,2,24,5]
-                    *              1             0             1 
+                    *              0             0             1 
    185 y[17,4,2,26,6]
                     *              1             0             1 
    186 y[17,4,2,34,7]
@@ -1474,21 +1474,21 @@ Objective:  objective = 736 (MINimum)
    198 y[20,4,4,32,7]
                     *              1             0             1 
    199 y[20,4,4,40,8]
-                    *              1             0             1 
+                    *              0             0             1 
    200 y[20,4,4,42,9]
                     *              1             0             1 
    201 y[20,4,4,48,10]
                     *              1             0             1 
    202 y[25,5,0,30,6]
-                    *              0             0             1 
+                    *              1             0             1 
    203 y[25,5,0,35,7]
-                    *              0             0             1 
+                    *              1             0             1 
    204 y[25,5,0,39,8]
-                    *              0             0             1 
+                    *              1             0             1 
    205 y[25,5,0,43,9]
                     *              1             0             1 
    206 y[25,5,0,50,10]
-                    *              0             0             1 
+                    *              1             0             1 
    207 y[21,5,1,27,6]
                     *              0             0             1 
    208 y[21,5,1,33,7]
@@ -1504,7 +1504,7 @@ Objective:  objective = 736 (MINimum)
    213 y[24,5,2,34,7]
                     *              0             0             1 
    214 y[24,5,2,37,8]
-                    *              0             0             1 
+                    *              1             0             1 
    215 y[24,5,2,45,9]
                     *              0             0             1 
    216 y[24,5,2,46,10]
@@ -1514,7 +1514,7 @@ Objective:  objective = 736 (MINimum)
    218 y[22,5,3,31,7]
                     *              1             0             1 
    219 y[22,5,3,36,8]
-                    *              0             0             1 
+                    *              1             0             1 
    220 y[22,5,3,41,9]
                     *              1             0             1 
    221 y[22,5,3,49,10]
@@ -1526,9 +1526,9 @@ Objective:  objective = 736 (MINimum)
    224 y[23,5,4,40,8]
                     *              0             0             1 
    225 y[23,5,4,42,9]
-                    *              1             0             1 
-   226 y[23,5,4,48,10]
                     *              0             0             1 
+   226 y[23,5,4,48,10]
+                    *              1             0             1 
    227 y[30,6,0,35,7]
                     *              0             0             1 
    228 y[30,6,0,39,8]
@@ -1556,7 +1556,7 @@ Objective:  objective = 736 (MINimum)
    239 y[28,6,3,31,7]
                     *              1             0             1 
    240 y[28,6,3,36,8]
-                    *              0             0             1 
+                    *              1             0             1 
    241 y[28,6,3,41,9]
                     *              1             0             1 
    242 y[28,6,3,49,10]
@@ -1578,29 +1578,29 @@ Objective:  objective = 736 (MINimum)
    250 y[33,7,1,38,8]
                     *              1             0             1 
    251 y[33,7,1,44,9]
-                    *              1             0             1 
+                    *              0             0             1 
    252 y[33,7,1,47,10]
                     *              1             0             1 
    253 y[34,7,2,37,8]
                     *              1             0             1 
    254 y[34,7,2,45,9]
-                    *              1             0             1 
+                    *              0             0             1 
    255 y[34,7,2,46,10]
                     *              1             0             1 
    256 y[31,7,3,36,8]
                     *              0             0             1 
    257 y[31,7,3,41,9]
-                    *              1             0             1 
+                    *              0             0             1 
    258 y[31,7,3,49,10]
                     *              0             0             1 
    259 y[32,7,4,40,8]
                     *              0             0             1 
    260 y[32,7,4,42,9]
-                    *              1             0             1 
+                    *              0             0             1 
    261 y[32,7,4,48,10]
                     *              0             0             1 
    262 y[39,8,0,43,9]
-                    *              1             0             1 
+                    *              0             0             1 
    263 y[39,8,0,50,10]
                     *              0             0             1 
    264 y[38,8,1,44,9]
@@ -1628,7 +1628,7 @@ Objective:  objective = 736 (MINimum)
    275 y[41,9,3,49,10]
                     *              0             0             1 
    276 y[42,9,4,48,10]
-                    *              0             0             1 
+                    *              1             0             1 
 
 Integer feasibility conditions:
 
