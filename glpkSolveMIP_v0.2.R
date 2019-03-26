@@ -69,7 +69,8 @@ startValues <- startValues %>% inner_join(tasks)
 # Visualisation
 
 # Set plan's starting date
-startDate <- Sys.time()
+startDate <- as.POSIXct(
+  paste0(Sys.Date(), ' ', '00:00:00'))
 
 # Change start time format, Add end time
 startValues <- startValues %>%
@@ -118,4 +119,3 @@ results <- list("res" = filename,
 
 mplFreeWkspGLPK(jsp)
 delProbGLPK(mip)
-

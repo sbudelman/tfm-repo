@@ -1,5 +1,5 @@
 # --------------------------------------
-# Generate and display mathprog model
+# Generate and display mathprog model (TO BE DELETED FOR PRODUCTION)
 # --------------------------------------
 displayMod <- function(excelFile){
   # Extract data from excel spreadsheets
@@ -63,21 +63,17 @@ displayMod <- function(excelFile){
 # --------------------------------------
 # Generate and solve mathprog model
 # --------------------------------------
-solveMod <- function(excelFile){
+solveMod <- function(data){
   
   # Extract data from excel spreadsheets
   
-  machines <- datatable(read_xlsx(excelFile,
-                                  sheet = "machines"))
-  
-  orders <- read_xlsx(excelFile,
-                      sheet = "orders")
-  
-  jobs <- read_xlsx(excelFile,
-                    sheet = "jobs")
-  
-  tasks <- read_xlsx(excelFile,
-                     sheet = "tasks")
+  machines <- data$machines
+
+  orders <- data$orders
+
+  jobs <- data$jobs
+
+  tasks <- data$tasks
   
   # Create data file
   
@@ -115,7 +111,7 @@ solveMod <- function(excelFile){
                 ";",
                 "end;")
   
-  modelFile <- readLines("model.mod")
+  modelFile <- readLines("models/model.mod")
   
   modelContent <- c(modelFile,modelData)
   
@@ -144,7 +140,7 @@ solveMod <- function(excelFile){
   setMIPParmGLPK(109, GLP_ON)
   
   # Set time limit
-  setMIPParmGLPK(106, 30000)
+  setMIPParmGLPK(106, 5000)
   
   # Solve problem
   return <- solveMIPGLPK(mip)
@@ -193,146 +189,151 @@ solveMod <- function(excelFile){
   # Add remaining data to results table
   startValues <- startValues %>% inner_join(tasks)
   
-  # Visualisation
+  return(list("res" = filename,
+              "rawSchedule" = startValues))
   
-  # Set plan's starting date
-  startDate <- Sys.time()
+}
+
+# --------------------------------------
+# Function to generate shift blocks per day
+# --------------------------------------
+shiftBlocks <- function (day, shifts){
   
-  # Change start time format
-  startValues <- startValues %>%
+  shiftBlocks <- c()
+  
+  for(row in 1:nrow(shifts)){
+    
+    if(shifts[row,1] > shifts[row,2]){
+      
+      shiftBlocks <- rbind(shiftBlocks, c(format(as.POSIXct(
+        paste0(day, ' ', shifts[row,1], ':00')), 
+        '%Y-%m-%d %H:%M:%S'),
+        format(as.POSIXct(
+          paste0(as.Date(day)+1, ' ', shifts[row,2], ':00')), 
+          '%Y-%m-%d %H:%M:%S')
+      ))
+      
+    } else {
+      
+      shiftBlocks <- rbind(shiftBlocks, c(format(as.POSIXct(
+        paste0(day, ' ', shifts[row,1], ':00')), '%Y-%m-%d %H:%M:%S'),
+        format(as.POSIXct(
+          paste0(day, ' ', shifts[row,2], ':00')), 
+          '%Y-%m-%d %H:%M:%S')
+      ))
+    }
+    
+    
+  }
+  
+  return(shiftBlocks)
+  
+}
+
+# --------------------------------------
+# Function to implement shifts on results
+# --------------------------------------
+shiftedTasks <- function(taskTimes, shifts){
+  
+  day <- format(min(taskTimes$`Task Starting Time`), '%Y-%m-%d')
+  
+  shiftList <- shiftBlocks(day, shifts)
+  
+  shiftedTable <- taskTimes
+  
+  shiftIdx <- 1
+  
+  while(any(shiftedTable$`Task Ending Time` > shiftList[shiftIdx,2])){
+    
+    if(nrow(shiftList) == shiftIdx){
+      
+      day <- as.Date(day) + 1
+      shiftList <- rbind(shiftList, shiftBlocks(day, shifts))
+      
+    }
+    
+    
+    shiftedTable <- shiftedTable %>% mutate(
+      
+      newStart = case_when(
+        
+        `Task Ending Time` < shiftList[shiftIdx, 2] ~ `Task Starting Time`,
+        
+        `Task Ending Time` > shiftList[shiftIdx, 2] &
+          `Task Starting Time` > shiftList[shiftIdx, 2] ~
+          `Task Starting Time` + difftime(shiftList[shiftIdx+1, 1], shiftList[shiftIdx, 2]),
+        
+        `Task Ending Time` > shiftList[shiftIdx, 2] &
+          `Task Starting Time` < shiftList[shiftIdx, 2] ~
+          `Task Starting Time`
+      ),
+      
+      newEnd = case_when(
+        
+        `Task Ending Time` > shiftList[shiftIdx, 2] &
+          `Task Starting Time` < shiftList[shiftIdx, 2] ~ as.POSIXct(shiftList[shiftIdx, 2]),
+        
+        TRUE ~ newStart + 60*`Task Runtime`),
+      
+      split = case_when(
+        
+        `Task Ending Time` > shiftList[shiftIdx, 2] &
+          `Task Starting Time` < shiftList[shiftIdx, 2] ~ TRUE,
+        
+        TRUE ~ FALSE)
+      
+    )
+    
+    shiftedTable <- rbind(shiftedTable,
+                          shiftedTable %>% filter(split == TRUE) %>%
+                            mutate(split = FALSE,
+                                   newEnd = as.POSIXct(shiftList[shiftIdx+1, 1]) + 60*`Task Runtime` - difftime(newEnd, newStart),
+                                   newStart = as.POSIXct(shiftList[shiftIdx+1, 1])
+                            )
+    )
+    
+    shiftedTable <- shiftedTable %>% 
+      mutate(`Task Starting Time` = newStart,
+             `Task Ending Time` = newEnd,
+             `Task Runtime` = as.numeric(difftime(newEnd, newStart, units = 'mins'))) %>%
+      select(-newStart, -newEnd, -split)
+    
+    shiftIdx <- shiftIdx + 1
+    
+  }
+  
+  resultList <- list("Tasks" = shiftedTable, 
+                     "Shifts" = shiftList)
+  
+  return(resultList)
+  
+}
+
+# --------------------------------------
+# Visualisation
+# --------------------------------------
+  
+# Include shifts
+shift <- matrix(c('12:00', '15:00',
+                  '17:00', '19:00',
+                  '19:00', '21:00' ),
+                nrow = 3, ncol = 2, byrow = TRUE)
+
+scheduleVis <- function(schedule, startDate, shifts = shift){
+  
+  startTime <- shiftBlocks(startDate, shifts)[1,1]
+  
+  # Change start time format and add end time
+  scheduleTimes <- schedule %>%
     mutate(`Task Starting Time`= 
-             startDate + as.difftime(tim = as.numeric(`Task Starting Time`), 
-                                     format = "%M", units = "mins")) 
-  
-  
-  # Add end time
-  startValues <- startValues %>%
-    mutate("Task Ending Time"=
+             as.POSIXct(startTime) + as.difftime(tim = as.numeric(`Task Starting Time`), 
+                                     format = "%M", units = "mins"),
+           "Task Ending Time"=
              `Task Starting Time` + as.difftime(tim = as.numeric(`Task Runtime`),
-                                                format = "%M", units = "mins"))
+                                                format = "%M", units = "mins")) 
   
-  
-  
-  # Include shifts
-  shift <- matrix(c('12:00', '15:00',
-                    '17:00', '19:00',
-                    '19:00', '21:00' ),
-                  nrow = 3, ncol = 2, byrow = TRUE)
-  
-  # Function to generate shift blocks per day
-  
-  shiftBlocks <- function (day, shifts){
-    
-    shiftBlocks <- c()
-    
-    for(row in 1:nrow(shifts)){
-      
-      if(shifts[row,1] > shifts[row,2]){
-        
-        shiftBlocks <- rbind(shiftBlocks, c(format(as.POSIXct(
-          paste0(day, ' ', shifts[row,1], ':00')), 
-          '%Y-%m-%d %H:%M:%S'),
-          format(as.POSIXct(
-            paste0(as.Date(day)+1, ' ', shifts[row,2], ':00')), 
-            '%Y-%m-%d %H:%M:%S')
-        ))
-        
-      } else {
-        
-        shiftBlocks <- rbind(shiftBlocks, c(format(as.POSIXct(
-          paste0(day, ' ', shifts[row,1], ':00')), '%Y-%m-%d %H:%M:%S'),
-          format(as.POSIXct(
-            paste0(day, ' ', shifts[row,2], ':00')), 
-            '%Y-%m-%d %H:%M:%S')
-        ))
-      }
-      
-      
-    }
-    
-    return(shiftBlocks)
-    
-  }
-  
-  # Function to implement shifts on results
-  shiftedTasks <- function(taskTimes, shifts){
-    
-    day <- format(min(taskTimes$`Task Starting Time`), '%Y-%m-%d')
-    
-    shiftList <- shiftBlocks(day, shifts)
-    
-    shiftedTable <- taskTimes
-    
-    shiftIdx <- 1
-    
-    while(any(shiftedTable$`Task Ending Time` > shiftList[shiftIdx,2])){
-      
-      if(nrow(shiftList) == shiftIdx){
-        
-        day <- as.Date(day) + 1
-        shiftList <- rbind(shiftList, shiftBlocks(day, shifts))
-        
-      }
-      
-      
-      shiftedTable <- shiftedTable %>% mutate(
-        
-        newStart = case_when(
-          
-          `Task Ending Time` < shiftList[shiftIdx, 2] ~ `Task Starting Time`,
-          
-          `Task Ending Time` > shiftList[shiftIdx, 2] &
-            `Task Starting Time` > shiftList[shiftIdx, 2] ~
-            `Task Starting Time` + difftime(shiftList[shiftIdx+1, 1], shiftList[shiftIdx, 2]),
-          
-          `Task Ending Time` > shiftList[shiftIdx, 2] &
-            `Task Starting Time` < shiftList[shiftIdx, 2] ~
-            `Task Starting Time`
-        ),
-        
-        newEnd = case_when(
-          
-          `Task Ending Time` > shiftList[shiftIdx, 2] &
-            `Task Starting Time` < shiftList[shiftIdx, 2] ~ as.POSIXct(shiftList[shiftIdx, 2]),
-          
-          TRUE ~ newStart + 60*`Task Runtime`),
-        
-        split = case_when(
-          
-          `Task Ending Time` > shiftList[shiftIdx, 2] &
-            `Task Starting Time` < shiftList[shiftIdx, 2] ~ TRUE,
-          
-          TRUE ~ FALSE)
-        
-      )
-      
-      shiftedTable <- rbind(shiftedTable,
-                            shiftedTable %>% filter(split == TRUE) %>%
-                              mutate(split = FALSE,
-                                     newEnd = as.POSIXct(shiftList[shiftIdx+1, 1]) + 60*`Task Runtime` - difftime(newEnd, newStart),
-                                     newStart = as.POSIXct(shiftList[shiftIdx+1, 1])
-                              )
-      )
-      
-      shiftedTable <- shiftedTable %>% 
-        mutate(`Task Starting Time` = newStart,
-               `Task Ending Time` = newEnd,
-               `Task Runtime` = as.numeric(difftime(newEnd, newStart, units = 'mins'))) %>%
-        select(-newStart, -newEnd, -split)
-      
-      shiftIdx <- shiftIdx + 1
-      
-    }
-    
-    resultList <- list("Tasks" = shiftedTable, 
-                       "Shifts" = shiftList)
-    
-    return(resultList)
-    
-  }
-  
-  # Refresh startValues
-  shifted <- shiftedTasks(startValues, shift)
+  # Refresh scheduleTimes
+  shifted <- shiftedTasks(scheduleTimes, shifts)
   
   # Generate data frame for a Job-based timeline
   jobsView <- data.frame("start" = append(shifted$Tasks$`Task Starting Time`, as.POSIXct(shifted$Shifts[,1])),
@@ -356,15 +357,15 @@ solveMod <- function(excelFile){
                                    content = c(sprintf(paste("Machine %s"), sort(unique(shifted$Tasks$`Machine ID`))))
   )
   
-  results <- list("res" = filename, 
-                  "jobsView" = jobsView,
-                  "jobsViewGroups" = jobsViewGroups,
-                  "machinesView" = machinesView,
-                  "machinesViewGroups" = machinesViewGroups)
-  
-  return(results)
+  return(list("jobsView" = jobsView,
+              "jobsViewGroups" = jobsViewGroups,
+              "machinesView" = machinesView,
+              "machinesViewGroups" = machinesViewGroups))
   
 }
+
+
+
 
 
 

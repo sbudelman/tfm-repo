@@ -1,47 +1,38 @@
-library(DT)
-library(shinyjs)
-library(timevis)
-
 # Define UI for data upload app ----
 ui <- navbarPage("Shiny JSP",
                  
   tabPanel("Home",
            
     sidebarLayout(
-      position = "right",
       sidebarPanel(
         
-        h2(style = "margin-bottom: 2em",
-          "Get started"),
+        tagList(
+          
+          h2(style = "margin-bottom: 2em", "Start new plan"),
+          
+          textInput("planID", label = "Enter Plan ID", placeholder = "Enter Plan ID..."),
+          
+          fileInput("file1", div("Upload data file",tags$a(href="", "(template here)")),
+                    placeholder = "Upload .XLSX file",
+                    multiple = FALSE,
+                    accept = c(".xlsx")),
+          
+          selectInput("optimizeFor", label = "Optimize for:", 
+                      choices = list("Makespan" = 1, "Tardiness" = 2), 
+                      selected = 1),
+          
+          dateInput("startingDate", label = "Plan starting date")),
         
-        textInput("planID", label = "Enter Plan ID", placeholder = "Enter Plan ID..."),
-        
-        # Input: Select a file ----
-        fileInput("file1", div("Upload data file",tags$a(href="", "(template here)")),
-                  placeholder = "Upload .XLSX file",
-                  multiple = FALSE,
-                  accept = c(".xlsx")),
-        
-        selectInput("optimizeFor", label = "Optimize for:", 
-                    choices = list("Makespan" = 1, "Tardiness" = 2), 
-                    selected = 1),
-        
-        dateInput("startingDate", label = "Plan starting date"),
-        
-        uiOutput('ui.plan'),
-        
-        uiOutput('ui.solve'),
+        actionButton("solve", "Create new plan"),
         
         hr(),
         
-        p("Dummy text"),
-        
-        width = 4),
+        width = 3),
       
       mainPanel(
         
         includeHTML("text/home.html"),
-        width = 8
+        hr()
       )
     )
            
@@ -74,21 +65,6 @@ ui <- navbarPage("Shiny JSP",
     )
   ),
   
-  tabPanel("Model",
-           
-           fluidRow(
-             
-             column(6,
-                    
-                    verbatimTextOutput("model")
-                    ),
-             
-             column(6,
-                    verbatimTextOutput("solve")
-                    )
-           )
-         ),
-  
   tabPanel("Plan",
            
            sidebarLayout(
@@ -96,7 +72,8 @@ ui <- navbarPage("Shiny JSP",
              position = "right",
              
              sidebarPanel(
-               actionButton("defineShifts", label = "Define Shifts")
+               actionButton("defineShifts", label = "Define Shifts"),
+               actionButton("refreshPlan", label = "Refresh plan")
              ),
              
              mainPanel(
