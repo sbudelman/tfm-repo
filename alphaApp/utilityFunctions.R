@@ -195,6 +195,15 @@ solveMod <- function(data){
 }
 
 # --------------------------------------
+# Use GRASP to solve JSP
+# --------------------------------------
+source(file = "main_grasp.R")
+
+# Prepare schedule from result
+solveGRASP <- function() {
+  return(edges_to_schedule(bestQ, arr))
+}
+# --------------------------------------
 # Function to generate shift blocks per day
 # --------------------------------------
 shiftBlocks <- function (day, shifts){

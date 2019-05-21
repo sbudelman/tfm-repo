@@ -2,24 +2,70 @@
 server <- function(input, output, session) {
   
   data <- callModule(newPlan, 'datafile')
-  
+
   currentModel <- reactive({
-    
+
     if(is.null(data())) return(NULL)
-    
+
     dataReact <- reactiveValues('machines' = data()$machines, 'orders' = data()$orders, 'jobs' = data()$jobs, 'tasks' = data()$tasks)
-    
+
     model <- solveMod(dataReact)
-    
+
     return(model)
+
+  })
+  
+  output$machines <- renderDataTable({
+    
+    # input$file1 will be NULL initially. After the user selects
+    # and uploads a file, head of that data file by default,
+    # or all rows if selected, will be shown.
+    
+    req(input$file1)
+    
+    machines <- datatable(data = read_xlsx(input$file1$datapath,
+                                           sheet = "machines",
+                                           col_types = "text"))
+    return(machines)
     
   })
   
-  output$machines <- renderDataTable({ data()$machines })
-  output$orders <- renderDataTable({ data()$orders })
-  output$jobs <- renderDataTable({ data()$jobs })
-  output$tasks <- renderDataTable({ data()$tasks })
-
+  output$orders <- renderDataTable({
+    
+    req(input$file1)
+    
+    
+    orders <- datatable(data = read_xlsx(input$file1$datapath,
+                                         sheet = "orders",
+                                         col_types = "text"))
+    
+    return(orders)
+    
+  })
+  
+  output$jobs <- renderDataTable({
+    
+    req(input$file1)
+    
+    jobs <- datatable(data = read_xlsx(input$file1$datapath,
+                                       sheet = "jobs",
+                                       col_types = "text"))
+    
+    return(jobs)
+    
+  })
+  
+  output$tasks <- renderDataTable({
+    
+    req(input$file1)
+    
+    tasks <- datatable(data = read_xlsx(input$file1$datapath,
+                                        sheet = "tasks",
+                                        col_types = "text"))
+    
+    return(tasks)
+    
+  })
   
   observeEvent(input$solve, {
     output$solve <- renderPrint({
@@ -51,9 +97,11 @@ server <- function(input, output, session) {
                  'tasks' = tasks,
                  'startingDate' = input$startingDate)
     
-    model <<- solveMod(data)
-
-    result <- scheduleVis(model$rawSchedule, startDate = input$startingDate, shifts = shift)
+    # model <<- solveMod(data)
+    model <- solveGRASP()
+    
+    # result <- scheduleVis(model$rawSchedule, startDate = input$startingDate, shifts = shift)
+    result <- scheduleVis(model, startDate = input$startingDate, shifts = shift)
     
     output$jobsVis <- renderTimevis(timevis(result$jobsView, groups = result$jobsViewGroups))
     
@@ -61,7 +109,8 @@ server <- function(input, output, session) {
 
   observeEvent(input$solve, {
     
-    result <- scheduleVis(model$rawSchedule, startDate = input$startingDate, shifts = shift)
+    # result <- scheduleVis(model$rawSchedule, startDate = input$startingDate, shifts = shift)
+    result <- scheduleVis(model, startDate = input$startingDate, shifts = shift)
 
     output$machinesVis <- renderTimevis(timevis(result$machinesView, groups = result$machinesViewGroups))
 
@@ -69,7 +118,7 @@ server <- function(input, output, session) {
 
   observeEvent(input$refreshPlan, {
 
-    result <- scheduleViseduleVis(currentModel()$rawSchedule, startDate = input$startingDate, shifts = shift)
+    result <- scheduleVis(currentModel()$rawSchedule, startDate = input$startingDate, shifts = shift)
 
     output$jobsVis <- renderTimevis(
 
