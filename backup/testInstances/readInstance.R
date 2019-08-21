@@ -1,3 +1,4 @@
+# ---- Functions ----
 readInstance <- function(filename) {
   
   lines <- readLines(filename) 

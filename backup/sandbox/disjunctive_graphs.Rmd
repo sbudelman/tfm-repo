@@ -1,0 +1,20 @@
+---
+title: "Disjunctive Graphs on JSP and variants"
+output: html_notebook
+---
+```{r, echo=FALSE, results='hold'}
+# Imports
+
+```
+
+
+The set of feasible solutions of a JSP can be visualize by making us of disjunctive graphs, as has been pointed out by *require ref*. In such a graph, the nodes represents individual operations, while the edges are meant to be the constraints associated with the instance. In particular, for the JSP, directed edges indicate precendence relationships while machine utilisation are depicted by disjunctive arcs.
+
+**insert image of sijunctive graph**
+
+
+
+```{r}
+  
+```
+
