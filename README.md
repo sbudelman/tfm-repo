@@ -1,8 +1,8 @@
 # tfm-repo
 
-This repo features a GRASP implementation to solve the Job Shop Problem JSP. These files complement my thesis _A production scheduling service for manufacturing short-run series on machining shops_, as part of the master program on engineering management at Universitat Politecnica de Catalunya UPC ESEIAAT.
+This repo features a GRASP implementation to solve the Job Shop Problem JSP. These files complement my thesis _A production scheduling service for manufacturing short-run series on machining shops_, done as part of the Master Program on Engineering Management at the [Universitat Politecnica de Catalunya UPC ESEIAAT](https://eseiaat.upc.edu/en).
 
-Comments and usggestions are very much welcome at samueludelman@gmail.com.
+Comments and suggestions are very much welcome at samueludelman@gmail.com.
 
 # Running the code
 
@@ -13,9 +13,9 @@ Comments and usggestions are very much welcome at samueludelman@gmail.com.
 # A glimpse of theory
 
 ## JSP formulation
-On its classical form the JSP is defined by _n_ jobs and _m_ machines, where each job has as many tasks as machines. These tasks have an associated duration and need to follow an specific sequence inside the job and machines can only perform one task at a time. The problem is to find the sequence of all tasks so that the makespan is the shortest possible[1], i.e. minimize the value of the completion time (starting plus process time) for the last task to be completed:
+On its classical form the JSP is defined by _n_ jobs and _m_ machines, where each job has as _m_ tasks, one per machine. These tasks have an associated duration and need to follow an specific sequence inside the job and machines can only perform one task at a time. The problem is to find the sequence of all tasks so that the makespan is the shortest possible[1], i.e. minimize the value of the completion time (starting plus process time) for the last task to be completed:
 
-![Makespan equation](http://latex.codecogs.com/svg.latex?min\ max(s_{mj} + p_{mj})\ \ \ \ \ \ \forall \ j\ \epsilon\ J)
+![Makespan equation](https://latex.codecogs.com/svg.latex?min%5C%20max%28s_%7Bmj%7D&plus;p_%7Bmj%7D%29%5C%20%5C%20%5C%20%5C%20%5C%20%5Cforall%20j%20%5Cepsilon%20J)
 
 Another way to describe this problem is by means of the disjunctive graph formulation of JSP[2]. When defining a directed graph, each node represents a task and the arcs going from one node to another play the role of precedence constraints and have a weight equal to the process time of the task they come from. Two additional nodes are added at the beginning and the end of the graph to serve as source and sink node respectively. 
 
@@ -29,11 +29,11 @@ Furthermore, the use of a disjuntive graph representation of the JSP is particul
 ## The JSPTWT
 Another variant also addressed in this implementation consists on assigning due dates and relative weights (priorities) to each job and minimize instead the total weighted tardiness TWT[2]. The TWT is computed as the sum of the product of weights and the difference between the due date and completion date of each job.
 
-![Total Weighted Tardiness equation](http://latex.codecogs.com/svg.latex?min \sum_{j=1}^{n} weight_j \times tardiness_j)
+![Total Weighted Tardiness equation](https://latex.codecogs.com/svg.latex?min%20%5Csum_%7Bj%3D1%7D%5E%7Bn%7D%20weight_j%20%5Ctimes%20tardiness_j)
 
 The JSPTWT can also be formulated with a disjunctive graph, this time replacing the sink node in the JSP formualtion with a completion node for each job and then a tardiness node after it. The weight of the arc connecting the completion nodes with their respective tardiness node is going to be equal to the due date times minus one. Note that the source node is also connected to the tardiness of each job, hence the tardiness of each job is given by the longest path from source to tardiness node:
 
-![Tardiness equation](http://latex.codecogs.com/svg.latex?max\ (0,\ completion_j - dueDate_j))
+![Tardiness equation](https://latex.codecogs.com/svg.latex?max%5C%20%280%2C%5C%20completion_j%20-%20dueDate_j%29)
 
 ![JSPTWT Disjunctive Graph](./images/disjGraphJsptwt.png)
 _Disjunctive graph example for JSP [2]_
@@ -53,12 +53,11 @@ procedure GRASP(data, maxIterations, seed)
 end
 ```
 
-In the construction, a feasible solution is generated to initiate GRASP's iteration. The schedule is formed by adding one task at a time, selecting it at random or
-by using a dispatch rule, from a restricted candidate list RCL:
+In the construction, a feasible solution is generated to initiate GRASP's iteration. The schedule is formed by adding one task at a time, selecting it from a restricted candidate list RCL either at random or by using a dispatch rule:
 
 ```
 procedure GreedyRandomizedConstruction(seed)
-  solution <- Ø
+  solution <- Ã˜
   while (number of tasks in solution < total number of tasks)
     Build a Restricted Candidate List with schedulable tasks
     Select a task to schedule based on a dispatch rule
