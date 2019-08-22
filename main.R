@@ -27,11 +27,11 @@
 #   - JSP with Total Weighted Tardiness (TWT)
 #   
 # Usage:
-#   1. Input your data updateing the excel spreadsheet on ./data. You could
-#     also create your one based on that template. If so make sure to update
-#     the filename under file declaration.
+#   1. Input your data updating the excel spreadsheet located on ./data. You 
+#     could also create your own based on that template. If that's the case
+#     make sure to update the filename under file declaration below.
 # 
-#   2. Configure the solver. You can read what each of the parameters are on
+#   2. Configure the solver. You can read what each of the parameters means on
 #     Grasp function's documentation at ./code/functions.R
 # 
 #   3. Run the remaining of the script and wait for your results :)

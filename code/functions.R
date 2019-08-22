@@ -29,7 +29,6 @@
 # ---- Load Dependencies ------------------------------------------------------
 library(dplyr)
 library(timevis)
-library(tictoc)
 
 # ---- GRASP Solver Functions -------------------------------------------------
 
@@ -291,8 +290,16 @@ DispatchRule <- function (tasks, TB0s, data, rule = NULL) {
   # 
   # Args:
   #   tasks: array. Tasks in the RCL.
+  # 
   #   TB0s: array. Potential starting times of each of the tasks.
-  #   data:
+  # 
+  #   data: list containing instance data, must have:
+  #     $n number of jobs
+  #     $m number of machines
+  #     $ti times array for job i and task order j
+  #     $mi machines array for job i and task order j
+  #     ... other data is optional, e.g. due times, weights, etc.
+  # 
   #   rule: string. Dispatch rule case identifier. If NULL a random case is 
   #     used.
   # 
@@ -577,7 +584,7 @@ FirstDescentLocalSearch <- function (data, solution, cfg, isPartial = FALSE) {
 Grasp <- function (data, cfg) {
   # GRASP implementation for JSP. It solves the different variants available
   # of the JSP (modes) by means of an iterative process involving the
-  # construction of random solutions and its refinment through a local search
+  # construction of random solutions and its refinement through a local search
   # procedure. 
   # 
   # Args:
