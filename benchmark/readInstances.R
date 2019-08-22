@@ -34,8 +34,8 @@ ReadJobShop1 <- function() {
   #   List with all instances from file. Each instance is also a list with: 
   #         $n number of jobs
   #         $m number of machines
-  #         $tij times table for job i and task order j
-  #         $mij machines table for job i and task order j
+  #         $ti times array for job i and task order j
+  #         $mi machines array for job i and task order j
   
   filepath <- "./jobshop1.txt"
   lines <- readLines(filepath)
@@ -100,8 +100,8 @@ ReadTaillard <- function(case) {
   #         $mseed machine seed
   #         $upper upper bound
   #         $lower lower bound
-  #         $tij times table for job i and task order j
-  #         $mij machines table for job i and task order j
+  #         $ti times array for job i and task order j
+  #         $mi machines array for job i and task order j
   
   url <- paste0("http://mistic.heig-vd.ch/taillard/problemes.dir/ordonnancement.dir/jobshop.dir/tai", case, ".txt")
   
@@ -143,60 +143,70 @@ ReadTaillard <- function(case) {
   return(instances)
 }
 
-DataToTWT <- function(times, f = 1.3) {
+DataToTWT <- function(data, f = 1.3) {
   # Get due dates and priority weights on instances based on Singer and Pinedo 
   # proposal. Weights will be: 4 for first 20% of jobs, 2 next 40% and 1 last 
   # 20% of jobs. Due dates are estimate as the sum of all processing times of
   # job's tasks multiplied by the factor f. TODO: Insert reference
   # 
   # Args:
-  #   times:  2D array with jobs as rows and processing times for each task on 
-  #           the cols
-  #   f:      float. Due date factor, 1.3 1.5 or 1.6
+  #   data: list. 
+  #     $n number of jobs
+  #     $m number of machines
+  #     $ti times array for job i and task order j
+  #     $mi machines array for job i and task order j
+  # 
+  #   f: float. Due date factor, 1.3 1.5 or 1.6
   # Returns:
   #   2D array. One row per job, first col job weight and second col job due 
   #   date.
   
-  jobs <- 1:nrow(times) 
-  tasks <- 1:(ncol(times))
+  times <- data$ti
+  n <- data$n
+  m <- data$m
   
   # Array containing machine and duration data per task
-  twtArr <- array(dim = c(length(jobs), 2))
+  twtArr <- array(dim = c(n, 2))
   
-  for(job in jobs){
+  for(job in 1:n){
     
     # Priority weights
-    if(job <= 0.2*length(jobs)) {
+    if(job <= 0.2*n) {
       twtArr[job, 1] <- 4
-    } else if(job <= 0.8*length(jobs)) {
+    } else if(job <= 0.8*n) {
       twtArr[job, 1] <- 2
     } else {
       twtArr[job, 1] <- 1
     }
     
     # Due dates
-    twtArr[job, 2] <- f*sum(times[job, ])
+    twtArr[job, 2] <- f*sum(times[((job-1)*m + 1):job*m])
   }
   return(twtArr)
 }
 
-AddTWT <- function(instanceList) {
+AddTWT <- function(data) {
   # Includes weights and due date into JSP instances
   # 
   # Args:
-  #   instanceList: instance list returned by ReadTaillard and ReadInstance
+  #   data: list returned by ReadTaillard or ReadInstance
+  #     $n number of jobs
+  #     $m number of machines
+  #     $ti times array for job i and task order j
+  #     $mi machines array for job i and task order j
+  #     ...
   # 
   # Returns:
   #   Same list with additional fields $weights and $dueDates
 
-  twtData <- DataToTWT(instanceList$tij)
+  twtData <- DataToTWT(data)
   
   # Jobs' weights
-  instanceList$weights <- twtData[ , 1]
+  data$weights <- twtData[ , 1]
   # Due dates
-  instanceList$dueDates <- twtData[ , 2]
+  data$dueDates <- twtData[ , 2]
   
-  return(instanceList)
+  return(data)
 }
 
 
