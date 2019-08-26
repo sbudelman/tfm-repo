@@ -1287,7 +1287,7 @@ NCet <- function (data, solution, cfg) {
   blocks <- solution$criticalTree$blocks
   
   # Initialize swaps matrix
-  swaps <- matrix(NA, nrow = n*m, ncol = 6)
+  swaps <- matrix(NA, nrow = n*n*m, ncol = 6)
   moveCount <- 1
   
   for (i in 1:length(blocks)) {
@@ -1429,7 +1429,7 @@ NCet2mt <- function (data, solution, cfg) {
   heads <- solution$heads
   
   # Initialize swaps matrix
-  swaps <- matrix(NA, nrow = n*m, ncol = 6)
+  swaps <- matrix(NA, nrow = n*n*m, ncol = 6)
   moveCount <- 1
   
   for (i in 1:length(blocks)) {
@@ -1559,7 +1559,7 @@ NEcet <- function (data, solution, cfg) {
   blocks <- solution$criticalTree$blocks
   
   # Initialize swaps matrix
-  swaps <- matrix(NA, nrow = n*m, ncol = 6)
+  swaps <- matrix(NA, nrow = n*n*m, ncol = 6)
   moveCount <- 1
   
   for (i in 1:length(blocks)) {
