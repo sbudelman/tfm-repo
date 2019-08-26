@@ -500,16 +500,29 @@ FirstDescentLocalSearch <- function (data, solution, cfg, isPartial = FALSE) {
       bestSolution$objective))
   }
   
+  if (cfg$benchmark) {
+    # benchmarkData [objective, nbhOperator, Nsize, neighborIdx, iter]
+    benchmarkData <- matrix(NA, nrow = cfg$lsMaxIter, ncol = 5)
+    bdLine <- 1
+  }
+  
   iter <- 0
-  while (iter < cfg$maxIter) {
+  while (iter < cfg$lsMaxIter) {
+    
+    # Computing neighborhood
     
     if (cfg$verbose > 2) {
       cat("Computing neighborhood...\n")
     }
     
-    nbhOperators <- ifelse(isPartial, "cet", "all")
+    if (!is.null(cfg$nbhOperator)) {
+      nbhOperator <- cfg$nbhOperator
+      
+    } else {
+      nbhOperator <- ifelse(isPartial, "cet", "all")
+    }
     
-    nbh <- N(nbhOperators, data, bestSolution, cfg)
+    nbh <- N(nbhOperator, data, bestSolution, cfg)
     
     if (cfg$verbose > 2) {
       cat("New neighborhood has been generated\n")
@@ -519,17 +532,33 @@ FirstDescentLocalSearch <- function (data, solution, cfg, isPartial = FALSE) {
       if (cfg$verbose > 1) {
         cat("No neighbors found for this solution. Stopping local search.\n")
       }
+      
+      if (cfg$benchmark) {
+        benchmarkData[bdLine, ] <- c(NA, nbhOperator, 0, 0, iter)
+  
+        bestSolution$benchmark <- benchmarkData[!is.na(benchmarkData[, 5]), ]
+      }
+      
       return(bestSolution)
     }
     
     # Shuffle neighborhood row-wise
     nbh <- nbh[sample(nrow(nbh)), ]
     
+    
+    
     # For neighbor in nbh
     for (i in 1:nrow(nbh)) {
       
       # Update heads
       newSolution <- SolutionUpdate(nbh[i, ], data, bestSolution, cfg)
+      
+      if (cfg$benchmark) {
+        benchmarkData[bdLine, ] <- c(newSolution$objective, nbhOperator, 
+                                     nrow(nbh), i, iter)
+        
+        bdLine <- bdLine + 1
+      }
     
       # If objective < bestSolution$objective then new best and break to
       # recalculate negihborhood and start again 
@@ -572,10 +601,19 @@ FirstDescentLocalSearch <- function (data, solution, cfg, isPartial = FALSE) {
       if (cfg$verbose > 1) {
         cat("No further improvements found on this neighborhood\n")
       }
+      
+      if (cfg$benchmark) {
+        bestSolution$benchmark <- benchmarkData[!is.na(benchmarkData[, 5]), ]
+      }
+      
       return(bestSolution)
     }
     
     iter <- iter + 1
+  }
+  
+  if (cfg$benchmark) {
+    bestSolution$benchmark <- benchmarkData[!is.na(benchmarkData[, 5]), ]
   }
   
   return(bestSolution)
@@ -636,9 +674,20 @@ Grasp <- function (data, cfg) {
     i <- 1
   }
   
+  if (cfg$benchmark) {
+    # [objective, nbhOperator, Nsize, neighborIdx, lsIter, globalIter]
+    benchmarkData <- matrix(NA, nrow = cfg$maxIter*cfg$lsMaxIter, ncol = 6)
+    bLine <- 1
+  }
+  
   # Initialize alpha
-  alpha <- ReactiveAlpha()
-  aMeanObj <- rep(1, 10) 
+  if (!is.null(cfg$alpha)) {
+    alpha <- cfg$alpha
+    
+  } else {
+    alpha <- ReactiveAlpha()
+    aMeanObj <- rep(1, 10) 
+  }
   
   iter <- 0
   while (iter < cfg$maxIter & Sys.time() < (time1 + cfg$maxTime)) {
@@ -650,6 +699,11 @@ Grasp <- function (data, cfg) {
       plotData[i, ] <- c(iter, solution$objective, "black")
       i <- i + 1
     }
+    
+    if (cfg$benchmark) {
+      benchmarkData[bLine, c(1, 6)] <- c(solution$objective, iter)
+      bLine <- bLine + 1
+    }
 
     # Local search if solution quality is reasonably good
     if (solution$objective < cfg$qualCoef * globalBest$objective) {
@@ -660,6 +714,18 @@ Grasp <- function (data, cfg) {
       if (cfg$plot) {
         plotData[i, ] <- c(iter, iterationBest$objective, "blue")
         i <- i + 1
+      }
+      
+      if (cfg$benchmark) {
+        bLength <- ifelse(is.null(nrow(iterationBest$benchmark)), 0, 
+                          nrow(iterationBest$benchmark))
+        
+        if (bLength != 0) {
+          benchmarkData[bLine:(bLine + bLength - 1), 1:5] <-
+            iterationBest$benchmark
+          
+          bLine <- bLine + bLength
+        }
       }
       
       # Compare results of the local search against global best
@@ -699,13 +765,15 @@ Grasp <- function (data, cfg) {
            xlab="Iteration", ylab="Objective value")
     }
     
-    # Update history and recalculate alpha. Based on alpha cases defined on
-    # ReactiveAlpha
-    aMeanObj[10*alpha] <- ifelse(aMeanObj[10*alpha] == 1, solution$objective,
-                                          mean(aMeanObj[10*alpha], 
-                                             solution$objective))
-    
-    alpha <- ReactiveAlpha(globalBest$objective, aMeanObj)
+    if (is.null(cfg$alpha)) {
+      # Update history and recalculate alpha. Based on alpha cases defined on
+      # ReactiveAlpha
+      aMeanObj[10*alpha] <- ifelse(aMeanObj[10*alpha] == 1, solution$objective,
+                                            mean(aMeanObj[10*alpha], 
+                                               solution$objective))
+      
+      alpha <- ReactiveAlpha(globalBest$objective, aMeanObj)
+    }
     
     iter <- iter + 1
   }
@@ -720,6 +788,9 @@ Grasp <- function (data, cfg) {
     }
   }
   
+  globalBest$benchmark <- as.data.frame(benchmarkData[1:(bLine-1), ])
+  names(globalBest$benchmark) <- c("objective", "nbhOperator", "Nsize", 
+                                   "neighborIdx", "lsIter", "globalIter")
   return(globalBest)
 }
 
@@ -777,9 +848,15 @@ GraspBuild <- function (data, cEdges, alpha = 1, cfg) {
   f <- 1 # Init partial local search counter
   
   if (cfg$mode == "jsptwt") {
-    # Dispatch rule cases
-    cases <- c("WEDD", "WSPT", "WMDD", "ATC", "WSL+WSPT")
-    rule <- sample(cases, 1)
+    
+    if (!is.null(cfg$dispRule)) {
+      rule <- cfg$dispRule
+      
+    } else {
+      # Dispatch rule cases
+      cases <- c("WEDD", "WSPT", "WMDD", "ATC", "WSL+WSPT")
+      rule <- sample(cases, 1)
+    }
   }
   
   # Empty schedule (only source node) [node, start, finish] 

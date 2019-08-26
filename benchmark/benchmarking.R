@@ -24,6 +24,8 @@
 # 
 # Script for benchmarking solver for the Job Shop Problem JSP and its variants.
 # 
+# The set of Lawrence's instances have been selected as benchmark, primar
+# 
 # 
 
 # ---- Main Script ------------------------------------------------------------
@@ -31,24 +33,80 @@
 source(file = "../code/functions.R") # Load functions
 source(file = "./readInstances.R") # Load benchmark instances
 
+Experiment1 <- function() {
+  # Objective: 
+  #   Study the impact of neighborhood operators by applying them individually.
+  # 
+  # Parameters:
+  #   1. Alpha = 0.5. No reactive alpha.
+  #   2. No partial local search
+  #   3. Standard number of iterations (1000)
+  #   4. For JSPTWT use WEDD dispatch rule
+  #   5. Due date factor 1.3
+  #   6. Quality coefficient set to 1.2
+  #   7. 5 runs with different seeds
+  
+  instances <- js1Instances[9:23]
+  
+  seeds <- c(1603, 2507, 609, 1902, 2405)
+
+  nbhOperators <- c("cet", "scei", "cet2mt", "ecet")
+  
+  # Adjust solver parameters. See Grasp function's documentation on
+  # ../code/functions
+  config <- list()
+  config$mode <- "jsp"
+  config$verbose <- 0
+  config$qualCoef <- 1.2
+  config$maxIter <- 1000
+  config$maxTime <- 10000
+  config$plot <- FALSE
+  config$lsMaxIter <- 100
+  config$plsFreq <- c(1.1)
+  config$benchmark <- TRUE
+  config$dispRule <- "WEDD"
+  config$alpha <- 0.5
+  
+  for (i in 1:length(instances)) {
+    data <- AddTWT(instances[[i]])
+    
+    for (nbhOperator in nbhOperators) {
+      config$nbhOperator <- nbhOperator
+      
+      for (seed in seeds) {
+        config$seed <- seed
+        
+        run <- Grasp(data, config)
+        
+        seedNum <- rep(seed, nrow(run$benchmark))
+        
+        instance <- rep(names(instances)[i], nrow(run$benchmark))
+
+        benchmarkTable <- cbind(run$benchmark, seedNum, instance)
+        
+        filename <- sprintf("./results/experiment1_%s.csv", 
+                            names(instances)[i])
+        
+        write.table(benchmarkTable, file = filename, 
+                    sep = ",", append = TRUE, quote = FALSE,
+                    col.names = (seed == 1603 & nbhOperator == "cet"), 
+                    row.names = FALSE)
+        
+        cat(names(instances)[i], nbhOperator, seed, 
+            format(Sys.time(), "%X"), "\n")
+      }
+    }
+  } 
+}
+
+
 # Define problem data using benchmark instances. See 
 # ./benchmark-instances/readInstances for available options
 data <- js1Instances$la15
 # data <- tai15.15[[2]]
 data <- AddTWT(data) # Add weights and due dates to problem data
 
-# Adjust solver parameters. See Grasp function's documentation on
-# ./code/functions
-config <- list()
-config$mode <- "jsp"
-config$seed <- 2507
-config$verbose <- 1
-config$qualCoef <- 1.2
-config$maxIter <- 100
-config$maxTime <- 10000
-config$plot <- TRUE
-config$lsMaxIter <- 1000
-config$plsFreq <- c(0.4, 0.8)
+
 
 # Solve problem
 solution <- Grasp(data, config)
