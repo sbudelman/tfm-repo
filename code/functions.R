@@ -502,7 +502,8 @@ FirstDescentLocalSearch <- function (data, solution, cfg, isPartial = FALSE) {
   
   if (cfg$benchmark) {
     # benchmarkData [objective, nbhOperator, Nsize, neighborIdx, iter]
-    benchmarkData <- matrix(NA, nrow = cfg$lsMaxIter, ncol = 5)
+    # TODO: improve benchmarkData nrow estimation while init
+    benchmarkData <- matrix(NA, nrow = 10*n*m*cfg$lsMaxIter, ncol = 5)
     bdLine <- 1
   }
   
