@@ -180,7 +180,7 @@ DataToTWT <- function(data, f = 1.3) {
     }
     
     # Due dates
-    twtArr[job, 2] <- f*sum(times[((job-1)*m + 1):job*m])
+    twtArr[job, 2] <- f*sum(times[((job-1)*m + 1):(job*m)])
   }
   return(twtArr)
 }
