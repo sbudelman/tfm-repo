@@ -46,7 +46,7 @@ Experiment1 <- function() {
   #   6. Quality coefficient set to 1.2
   #   7. 5 runs with different seeds
   
-  instances <- js1Instances[9:23]
+  instances <- js1Instances[10:48]
   
   seeds <- c(1603, 2507, 609, 1902, 2405)
 
@@ -55,7 +55,7 @@ Experiment1 <- function() {
   # Adjust solver parameters. See Grasp function's documentation on
   # ../code/functions
   config <- list()
-  config$mode <- "jsp"
+  config$mode <- "jsptwt"
   config$verbose <- 0
   config$qualCoef <- 1.2
   config$maxIter <- 1000
@@ -66,6 +66,12 @@ Experiment1 <- function() {
   config$benchmark <- TRUE
   config$dispRule <- "WEDD"
   config$alpha <- 0.5
+  
+  # Total cases to evaluate
+  total <- length(instances) * length(nbhOperators) * length(seeds)
+  
+  # Counter
+  count <- 1
   
   for (i in 1:length(instances)) {
     data <- AddTWT(instances[[i]])
@@ -84,7 +90,7 @@ Experiment1 <- function() {
 
         benchmarkTable <- cbind(run$benchmark, seedNum, instance)
         
-        filename <- sprintf("./results/experiment1_%s.csv", 
+        filename <- sprintf("./results/experiment1_twt_%s.csv", 
                             names(instances)[i])
         
         write.table(benchmarkTable, file = filename, 
@@ -93,7 +99,9 @@ Experiment1 <- function() {
                     row.names = FALSE)
         
         cat(names(instances)[i], nbhOperator, seed, 
-            format(Sys.time(), "%X"), "\n")
+            format(Sys.time(), "%X"), sprintf(" %d / %d", count, total), "\n")
+        
+        count <- count + 1 
       }
     }
   } 
