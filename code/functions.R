@@ -485,6 +485,8 @@ FirstDescentLocalSearch <- function (data, solution, cfg, isPartial = FALSE) {
   #   Solution object with the best solution found after the local search.
   
   ti <- data$ti
+  n <- data$n
+  m <- data$m
   
   # Initialize best
   bestSolution <- solution
