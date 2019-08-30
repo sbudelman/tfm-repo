@@ -89,7 +89,7 @@ ui <- tagList(
                  uiOutput("settings"),
                  tags$hr(),
                  actionButton("resetSettings", "Reset Settings", 
-                                       class = "btn-secondary"))
+                                       class = "btn-warning"))
                ),
   
       # Help ===============================
