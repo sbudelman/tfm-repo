@@ -620,7 +620,7 @@ FirstDescentLocalSearch <- function (data, solution, cfg, isPartial = FALSE) {
   return(bestSolution)
 }
 
-Grasp <- function (data, cfg) {
+Grasp <- function (data, cfg, UpdateProgress = NULL) {
   # GRASP implementation for JSP. It solves the different variants available
   # of the JSP (modes) by means of an iterative process involving the
   # construction of random solutions and its refinement through a local search
@@ -651,6 +651,8 @@ Grasp <- function (data, cfg) {
   #     $plsFreq: array 0 < el < 1 for every el in plsFreq. Defines at which 
   #       percentage of scheduled tasks a local search must be performed in 
   #       orer to improve the partial solution.
+  # 
+  #   UpdateProgress: function. Callback to update progress bar on shiny app.
   # 
   # Returns:
   #   Solution object (list) containing the best solution found. This list has
@@ -777,6 +779,16 @@ Grasp <- function (data, cfg) {
     }
     
     iter <- iter + 1
+    # If we were passed a progress update function, call it
+    if (is.function(UpdateProgress)) {
+      text <- paste0("Best solution: ", globalBest$objective)
+      now <- as.double(Sys.time(), units="secs")
+      value <- max(iter/cfg$maxIter, 
+                   now/as.double(time1 + cfg$maxTime, units="secs"))
+      # Update value gets up to 0.9. Remaining 0.1 corresponds to 
+      # visualization computations
+      UpdateProgress(value = 0.9*value, detail = text)
+    }
   }
 
   if (cfg$verbose > 0) {
@@ -789,9 +801,12 @@ Grasp <- function (data, cfg) {
     }
   }
   
-  globalBest$benchmark <- as.data.frame(benchmarkData[1:(bLine-1), ])
-  names(globalBest$benchmark) <- c("objective", "nbhOperator", "Nsize", 
-                                   "neighborIdx", "lsIter", "globalIter")
+  if (cfg$benchmark) {
+    globalBest$benchmark <- as.data.frame(benchmarkData[1:(bLine-1), ])
+    names(globalBest$benchmark) <- c("objective", "nbhOperator", "Nsize", 
+                                     "neighborIdx", "lsIter", "globalIter")
+  }
+  
   return(globalBest)
 }
 
@@ -1140,6 +1155,44 @@ LongestPath <- function (task, predecesors) {
   
   return(path)
   
+}
+
+LateJobs <- function (data, solution) {
+  # Get late jobs out of a jsptwt solution
+  # 
+  # Args:
+  #   data: list. See Grasp input.
+  # 
+  #   solution: list. See Grasp output.
+  # 
+  # Returns:
+  #   List with:
+  #     $tardiness array with jobs' tardiness
+  #     $tasks  array with jobs' tasks with completion times after due date
+  
+  dueDates <- data$dueDates
+  n <- data$n
+  m <- data$m
+  ti <- data$ti
+  
+  # Init tardiness 
+  tardiness <- rep(NA, n)
+  
+  # Init tasks
+  tasks <- list()
+  
+  completion <- solution$heads + ti
+  for (job in 1:n) {
+    tardiness[job] <- max(completion[job*m] - dueDates[job], 0)
+    tmp <- (job-1)*m + 
+      which(completion[(job-1)*m + (1:m)] > dueDates[job])
+    
+    tasks[job] <- ifelse(length(tmp) > 0, tmp, NA)
+  }
+  
+  output <- list("tardiness" = tardiness, "tasks" = tasks)
+  
+  return(output)
 }
 
 MachineSequency <- function (data, topoSort) {
@@ -2146,9 +2199,9 @@ HeadsToSchedule <- function (heads, data) {
   duration <- data$ti
   
   # Data Frame
-  df <- data.frame(taskId, jobId, machineId, startTime, taskName, duration)
-  colnames(df) <- c("Task ID",	"Job ID",	"Machine ID",	"Task Starting Time",	
-                    "Task Name",	"Task Runtime")
+  df <- data.frame(taskId, jobId, machineId, taskName, startTime, duration)
+  colnames(df) <- c("Task ID",	"Job ID",	"Machine ID",	"Task Name",	
+                    "Task Starting Time", "Task Runtime")
   
   return(df)
 }
@@ -2343,7 +2396,7 @@ PlotEdges <- function (edges, data, paths = NULL, objective = NULL,
   }
 }
 
-ScheduleToGantt <- function(schedule, startDate = as.POSIXct(Sys.time()), 
+ScheduleToGantt <- function(schedule, startDate = as.POSIXlt(Sys.time()), 
                               longPath = NULL, shifts = NULL) {
   # Uses timevis library to render schedule created by HeadsToSchedule as Gantt
   # chart. It can be visualized by job or by machine.
@@ -2407,7 +2460,7 @@ ScheduleToGantt <- function(schedule, startDate = as.POSIXct(Sys.time()),
   jobsVis <- timevis(
     jobsView,
     groups = data.frame(
-      id = unique(startValues$`Job ID`), 
+      id = sort(unique(startValues$`Job ID`)), 
       content = c(sprintf(paste("Job %s"),
                           seq(1:n_distinct(startValues$`Job ID`))
       ))
@@ -2424,6 +2477,12 @@ ScheduleToGantt <- function(schedule, startDate = as.POSIXct(Sys.time()),
     "style" = startValues$style
   )
   
+  machinesViewGroups <- data.frame(
+    id = sort(unique(startValues$`Machine ID`)),
+    content = c(sprintf(paste("Machine %s"), 
+                        seq(1:n_distinct(startValues$`Machine ID`))))
+  )
+  
   machinesVis <- timevis(
     machinesView,
     groups = data.frame(
@@ -2434,12 +2493,17 @@ ScheduleToGantt <- function(schedule, startDate = as.POSIXct(Sys.time()),
     )
   )
   
+  schedule <- startValues %>% select(-"style") %>%
+    mutate(`Task Starting Time` = format(`Task Starting Time`, format="%F %R"),
+           `Task Ending Time` = format(`Task Ending Time`, format="%F %R"))
   
   results <- list("jobsView" = jobsView,
                   "jobsViewGroups" = jobsViewGroups, 
                   "jobsVis" = jobsVis,
                   "machinesView" = machinesView,
-                  "machinesVis" = machinesVis)
+                  "machinesViewGroups" = machinesViewGroups,
+                  "machinesVis" = machinesVis,
+                  "schedule" = schedule)
   
   return(results)
   

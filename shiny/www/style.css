@@ -1,0 +1,49 @@
+.nav-tabs {
+  margin-bottom: 10px;
+}
+
+.bs-callout {
+  padding: 20px;
+  border: 1px solid #eee;
+  border-left-width: 5px;
+  border-radius: 3px;
+}
+
+.bs-callout-info {
+    border-left-color: #1b809e;
+}
+
+.inst-list > * {
+  margin: 15px 0;
+}
+
+.vis-label .vis-inner {
+  min-height: 50px;
+  max-height: 50px;
+}
+
+.input-help {
+  margin-bottom: 15px;
+}
+
+.input-help > div {
+  margin-bottom: 0px;
+}
+
+.links-menu {
+  font-size: 13px;
+  margin-left: 15px;
+  margin-top: 30px;
+}
+
+.links-menu.affix {
+  top: 15px;
+}
+
+.links-menu > li {
+  padding: 4px 20px;
+}
+
+.links-menu > a {
+  color: #767676;
+}
