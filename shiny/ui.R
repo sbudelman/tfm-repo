@@ -10,12 +10,14 @@ ui <- tagList(
       
       tabPanel(title = "Data", value = "data",
                sidebarPanel(
-                 fileInput("file1", "Data file input:"),
+                   actionButton("loadSample", "Load Sample",
+                                class="btn-info btn-xs pull-right"),
+                   fileInput("file1", "Data file input:"),
                  disabled(actionButton("jump2plan", "Setup Plan", 
                                        class = "btn-primary"))
                ),
                mainPanel(
-                 conditionalPanel(condition = "!output.fileUploaded",
+                 conditionalPanel(condition = "!output.dataLoaded",
                                   withTags(
                                     div(class ="panel panel-default",
                                         ol(class="inst-list",
@@ -26,7 +28,7 @@ ui <- tagList(
                                           li("Go to Plan tab or click on Setup Plan")
                                         ))
                                   )),
-                 conditionalPanel(condition = "output.fileUploaded",
+                 conditionalPanel(condition = "output.dataLoaded",
                                   h3(textOutput("filename1")),
                                   tabsetPanel(
                                     tabPanel("Jobs", dataTableOutput("jobs")),
@@ -59,7 +61,7 @@ ui <- tagList(
                                        class = "btn-primary"))
                ),
                mainPanel(
-                 conditionalPanel(condition = "!output.fileUploaded",
+                 conditionalPanel(condition = "!output.dataLoaded",
                                   withTags(
                                     div(class="panel panel-default",
                                         div(class="panel-body",
@@ -68,7 +70,7 @@ ui <- tagList(
                                                      class = "btn-primary"))
                                             )
                                   )),
-                 conditionalPanel(condition = "output.fileUploaded",
+                 conditionalPanel(condition = "output.dataLoaded",
                    conditionalPanel("output.scheduleReady",
                       downloadButton("dlSchedule", "Download Schedule", 
                         class = "btn-success btn-sm",

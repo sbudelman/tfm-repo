@@ -16,16 +16,9 @@ server <- function(input, output, session) {
   
   # On the side panel
   inFile <- reactive({input$file1})
+  sampleFile <- reactiveVal()
   
-  filename <- reactive({
-    # Test if file is selected
-    if (!is.null(inFile())) {
-      # Extract file name (additionally remove file extension using sub)
-      return(sub(".xlsx$", "", basename(input$file1$name)))
-    } else {
-      return("No file selected yet")
-    }
-  })
+  filename <- reactiveVal()
   
   output$filename1 <- renderText(filename())
   
@@ -33,7 +26,20 @@ server <- function(input, output, session) {
     if (!is.null(inFile())) {
       enable("jump2plan")
       enable("createPlan")
+      sampleFile(NULL)
+      filename(sub(".xlsx$", "", basename(inFile()$name)))
+      dataLoaded(TRUE)
+      
     }
+  })
+  
+  observeEvent(input$loadSample, {
+    enable("jump2plan")
+    enable("createPlan")
+    reset("file1")
+    sampleFile("www/dataTemplate.xlsx")
+    filename("Example Data")
+    dataLoaded(TRUE)
   })
   
   observeEvent(input$jump2plan, {
@@ -42,42 +48,45 @@ server <- function(input, output, session) {
   })
   
   # On the main panel
-  output$fileUploaded <- reactive({
-    return(!is.null(inFile()))
+  dataLoaded <- reactiveVal(value = FALSE)
+  output$dataLoaded <- reactive({dataLoaded()})
+  outputOptions(output, 'dataLoaded', suspendWhenHidden=FALSE)
+  
+  data <- reactive({
+    
+    d <- list("jobs" = NULL, "machines" = NULL, "tasks" = NULL)
+
+    if (is.null(inFile()) & is.null(sampleFile())) {
+      return(d)
+    } 
+    
+    file <- ifelse(!is.null(inFile()), inFile()$datapath, sampleFile())
+    
+    d$jobs <- datatable(data = read_xlsx(file, sheet = "jobs", 
+                                         col_types = "text"))
+    
+    d$machines <- datatable(data = read_xlsx(file, sheet = "machines",
+                                             col_types = "text"))
+    
+    d$tasks <- datatable(data = read_xlsx(file, sheet = "tasks",
+                                          col_types = "text"))
+    
+    return(d)
   })
-  outputOptions(output, 'fileUploaded', suspendWhenHidden=FALSE)
   
   output$jobs <- renderDataTable({
-    
-    req(input$file1)
-    
-    jobs <- datatable(data = read_xlsx(input$file1$datapath,
-                                       sheet = "jobs",
-                                       col_types = "text"))
-    return(jobs)
-    
+    req(data())
+    return(data()$jobs)
   })
-  
+
   output$machines <- renderDataTable({
-    
-    req(input$file1)
-    
-    machines <- datatable(data = read_xlsx(input$file1$datapath,
-                                           sheet = "machines",
-                                           col_types = "text"))
-    return(machines)
-    
+    req(data())
+    return(data()$machines)
   })
-  
+
   output$tasks <- renderDataTable({
-    
-    req(input$file1)
-    
-    tasks <- datatable(data = read_xlsx(input$file1$datapath,
-                                        sheet = "tasks",
-                                        col_types = "text"))
-    return(tasks)
-    
+    req(data())
+    return(data()$tasks)
   })
   
   
@@ -319,6 +328,7 @@ server <- function(input, output, session) {
   })
   
   # Others =================================
+  # Github link/logo navbar
   observeEvent(input$navbar,{
     if(input$navbar == "github"){
       browseURL("https://www.github.com/sbudelman/tfm-repo")
