@@ -2193,11 +2193,11 @@ HeadsToSchedule <- function (heads, data) {
   n <- data$n
   m <- data$m
   
-  taskId <- 1:(n*m)
-  jobId <- rep(1:n, each = m)
-  machineId <- data$mi
+  taskId <- data$rawTasks$`Task ID`
+  jobId <- data$rawTasks$`Job ID`
+  machineId <- data$rawTasks$`Machine ID`
   startTime <- heads
-  taskName <- sprintf("task %d", taskId)
+  taskName <- data$rawTasks$`Task Name`
   duration <- data$ti
   
   # Data Frame
@@ -2435,14 +2435,11 @@ ScheduleToGantt <- function(schedule, startDate = as.POSIXlt(Sys.time()),
   }
   
   # Add bottleneck visuals
+  startValues <- startValues %>% mutate(style = "")
   if(!is.null(longPath)) {
-    startValues <- startValues %>% mutate(style = if_else(
-      `Task ID` %in% longPath, 
-      "background-color: #e28e8c; border-color: #a94442", ""))
-  } else {
-    startValues <- startValues %>% mutate(style = "")
+    startValues$style[longPath[longPath <= nrow(startValues)]] <- 
+      "background-color: #e28e8c; border-color: #a94442"
   }
-  
   
   # Generate data frame for a Job-based timeline
   jobsView <- data.frame(
@@ -2456,17 +2453,12 @@ ScheduleToGantt <- function(schedule, startDate = as.POSIXlt(Sys.time()),
   
   jobsViewGroups <- data.frame(
     id = unique(startValues$`Job ID`),
-    content = c(sprintf(paste("Job %s"), seq(1:n_distinct(startValues$`Job ID`))))
+    content = sort(unique(startValues$`Job ID`))
   )
   
   jobsVis <- timevis(
     jobsView,
-    groups = data.frame(
-      id = sort(unique(startValues$`Job ID`)), 
-      content = c(sprintf(paste("Job %s"),
-                          seq(1:n_distinct(startValues$`Job ID`))
-      ))
-    )
+    groups = jobsViewGroups
   )
   
   # Generate data frame for a Machine-based timeline
@@ -2481,18 +2473,12 @@ ScheduleToGantt <- function(schedule, startDate = as.POSIXlt(Sys.time()),
   
   machinesViewGroups <- data.frame(
     id = sort(unique(startValues$`Machine ID`)),
-    content = c(sprintf(paste("Machine %s"), 
-                        seq(1:n_distinct(startValues$`Machine ID`))))
+    content = sort(unique(startValues$`Machine ID`))
   )
   
   machinesVis <- timevis(
     machinesView,
-    groups = data.frame(
-      id = sort(unique(startValues$`Machine ID`)),
-      content = c(sprintf(paste("Machine %s"), 
-                          sort(unique(startValues$`Machine ID`))
-      ))
-    )
+    groups = machinesViewGroups
   )
   
   schedule <- startValues %>% select(-"style") %>%

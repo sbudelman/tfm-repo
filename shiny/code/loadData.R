@@ -82,9 +82,8 @@ DataFromExcel <- function (file) {
         
         for (machine in missingM) {
           dummyRow <- list("Task ID" = NA, "Job ID" = NA, "Task Name" = NA,
-                           "Task Runtime" = 0, "Machine Family" = NA,
-                           "Machine ID" = NA, "Predecessor Task ID" = NA,
-                           "Comments" = "Dummy task, runtime 0", 
+                           "Task Runtime" = 0,
+                           "Machine ID" = NA, "Predecessor Task ID" = NA, 
                            "jobIntId" = job, "machineIntId" = machine,
                            "taskIntId" = (job - 1)*m + i)
           tasks <- rbind(tasks, dummyRow)

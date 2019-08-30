@@ -17,8 +17,8 @@ server <- function(input, output, session) {
   # On the side panel
   inFile <- reactive({input$file1})
   sampleFile <- reactiveVal()
-  
   filename <- reactiveVal()
+  file <- reactiveVal()
   
   output$filename1 <- renderText(filename())
   
@@ -60,15 +60,15 @@ server <- function(input, output, session) {
       return(d)
     } 
     
-    file <- ifelse(!is.null(inFile()), inFile()$datapath, sampleFile())
+    file(ifelse(!is.null(inFile()), inFile()$datapath, sampleFile()))
     
-    d$jobs <- datatable(data = read_xlsx(file, sheet = "jobs", 
+    d$jobs <- datatable(data = read_xlsx(file(), sheet = "jobs", 
                                          col_types = "text"))
     
-    d$machines <- datatable(data = read_xlsx(file, sheet = "machines",
+    d$machines <- datatable(data = read_xlsx(file(), sheet = "machines",
                                              col_types = "text"))
     
-    d$tasks <- datatable(data = read_xlsx(file, sheet = "tasks",
+    d$tasks <- datatable(data = read_xlsx(file(), sheet = "tasks",
                                           col_types = "text"))
     
     return(d)
@@ -129,7 +129,7 @@ server <- function(input, output, session) {
     disable("createPlan")
     schReady("false")
     
-    data <- DataFromExcel(inFile()$datapath)
+    data <- DataFromExcel(file())
     
     # Adjust solver parameters. See Grasp function's documentation on
     # ./code/functions
@@ -233,12 +233,12 @@ server <- function(input, output, session) {
   # Display bottlenecks on machines Gantt chart
   observeEvent(bottleneckMachine(), {
     
-    if (bottleneckMachine() == 0) {
-      newMachinesView <- machinesView() %>% mutate(style = "")
-    } else {
-      newMachinesView <- machinesView() %>% mutate(style = if_else(
-        id %in% paths()[[bottleneckMachine()]], 
-        "background-color: #e28e8c; border-color: #a94442", ""))
+    newMachinesView <- machinesView() %>% mutate(style = "")
+    
+    if (bottleneckMachine() != 0) {
+      longPath <- paths()[[bottleneckMachine()]]
+      newMachinesView$style[longPath[longPath <= nrow(machinesView())]] <- 
+        "background-color: #e28e8c; border-color: #a94442"
     }
     
     machinesView(newMachinesView)
@@ -249,18 +249,19 @@ server <- function(input, output, session) {
   # Display bottlenecks on jobs Gantt chart
   observeEvent(bottleneckJob(), {
     
-    if (bottleneckJob() == 0) {
-      newJobsView <- jobsView() %>% mutate(style = "")
-    } else {
-      newJobsView <- jobsView() %>% mutate(style = if_else(
-        id %in% paths()[[bottleneckJob()]], 
-        "background-color: #e28e8c; border-color: #a94442", ""))
+    newJobsView <- jobsView() %>% mutate(style = "")
+    
+    if (bottleneckJob() != 0) {
+      longPath <- paths()[[bottleneckJob()]]
+      newJobsView$style[longPath[longPath <= nrow(jobsView())]] <- 
+        "background-color: #e28e8c; border-color: #a94442"
     }
     
     jobsView(newJobsView)
     jobsVis(timevis(jobsView(), jobsViewGroups()))
     
   })
+  
   # Help tab ===============================
   output$downloadTemplate2 <- downloadTemplate
   
