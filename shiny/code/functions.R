@@ -877,9 +877,16 @@ GraspBuild <- function (data, cEdges, alpha = 1, cfg) {
     }
   }
   
-  # Empty schedule (only source node) [node, start, finish] 
+  # Empty schedule (only source node and tasks with duration 0) 
+  # [node, start, finish] 
   scheduled <- matrix(0, ncol = 3, nrow = n * m + 1)
   schLine <- 2 # scheduled line to write
+  
+  tiZero <- which(ti == 0)
+  for (task in tiZero) {
+    scheduled[schLine, 1] <- c(task)
+    schLine <- schLine + 1
+  }
   
   # Initialize edges with disjunctive edges
   dEdges <- matrix(data = rep(c(0, 0, 1), m*n*(n - 1)/2), nrow = m*n*(n - 1)/2,
@@ -2204,6 +2211,9 @@ HeadsToSchedule <- function (heads, data) {
   df <- data.frame(taskId, jobId, machineId, taskName, startTime, duration)
   colnames(df) <- c("Task ID",	"Job ID",	"Machine ID",	"Task Name",	
                     "Task Starting Time", "Task Runtime")
+  
+  # Remove dummy tasks
+  df <- df %>% filter(!is.na(`Task ID`))
   
   return(df)
 }

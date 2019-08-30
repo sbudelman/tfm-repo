@@ -99,7 +99,7 @@ RenderSummary <- function(config, data, solution, paths, vis, startDatetime) {
       </tr>
       <tr>
       <td>Total number of tasks</td>
-      <td>",data$n*data$m,"</td>
+      <td>",length(which(data$ti != 0)),"</td>
       </tr>",
       ifelse(config$mode == "jsptwt", paste(
              "<tr class=",ifelse(lateJobs == 0, "success", "danger"),">

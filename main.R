@@ -43,7 +43,7 @@ source(file = "shiny/code/functions.R") # Load functions
 source(file = "shiny/code/loadData.R") # Load functions
 
 # Get data from file
-file <- "./shiny/www/dataTemplate.xlsx"
+file <- "./data/data1.xlsx"
 data <- DataFromExcel(file)
 
 # Adjust solver parameters. See Grasp function's documentation on
