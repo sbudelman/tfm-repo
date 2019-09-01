@@ -271,10 +271,10 @@ server <- function(input, output, session) {
       sliderInput("maxTime", "Max search time (secs):", 30, 300, 10),
       
       numericInput("maxIter", "Global max iteration:",
-                   value = 1000, min = 1, max = 10000),
+                   value = 100, min = 1, max = 10000),
       
       numericInput("lsMaxIter", "Local search max iteration:",
-                   value = 1000, min = 1, max = 10000),
+                   value = 100, min = 1, max = 10000),
       
       sliderInput("qualCoef", "Quality Coefficient:", 1, 2, 0.05, 
                   value = 1.2),
@@ -437,7 +437,7 @@ server <- function(input, output, session) {
       sidebarPanel(
         uiOutput("settings"),
         tags$hr(),
-        actionButton("resetSettings", i18n$t("Reset Settings"), 
+        actionButton("resetSettings", i18n()$t("Reset Settings"), 
                      class = "btn-warning"))
     )
   })
