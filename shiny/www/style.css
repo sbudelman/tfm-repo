@@ -47,3 +47,7 @@
 .links-menu > a {
   color: #767676;
 }
+
+.navbar-right > li > a {
+  padding: 15px 10px;
+}
