@@ -7,19 +7,19 @@ ui <- tagList(
       id = "navbar",
       
       # Data ===============================
-      tabPanel(title = i18n$t("Data"), value = "data",
+      tabPanel(title = textOutput("dataTabTitle"), value = "data",
                uiOutput("dataContent")),
 
       # Plan ===============================
-      tabPanel(title = "Plan", value = "plan",
+      tabPanel(title = textOutput("planTabTitle"), value = "plan",
                 uiOutput("planContent")),
       
       # Settings ===========================
-      tabPanel("Settings", 
+      tabPanel(textOutput("settingsTabTitle"), 
                uiOutput("settingsContent")),
   
       # Help ===============================
-      tabPanel("Help",
+      tabPanel(textOutput("helpTabTitle"),
                uiOutput("helpContent"))
     ),
   # Add to head ============================

@@ -339,6 +339,12 @@ server <- function(input, output, session) {
     translator
   })
   
+  # Setting tab titles
+  output$dataTabTitle <- renderText({i18n()$t("Data")})
+  output$planTabTitle <- renderText({i18n()$t("Plan")})
+  output$settingsTabTitle <- renderText({i18n()$t("Settings")})
+  output$helpTabTitle <- renderText({i18n()$t("Help")})
+  
   # UI content =============================
   # Content is being passed from server to be able to change app language 
   # dynamically :S
