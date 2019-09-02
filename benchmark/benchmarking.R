@@ -24,10 +24,11 @@
 # 
 # Script for benchmarking solver for the Job Shop Problem JSP and its variants.
 # 
-# The set of Lawrence's instances have been selected as benchmark, primar
+# The set of Lawrence's instances have been selected as benchmark.
 # 
+# - Experiment 1: Study the impact of neighborhood operators by applying them 
+#   individually
 # 
-
 # ---- Main Script ------------------------------------------------------------
 
 source(file = "../code/functions.R") # Load functions
@@ -46,7 +47,7 @@ Experiment1 <- function() {
   #   6. Quality coefficient set to 1.2
   #   7. 5 runs with different seeds
   
-  instances <- js1Instances[15:48]
+  instances <- js1Instances[39:48]
   
   seeds <- c(1603)
 

@@ -1,0 +1,214 @@
+---
+title: 'Experiment 1: neighborhood operators'
+author: "Samuel Udelman"
+date: "September 2, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r message=FALSE, warning=FALSE}
+library(ggplot2)
+library(dplyr)
+library(readr)
+library(tidyr)
+
+# Colors
+ggColor <- function(n) {
+  hues = seq(15, 375, length = n + 1)
+  hcl(h = hues, l = 65, c = 100)[1:n]
+}
+
+```
+
+## Objective
+
+The purpose of this experiment was to study the impact of neighborhood operators on the quality of solutions. The operators were appied individually (altought some such as "cet" and "cet+2mt" may overlap sometimes).
+
+## Parameters
+The following list summarizes the condition of relevant parameters:
+
+1. Alpha = 0.5. No reactive alpha.
+2. No partial local search
+3. Standard number of iterations (1000)
+4. For JSPTWT use WEDD dispatch rule
+5. Due date factor 1.3
+6. Quality coefficient set to 1.2
+
+## Results
+
+### JSP
+
+```{r message=FALSE, warning=FALSE}
+# Load data
+dir <- "../results/experiment1/jsp"
+df <- list.files(path=dir, pattern="*.csv", full.names = TRUE) %>% 
+  lapply(read_csv) %>% 
+  bind_rows 
+
+# Include instance sizes and best values
+bests <- c(666, 655, 597, 590, 593,
+           926, 890, 863, 951, 958,
+           1222, 1039, 1150, 1292, 1207,
+           945, 784, 848, 842, 902,
+           1046, 927, 1032, 935, 977,
+           1218, 1235, 1216, 1152, 1355,
+           1784, 1850, 1719, 1721, 1888,
+           1268, 1397, 1196, 1233, 1222)
+
+sizes <- c(rep("10x5", 5), rep("15x5", 5), rep("20x5", 5),
+           rep("10x10", 5), rep("15x10", 5), rep("20x10", 5),
+           rep("30x10", 5), rep("15x15", 5))
+
+keys <- rep(NA, length(bests))
+instances <- list()
+instances$bests <- vector(length = length(keys))
+instances$sizes <- vector(length = length(keys))
+for (i in 1:40) {
+  keys[i] <- paste0("la", sprintf("%02d", i))
+  instances$bests[[i]] <- bests[i]
+  instances$sizes[[i]] <- sizes[i]
+}
+names(instances$bests) <- keys
+names(instances$sizes) <- keys
+
+df <- df %>% fill(globalIter) %>% 
+  filter(seedNum == 1603, !is.na(nbhOperator), !is.na(objective)) %>% 
+  mutate(best = instances$bests[instance], size = instances$sizes[instance], 
+         normObjective = objective/best)
+```
+
+```{r fig1, fig.cap="Distribution of normalized objective values per operator", warning=FALSE}
+# Objective boxplot
+p <- ggplot(df, aes(y = normObjective, x = size , fill = nbhOperator)) + 
+  geom_hline(yintercept = 1, linetype="dashed") +
+  geom_boxplot() +
+  theme_bw()              # for clean look overall
+p
+```
+
+```{r fig2, fig.cap="Min normalized objective values after global iteration per operator", warning=FALSE}
+# Find min objective values after every global iter
+dfIterBest <- df %>% 
+  select(instance, globalIter, normObjective, nbhOperator, size) %>%
+  group_by(size, instance, nbhOperator, globalIter) %>%
+  summarise(minObj = min(normObjective))
+
+# Objective quality boxplot
+p <- ggplot(dfIterBest, aes(y = minObj, x = size , fill = nbhOperator)) + 
+  geom_hline(yintercept = c(1, 1.05, 1.1), linetype="dashed", color=ggColor(3)) +
+  geom_boxplot() +
+  theme_bw()              # for clean look overall
+p
+```
+
+```{r fig3, fig.cap="Total number of neighbors by operator and instance size", message=FALSE, warning=FALSE}
+# Count neighborhood sizes
+dfNSizes <- df %>% filter(neighborIdx == 1)
+
+# Aggregate all to get total number of neighbors
+dfNagg <- dfNSizes %>% select(size, nbhOperator, Nsize) %>% group_by(size, nbhOperator) %>% summarise(totalN = sum(Nsize))
+
+# Nsizes boxplot
+p <- ggplot(dfNagg, aes(x = size, y = totalN, fill = nbhOperator)) +
+  geom_bar(stat = "identity", position = position_dodge()) +
+  theme_bw()              # for clean look overall
+p
+```
+
+```{r fig4, fig.cap="Neighborhood sizes per operator out of the total number of neighborhoods generated", message=FALSE, warning=FALSE}
+
+dfNSizesBg <- dfNSizes %>% select(-nbhOperator) # Background bars
+
+# Nsizes boxplot
+p <- ggplot(dfNSizes, aes(x = Nsize, fill = nbhOperator)) +
+  geom_bar(data = dfNSizesBg, fill = "grey", alpha = .5) +
+  geom_bar() +
+  facet_wrap(~ nbhOperator) +
+  guides(fill = FALSE) +  # to remove the legend
+  theme_bw()              # for clean look overall
+p
+```
+
+### JSPTWT
+
+```{r message=FALSE, warning=FALSE}
+# Load data
+dir <- "../results/experiment1/jsptwt"
+df <- list.files(path=dir, pattern="*.csv", full.names = TRUE) %>% 
+  lapply(read_csv) %>% 
+  bind_rows 
+
+# Include instance sizes and best values
+bests <- c(2299, 1762, 1951, 1917, 1878,
+           5810, 5765, 5475, 5608, 6618,
+           11978, 10542, 11557, 13107, 12330,
+           1169, 899, 929, 948, 805, 
+           3560, 4227, 3777, 3539, 3313,
+           8946, 9090, 9091, 8744, 8626,
+           27671, 30301, 25902, 27901, 29652,
+           2957, 2290, 2122, 1676, 2078)
+
+for (i in 1:40) {
+  instances$bests[[i]] <- bests[i]
+}
+
+df <- df %>% fill(globalIter) %>% 
+  filter(seedNum == 1603, !is.na(nbhOperator), !is.na(objective)) %>% 
+  mutate(best = instances$bests[instance], size = instances$sizes[instance], 
+         normObjective = objective/best)
+```
+
+```{r fig5, fig.cap="JSPTWT Distribution of normalized objective values per operator", warning=FALSE}
+# Objective boxplot
+p <- ggplot(df, aes(y = normObjective, x = size , fill = nbhOperator)) + 
+  geom_hline(yintercept = 1, linetype="dashed") +
+  geom_boxplot() +
+  theme_bw()              # for clean look overall
+p
+```
+
+```{r fig6, fig.cap="JSPTWT Min normalized objective values after global iteration per operator", warning=FALSE}
+# Find min objective values after every global iter
+dfIterBest <- df %>% 
+  select(instance, globalIter, normObjective, nbhOperator, size) %>%
+  group_by(size, instance, nbhOperator, globalIter) %>%
+  summarise(minObj = min(normObjective))
+
+# Objective quality boxplot
+p <- ggplot(dfIterBest, aes(y = minObj, x = size , fill = nbhOperator)) + 
+  geom_hline(yintercept = c(1, 1.05, 1.1), linetype="dashed", color=ggColor(3)) +
+  geom_boxplot() +
+  theme_bw()              # for clean look overall
+p
+```
+
+```{r fig7, fig.cap="JSPTWT Total number of neighbors by operator and instance size", message=FALSE, warning=FALSE}
+# Count neighborhood sizes
+dfNSizes <- df %>% filter(neighborIdx == 1)
+
+# Aggregate all to get total number of neighbors
+dfNagg <- dfNSizes %>% select(size, nbhOperator, Nsize) %>% group_by(size, nbhOperator) %>% summarise(totalN = sum(Nsize))
+
+# Nsizes boxplot
+p <- ggplot(dfNagg, aes(x = size, y = totalN, fill = nbhOperator)) +
+  geom_bar(stat = "identity", position = position_dodge()) +
+  theme_bw()              # for clean look overall
+p
+```
+
+```{r fig8, fig.cap="JSPTWT Neighborhood sizes per operator out of the total number of neighborhoods generated", message=FALSE, warning=FALSE}
+
+dfNSizesBg <- dfNSizes %>% select(-nbhOperator) # Background bars
+
+# Nsizes boxplot
+p <- ggplot(dfNSizes, aes(x = Nsize, fill = nbhOperator)) +
+  geom_bar(data = dfNSizesBg, fill = "grey", alpha = .5) +
+  geom_bar() +
+  facet_wrap(~ nbhOperator) +
+  guides(fill = FALSE) +  # to remove the legend
+  theme_bw()              # for clean look overall
+p
+```
