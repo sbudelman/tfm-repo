@@ -679,7 +679,7 @@ Grasp <- function (data, cfg) {
   
   if (cfg$benchmark) {
     # [objective, nbhOperator, Nsize, neighborIdx, lsIter, globalIter]
-    benchmarkData <- matrix(NA, nrow = cfg$maxIter*cfg$lsMaxIter, ncol = 6)
+    benchmarkData <- matrix(NA, nrow = data$n*data$m*cfg$maxIter*cfg$lsMaxIter, ncol = 6)
     bLine <- 1
   }
   
