@@ -1,0 +1,31 @@
+en, es
+Data,Datos
+Plan,Plan
+Settings,Ajustes
+Help,Ayuda
+Load Sample,Cargar Ejemplo
+Data file input:,Insertar datos: 
+Setup Plan,Configurar Plan
+Download Excel spreadsheet template,Descarga plantilla de Excel
+Download Template,Descargar Plantilla
+Fill in Excel spreadsheet with your data,Rellena la plantilla de Excel con tus datos
+Use panel on the left to,Usa el panel a la izquierda para
+upload your file,cargar tu archivo
+Go to Plan tab or click on Setup Plan,Ve a Plan o haz click en Configurar Plan
+Jobs,Trabajos
+Machines,Maquinas
+Tasks,Operaciones
+Data:,Datos:
+Optimize for:,Optimizar:
+Makespan,Tiempo Total
+Due Dates,Fechas de Entrega
+Plan start datetime:,Fecha y hora de inicio:
+Create Plan,Crear Plan
+Upload your data in order to create a plan,Carga los datos para poder crear un plan
+Go to Data,Ir a Datos
+Download Schedule,Descargar Plan
+Summary,Resumen
+Gantt Jobs,Gantt Trabajos
+Gantt Machines,Gantt Maquinas
+Schedule Table,Tabla
+Reset Settings,Reiniciar Ajustes

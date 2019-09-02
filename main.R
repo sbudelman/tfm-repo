@@ -39,8 +39,8 @@
 
 # ---- Main Script ------------------------------------------------------------
 
-source(file = "code/functions.R") # Load functions
-source(file = "code/loadData.R") # Load functions
+source(file = "shiny/code/functions.R") # Load functions
+source(file = "shiny/code/loadData.R") # Load functions
 
 # Get data from file
 file <- "./data/data1.xlsx"
@@ -53,11 +53,12 @@ config$mode <- "jsp"
 config$seed <- 2507
 config$verbose <- 1
 config$qualCoef <- 1.2
-config$maxIter <- 100
+config$maxIter <- 10
 config$maxTime <- 100
-config$plot <- TRUE
+config$plot <- FALSE
 config$lsMaxIter <- 100
 config$plsFreq <- c(0.4, 0.8)
+config$benchmark <- FALSE
 
 # Solve problem
 solution <- Grasp(data, config)

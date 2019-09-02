@@ -2,6 +2,8 @@
 
 This repo features a GRASP implementation to solve the Job Shop Problem JSP. These files complement my thesis _A production scheduling service for manufacturing short-run series on machining shops_, done as part of the Master Program on Engineering Management at the [Universitat Politecnica de Catalunya UPC ESEIAAT](https://eseiaat.upc.edu/en).
 
+A beta version of the shiny app implmenting the solver is live at https://sbudelman.shinyapps.io/tfm-schedule-tool/.
+
 Comments and suggestions are very much welcome at samueludelman@gmail.com.
 
 # Running the code

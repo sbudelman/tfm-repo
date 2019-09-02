@@ -66,13 +66,13 @@ DataFromExcel <- function (file) {
   # Compute task internal id
   for (job in 1:n) {
     jobTasks <- tasks %>% filter(jobIntId == job) %>% 
-      select(`Predecessors Task ID`, `Task ID`, machineIntId)
+      select(`Predecessor Task ID`, `Task ID`, machineIntId)
     
     machines <- rep(0, m)
 
     for (i in m:1) {
       jTaskIdx <- which(!jobTasks$`Task ID` %in% 
-                          jobTasks$`Predecessors Task ID`)
+                          jobTasks$`Predecessor Task ID`)
       
       machines[jobTasks$machineIntId[jTaskIdx]] <- 1
       
@@ -82,9 +82,8 @@ DataFromExcel <- function (file) {
         
         for (machine in missingM) {
           dummyRow <- list("Task ID" = NA, "Job ID" = NA, "Task Name" = NA,
-                           "Task Runtime" = 0, "Machine Family" = NA,
-                           "Machine ID" = NA, "Predecessors Task ID" = NA,
-                           "Comments" = "Dummy task, runtime 0", 
+                           "Task Runtime" = 0,
+                           "Machine ID" = NA, "Predecessor Task ID" = NA, 
                            "jobIntId" = job, "machineIntId" = machine,
                            "taskIntId" = (job - 1)*m + i)
           tasks <- rbind(tasks, dummyRow)
@@ -125,7 +124,6 @@ ReadExcel <- function (file) {
   # Returns:
   #   List with dataframes for each spreadsheet on the template:
   #     $machines
-  #     $orders
   #     $jobs
   #     $tasks
 
@@ -133,13 +131,11 @@ ReadExcel <- function (file) {
   machines <- read_xlsx(file, sheet = "machines") %>% 
     filter(!is.na(`Machine ID`))
   
-  orders <- read_xlsx(file, sheet = "orders") %>% filter(!is.na(`Order ID`))
-  
   jobs <- read_xlsx(file, sheet = "jobs") %>% filter(!is.na(`Job ID`))
   
   tasks <- read_xlsx(file, sheet = "tasks") %>% filter(!is.na(`Task ID`))
   
-  output <- list("machines" = machines, "orders" = orders, "jobs" = jobs, 
+  output <- list("machines" = machines, "jobs" = jobs, 
        "tasks" = tasks)
   
   return(output)
