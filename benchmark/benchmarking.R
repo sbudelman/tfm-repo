@@ -46,9 +46,9 @@ Experiment1 <- function() {
   #   6. Quality coefficient set to 1.2
   #   7. 5 runs with different seeds
   
-  instances <- js1Instances[10:48]
+  instances <- js1Instances[15:48]
   
-  seeds <- c(1603, 2507, 609, 1902, 2405)
+  seeds <- c(1603)
 
   nbhOperators <- c("cet", "scei", "cet2mt", "ecet")
   
