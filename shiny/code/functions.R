@@ -681,7 +681,7 @@ Grasp <- function (data, cfg, UpdateProgress = NULL) {
   
   if (cfg$benchmark) {
     # [objective, nbhOperator, Nsize, neighborIdx, lsIter, globalIter]
-    benchmarkData <- matrix(NA, nrow = data$n*data$m*cfg$maxIter*cfg$lsMaxIter, ncol = 6)
+    benchmarkData <- matrix(NA, nrow = data$n*data$m*cfg$maxIter*(cfg$lsMaxIter + 1), ncol = 6)
     bLine <- 1
   }
   
@@ -713,8 +713,12 @@ Grasp <- function (data, cfg, UpdateProgress = NULL) {
     # Local search if solution quality is reasonably good
     if (solution$objective < cfg$qualCoef * globalBest$objective) {
       
-      # Do local search
-      iterationBest <- FirstDescentLocalSearch(data, solution, cfg)
+      # Do local search if max local search iterations is greater than 0
+      if (!is.null(cfg$skipLocalSearch)) {
+        iterationBest <- FirstDescentLocalSearch(data, solution, cfg)
+      } else {
+        iterationBest <- solution
+      }
       
       if (cfg$plot) {
         plotData[i, ] <- c(iter, iterationBest$objective, "blue")
