@@ -1,0 +1,129 @@
+---
+title: 'Experiment 2: alpha values'
+author: "Samuel Udelman"
+date: "September 2, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r message=FALSE, warning=FALSE}
+library(ggplot2)
+library(dplyr)
+library(readr)
+library(tidyr)
+
+# Colors
+ggColor <- function(n) {
+  hues = seq(15, 375, length = n + 1)
+  hcl(h = hues, l = 65, c = 100)[1:n]
+}
+
+```
+
+## Objective
+
+Remember that _alpha_ is the look-ahead paramter used within GRASP solution building procedure, as a way to discriminate among all the schedulable tasks on every iteration of the schedule construction process. In this experiment different strategies to set the alpha value were tested to evaluate their impact on the quility of builded solutions.
+
+## Parameters
+The following list summarizes the condition of relevant parameters:
+
+1. No partial local search
+2. Standard number of iterations (1000)
+3. For JSPTWT use WEDD dispatch rule
+4. Due date factor 1.3
+5. Quality coefficient set to Inf
+
+## Results
+
+### JSP
+
+```{r message=FALSE, warning=FALSE}
+# Load data
+dir <- "../results/experiment2/jsp"
+df <- list.files(path=dir, pattern="*.csv", full.names = TRUE) %>% 
+  lapply(read_csv) %>% 
+  bind_rows 
+
+# Include instance sizes and best values
+bests <- c(666, 655, 597, 590, 593,
+           926, 890, 863, 951, 958,
+           1222, 1039, 1150, 1292, 1207,
+           945, 784, 848, 842, 902,
+           1046, 927, 1032, 935, 977,
+           1218, 1235, 1216, 1152, 1355,
+           1784, 1850, 1719, 1721, 1888,
+           1268, 1397, 1196, 1233, 1222)
+
+sizes <- c(rep("10x5", 5), rep("15x5", 5), rep("20x5", 5),
+           rep("10x10", 5), rep("15x10", 5), rep("20x10", 5),
+           rep("30x10", 5), rep("15x15", 5))
+
+keys <- rep(NA, length(bests))
+instances <- list()
+instances$bests <- vector(length = length(keys))
+instances$sizes <- vector(length = length(keys))
+for (i in 1:40) {
+  keys[i] <- paste0("la", sprintf("%02d", i))
+  instances$bests[[i]] <- bests[i]
+  instances$sizes[[i]] <- sizes[i]
+}
+names(instances$bests) <- keys
+names(instances$sizes) <- keys
+
+df <- df %>% fill(globalIter) %>% 
+  select(objective, globalIter, instance, alpha) %>% 
+  mutate(best = instances$bests[instance], size = instances$sizes[instance], 
+         normObjective = objective/best, 
+         alpha = as.character(ifelse(alpha == 0, "reactive", alpha)))
+```
+
+```{r fig1, fig.cap="Distribution of normalized objective values per alpha strategy", warning=FALSE}
+# Objective boxplot
+p <- ggplot(df, aes(y = normObjective, x = size , fill = alpha)) + 
+  geom_hline(yintercept = 1, linetype="dashed") +
+  geom_boxplot() +
+  theme_bw()              # for clean look overall
+p
+```
+
+### JSPTWT
+
+```{r message=FALSE, warning=FALSE}
+# Load data
+dir <- "../results/experiment2/jsptwt"
+df <- list.files(path=dir, pattern="*.csv", full.names = TRUE) %>% 
+  lapply(read_csv) %>% 
+  bind_rows 
+
+# Include instance sizes and best values
+bests <- c(2299, 1762, 1951, 1917, 1878,
+           5810, 5765, 5475, 5608, 6618,
+           11978, 10542, 11557, 13107, 12330,
+           1169, 899, 929, 948, 805, 
+           3560, 4227, 3777, 3539, 3313,
+           8946, 9090, 9091, 8744, 8626,
+           27671, 30301, 25902, 27901, 29652,
+           2957, 2290, 2122, 1676, 2078)
+
+for (i in 1:40) {
+  instances$bests[[i]] <- bests[i]
+}
+
+df <- df %>% fill(globalIter) %>% 
+  select(objective, globalIter, instance, alpha) %>% 
+  mutate(best = instances$bests[instance], size = instances$sizes[instance], 
+         normObjective = objective/best, 
+         alpha = as.character(ifelse(alpha == 0, "reactive", alpha)))
+```
+
+```{r fig2, fig.cap="JSPTWT Distribution of normalized objective values per alpha strategy", warning=FALSE}
+# Objective boxplot
+p <- ggplot(df, aes(y = normObjective, x = size , fill = alpha)) + 
+  geom_hline(yintercept = 1, linetype="dashed") +
+  geom_boxplot() +
+  theme_bw()              # for clean look overall
+p
+```
