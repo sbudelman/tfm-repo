@@ -26,16 +26,17 @@ server <- function(input, output, session) {
     if (!is.null(inFile())) {
       enable("jump2plan")
       enable("createPlan")
+      
       sampleFile(NULL)
       filename(sub(".xlsx$", "", basename(inFile()$name)))
       dataLoaded(TRUE)
-      
     }
   })
   
   observeEvent(input$loadSample, {
     enable("jump2plan")
     enable("createPlan")
+    
     reset("file1")
     sampleFile("www/dataTemplate.xlsx")
     filename("Example Data")
@@ -384,6 +385,15 @@ server <- function(input, output, session) {
   })
   
   output$planContent <- renderUI({
+    
+    if (dataLoaded()) {
+      createPlan <- actionButton("createPlan", i18n()$t("Create Plan"), 
+                                 class = "btn-primary")
+    } else {
+      createPlan <- disabled(actionButton("createPlan", i18n()$t("Create Plan"), 
+                                          class = "btn-primary"))
+    }
+    
     tagList(
       sidebarPanel(
         tags$div(HTML(paste(tags$span(i18n()$t("Data:"), style = "font-weight: bold;"), 
@@ -402,8 +412,8 @@ server <- function(input, output, session) {
                  HTML(paste(tags$small(
                    paste("e.g. ", format(Sys.time(), format = "%F %R")))))),
         
-        disabled(actionButton("createPlan", i18n()$t("Create Plan"), 
-                              class = "btn-primary"))
+        createPlan
+        
       ),
       mainPanel(
         conditionalPanel(condition = "!output.dataLoaded",
@@ -431,7 +441,7 @@ server <- function(input, output, session) {
       )
     )
   })
-  
+
   output$settingsContent <- renderUI({
     tagList(
       sidebarPanel(
