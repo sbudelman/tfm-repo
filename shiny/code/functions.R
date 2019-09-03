@@ -785,15 +785,18 @@ Grasp <- function (data, cfg, UpdateProgress = NULL) {
     }
     
     iter <- iter + 1
+    
     # If we were passed a progress update function, call it
     if (is.function(UpdateProgress)) {
+      
       text <- paste0("Best solution: ", globalBest$objective)
-      now <- as.double(Sys.time(), units="secs")
-      value <- max(iter/cfg$maxIter, 
-                   now/as.double(time1 + cfg$maxTime, units="secs"))
-      # Update value gets up to 0.9. Remaining 0.1 corresponds to 
+      
+      elapsed <- difftime(Sys.time(), time1, units="secs")
+      value <- max(iter/cfg$maxIter, elapsed/cfg$maxTime)
+      
+      # Update value gets up to 0.95. Remaining 0.1 corresponds to 
       # visualization computations
-      UpdateProgress(value = 0.9*value, detail = text)
+      UpdateProgress(value = 0.98*value, detail = text)
     }
   }
 

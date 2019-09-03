@@ -151,19 +151,20 @@ server <- function(input, output, session) {
     # Create a Progress object
     progress <- shiny::Progress$new()
     progress$set(message = "Computing schedule \n", value = 0)
+    
     # Close the progress when this reactive exits (even if there's an error)
     on.exit(progress$close())
     
     # Create a callback function to update progress.
     UpdateProgress <- function(value, detail = NULL) {
-      progress$inc(amount = value, detail = detail)
+      progress$set(value, detail)
     }
     
     # Solve problem, and pass in the updateProgress function so
     # that it can update the progress indicator.
     solution <- Grasp(data, config, UpdateProgress)
     
-    UpdateProgress(0.9, "Generating Gantt")
+    UpdateProgress(0.98, "Generating Gantt")
     
     # View Schedules
     paths(solution$criticalTree$path)
