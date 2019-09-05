@@ -202,8 +202,12 @@ server <- function(input, output, session) {
     
     # Download schedule button
     output$dlSchedule <- downloadHandler(
-      filename = function () {"Schedule.xlsx"},
-      content = function(file) {write_xlsx(data, path = file)}
+      filename = function () {
+        paste("Schedule_",Sys.Date(),".xlsx", sep="")
+      },
+      content = function(file) {
+        write_xlsx(schedule, path = file)
+      }
     )
     
     # Show download schedule button
