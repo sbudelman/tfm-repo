@@ -274,7 +274,7 @@ server <- function(input, output, session) {
   # Settings tab ===========================
   
   defaultSettings <- tagList(
-      sliderInput("maxTime", "Max search time (secs):", 30, 300, 10),
+      sliderInput("maxTime", "Max search time (secs):", 10, 300, 10),
       
       numericInput("maxIter", "Global max iteration:",
                    value = 100, min = 1, max = 10000),
@@ -313,7 +313,7 @@ server <- function(input, output, session) {
     if (!is.null(input$maxTime)) {
       return(input$maxTime)
     }
-    return(30)
+    return(10)
   })
   
   lsMaxIter <- reactive({
@@ -367,6 +367,9 @@ server <- function(input, output, session) {
            ),
            mainPanel(
              conditionalPanel(condition = "!output.dataLoaded",
+                              div(class="alert alert-info",
+                                  HTML(paste("<p>To just run an example click on <strong>Load Sample</strong>",
+                                             "button on the left and then <strong>Setup Plan</strong></p>"))),
                               withTags(
                                 div(class ="panel panel-default",
                                     ol(class="inst-list",
@@ -431,17 +434,21 @@ server <- function(input, output, session) {
                            )
                          )),
         conditionalPanel(condition = "output.dataLoaded",
+                         conditionalPanel("!output.scheduleReady",
+                                          div(class="alert alert-info",
+                                              HTML(paste("<p>Click on <strong>Create Plan</strong> to get your schedule</p>")))),
                          conditionalPanel("output.scheduleReady",
-                                          downloadButton("dlSchedule", i18n()$t("Download Schedule"), 
-                                                         class = "btn-success btn-sm",
-                                                         style = "float: right !important;")),
-                         tabsetPanel(
-                           tabPanel(i18n()$t("Summary"), uiOutput("summary")),
-                           tabPanel(i18n()$t("Gantt Jobs"), uiOutput("bottlenecksJ"),
-                                    timevisOutput("jobsVis")),
-                           tabPanel(i18n()$t("Gantt Machines"), uiOutput("bottlenecksM"),
-                                    timevisOutput("machinesVis")),
-                           tabPanel(i18n()$t("Schedule Table"), dataTableOutput("schedule")))
+                            downloadButton("dlSchedule", i18n()$t("Download Schedule"), 
+                                           class = "btn-success btn-sm",
+                                           style = "float: right !important;"),
+                           tabsetPanel(
+                             tabPanel(i18n()$t("Summary"), uiOutput("summary")),
+                             tabPanel(i18n()$t("Gantt Jobs"), uiOutput("bottlenecksJ"),
+                                      timevisOutput("jobsVis")),
+                             tabPanel(i18n()$t("Gantt Machines"), uiOutput("bottlenecksM"),
+                                      timevisOutput("machinesVis")),
+                             tabPanel(i18n()$t("Schedule Table"), dataTableOutput("schedule")))
+          )
         )
       )
     )
@@ -453,7 +460,36 @@ server <- function(input, output, session) {
         uiOutput("settings"),
         tags$hr(),
         actionButton("resetSettings", i18n()$t("Reset Settings"), 
-                     class = "btn-warning"))
+                     class = "btn-warning")),
+      mainPanel(
+        div(class="alert alert-info",
+            HTML(paste("<p>","You can always go back to default settings. Click on", "<strong>",
+            "Reset Settings","</strong>"," on the left panel","</p>"))),
+        div(class="panel panel-default ",
+            div(class="panel-body",
+              h4("Max search time"),
+              p("Maximum time in seconds the solver will spend looking for a schedule. The solver will stop
+                after either this time has passed or the global number of iterations reach its maximum, whatever
+                happens first. The best schedule found during so far would be returned. For large number of tasks 
+                (above 100s) longer times could improve greatly schedule quality."),
+              h4("Global max iteration"),
+              p("Limit on solver's total number of iterations. The solver will stop
+                after either hitting this number of iterations or reaching the maximum search time, whatever
+                happens first. The best schedule found during so far would be returned. For large number of tasks 
+                (above 100s) a greater number of iterations could improve greatly schedule quality."),
+              h4("Local search max iteration"),
+              p("Maximum number of iterations performed on every step of the solver. Default value works fine in most
+                cases and it rarely makes sense to change it (only perhaps for very large number of tasks, above 500)."),
+              h4("Quality Coefficient"),
+              p("Solver will discard all builded shcedules greater than the best one found so far times this quality
+                coefficient. A greater coefficient means a broader set of solutions may be explored, at expense of 
+                computation (and actual) time."),
+              h4("Partial local search frequency"),
+              p("Indicates the solver whether it should perform local search during schedule construction stage and
+                when. For instance, by checking 20% the solver will perform a local search after 20% of the tasks have
+                been scheduled, increasing chances of building better solutions."))
+        )
+      )
     )
   })
   
