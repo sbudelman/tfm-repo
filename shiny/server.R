@@ -469,21 +469,21 @@ server <- function(input, output, session) {
             div(class="panel-body",
               h4("Max search time"),
               p("Maximum time in seconds the solver will spend looking for a schedule. The solver will stop
-                after either this time has passed or the global number of iterations reach its maximum, whatever
-                happens first. The best schedule found during so far would be returned. For large number of tasks 
-                (above 100s) longer times could improve greatly schedule quality."),
+                after either this time has passed or the global number of iterations reaches its maximum, whatever
+                happens first. The best schedule found so far would be returned. For large number of tasks 
+                (above 100s) longer times could improve greatly the schedule quality."),
               h4("Global max iteration"),
               p("Limit on solver's total number of iterations. The solver will stop
                 after either hitting this number of iterations or reaching the maximum search time, whatever
-                happens first. The best schedule found during so far would be returned. For large number of tasks 
+                happens first. The best schedule found so far would be returned. For large number of tasks 
                 (above 100s) a greater number of iterations could improve greatly schedule quality."),
               h4("Local search max iteration"),
               p("Maximum number of iterations performed on every step of the solver. Default value works fine in most
-                cases and it rarely makes sense to change it (only perhaps for very large number of tasks, above 500)."),
+                cases and it rarely makes sense to change it (only perhaps for very large number of tasks, above 300)."),
               h4("Quality Coefficient"),
-              p("Solver will discard all builded shcedules greater than the best one found so far times this quality
-                coefficient. A greater coefficient means a broader set of solutions may be explored, at expense of 
-                computation (and actual) time."),
+              p("Solver will discard all builded schedules with an objective value greater than that of the best one found 
+                so far times this quality coefficient. A greater coefficient means a broader set of solutions may be explored, 
+                at expense of computation (and actual) time."),
               h4("Partial local search frequency"),
               p("Indicates the solver whether it should perform local search during schedule construction stage and
                 when. For instance, by checking 20% the solver will perform a local search after 20% of the tasks have
