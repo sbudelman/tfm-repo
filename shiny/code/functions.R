@@ -2428,7 +2428,7 @@ ScheduleToGantt <- function(schedule, startDate = as.POSIXlt(Sys.time()),
   #   longPath: array. Tasks on the longest path to be highlighted on the Gantt
   #     chart.
   # 
-  #   shifts: 
+  #   shifts: list. Shifts data (see data input on GRASP function)
   # 
   # Returns:
   #   List with:
@@ -2456,6 +2456,7 @@ ScheduleToGantt <- function(schedule, startDate = as.POSIXlt(Sys.time()),
   if(!is.null(shifts)) {
     shifted <- ShiftedTasks(startValues, shifts)
     startValues <- shifted$Tasks
+    shiftList <- shifted$Shifts
   }
   
   # Generate data frame for a Job-based timeline
@@ -2498,6 +2499,18 @@ ScheduleToGantt <- function(schedule, startDate = as.POSIXlt(Sys.time()),
     groups = machinesViewGroups
   )
   
+  if (!is.null(shiftList)) {
+    jobsVis <- jobsVis %>% addItems(data.frame(
+      "start" = shiftList[, 1],
+      "end" = shiftList[, 2],
+      "type" = "background"))
+    
+    machinesVis <- machinesVis %>% addItems(data.frame(
+      "start" = shiftList[, 1],
+      "end" = shiftList[, 2],
+      "type" = "background"))
+  }
+  
   schedule <- startValues %>% select(-"style") %>%
     mutate(`Task Starting Time` = format(`Task Starting Time`, format="%F %R"),
            `Task Ending Time` = format(`Task Ending Time`, format="%F %R"))
@@ -2514,7 +2527,7 @@ ScheduleToGantt <- function(schedule, startDate = as.POSIXlt(Sys.time()),
   
 }
 
-ShiftedTasks <- function(schedule, shifts){
+ShiftedTasks <- function(schedule, shifts, mode = "default") {
   # 
   # 
   # Args:
@@ -2529,17 +2542,19 @@ ShiftedTasks <- function(schedule, shifts){
   
   day <- as.Date(min(schedule$`Task Starting Time`))
   
-  shiftList <- ShiftBlocks(day, shifts)
+  mShifts <- shifts[[1]]$shifts
+  
+  shiftList <- ShiftBlocks(day, mShifts)
   
   shiftedTable <- schedule
   
   shiftIdx <- 1
   
-  while(any(shiftedTable$`Task Ending Time` > shiftList[shiftIdx,2])){
+  while (any(shiftedTable$`Task Ending Time` > shiftList[shiftIdx, 2])) {
     
-    if(nrow(shiftList) == shiftIdx){
+    if (nrow(shiftList) == shiftIdx) {
       
-      day <- as.Date(day) + 1
+      day <- as.Date(day) + 7
       shiftList <- rbind(shiftList, ShiftBlocks(day, shifts))
       
     }
@@ -2584,7 +2599,7 @@ ShiftedTasks <- function(schedule, shifts){
                               newEnd = as.POSIXct(shiftList[shiftIdx + 1, 1]) + 
                                 60 * `Task Runtime` - 
                                 difftime(newEnd, newStart),
-                              newStart = as.POSIXct(shiftList[shiftIdx+1, 1])
+                              newStart = as.POSIXct(shiftList[shiftIdx + 1, 1])
                             )
     )
     
@@ -2605,32 +2620,56 @@ ShiftedTasks <- function(schedule, shifts){
   
 }
 
-ShiftBlocks <- function (day, shifts) {
+ShiftBlocks <- function (day, mShifts) {
+  # Returns a matrix with starting and ending times of shifts for the next
+  # seven days, beginning at given day
+  # 
+  # Args:
+  #   day: str | Date. YYYY-mm-dd. Day from which the shift matrix needs to
+  #   start
+  # 
+  #   mShifts: matrix. Machine shifts (see data$shifts)
+  # 
+  # Returns:
+  #   Matrix. Col1 shift starting time, col2 shift ending time, including date.
+  
+  wday <- as.POSIXlt(day)$wday
+  
+  if (wday == 1) {
+    week <- 1:7
+  } else {
+    week <- c(wday:7, 1:(wday-1))
+  }
   
   shiftBlocks <- c()
   
-  for(row in 1:nrow(shifts)){
+  for(weekDay in week) {
     
-    if(shifts[row,1] > shifts[row,2]){
+    rows <- which(as.integer(mShifts[, 1]) == weekDay)
+    
+    for (row in rows) {
       
+      if (any(mShifts[row, ] == "NA")) {
+        break
+      }
+      
+      tmpDay <- day
+      
+      if (mShifts[row, 2] > mShifts[row, 3]) {
+        tmpDay <- as.Date(tmpDay) + 1
+      } 
+        
       shiftBlocks <- rbind(shiftBlocks, c(format(as.POSIXct(
-        paste0(day, ' ', shifts[row,1], ':00')), 
+        paste0(day, ' ', mShifts[row, 2], ':00')), 
         '%Y-%m-%d %H:%M:%S'),
         format(as.POSIXct(
-          paste0(as.Date(day)+1, ' ', shifts[row,2], ':00')), 
+          paste0(tmpDay, ' ', mShifts[row, 3], ':00')), 
           '%Y-%m-%d %H:%M:%S')
       ))
       
-    } else {
-      
-      shiftBlocks <- rbind(shiftBlocks, c(format(as.POSIXct(
-        paste0(day, ' ', shifts[row,1], ':00')), '%Y-%m-%d %H:%M:%S'),
-        format(as.POSIXct(
-          paste0(day, ' ', shifts[row,2], ':00')), 
-          '%Y-%m-%d %H:%M:%S')
-      ))
     }
     
+    day <- as.Date(day) + 1
     
   }
   
