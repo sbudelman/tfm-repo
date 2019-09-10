@@ -2219,6 +2219,8 @@ HeadsToSchedule <- function (heads, data) {
   colnames(df) <- c("Task ID",	"Job ID",	"Machine ID",	"Task Name",	
                     "Task Starting Time", "Task Runtime")
   
+  
+  
   # Remove dummy tasks
   df <- df %>% filter(!is.na(`Task ID`))
   
@@ -2269,6 +2271,26 @@ NodePoints <- function (node, n, m, mode = "jsp") {
   
   points <- c(nodeX, nodeY)
   return(points)
+}
+
+PathsDecoded <- function (paths, rawTasks) {
+  # Replace internal id's of tasks on critical paths with actual ids from data
+  # input
+  # 
+  # Args:
+  #   paths: list. CriticalTree$path from GRASP output.
+  # 
+  #   rawTasks: dataframe See GRASP data$rawtasks input.
+  # 
+  # Returns:
+  #   Same paths list but with ids updated
+  
+  for (i in 1:length(paths)) {
+    path <- rawTasks$`Task ID`[paths[[i]]]
+    paths[[i]] <- path[!is.na(path)]
+  }
+  
+  return(paths)
 }
 
 PlotEdges <- function (edges, data, paths = NULL, objective = NULL, 
@@ -2448,80 +2470,38 @@ ScheduleToGantt <- function(schedule, startDate = as.POSIXlt(Sys.time()),
   # Add bottleneck visuals
   startValues <- startValues %>% mutate(style = "")
   if(!is.null(longPath)) {
-    startValues$style[longPath[longPath <= nrow(startValues)]] <- 
+    startValues$style[which(startValues$`Task ID` %in% longPath)] <- 
       "background-color: #e28e8c; border-color: #a94442"
   }
   
   # Implement shifts if any
+  shiftList <- NULL
   if(!is.null(shifts)) {
     shifted <- ShiftedTasks(startValues, shifts)
     startValues <- shifted$Tasks
     shiftList <- shifted$Shifts
   }
   
-  # Generate data frame for a Job-based timeline
-  jobsView <- data.frame(
-    # "id" = startValues$`Task ID`,
-    "start" = startValues$`Task Starting Time`,
-    "end" = startValues$`Task Ending Time`,
-    "content" = startValues$`Task Name`,
-    "group" = startValues$`Job ID`,
-    "style" = startValues$style
-  )
+  # Produce timelines
+  jobsTL <- GenerateTimeline(startValues, startValues$style, 
+                                "Job ID", shiftList)
   
-  jobsViewGroups <- data.frame(
-    id = unique(startValues$`Job ID`),
-    content = sort(unique(startValues$`Job ID`))
-  )
+  machinesTL <- GenerateTimeline(startValues, startValues$style, 
+                             "Machine ID", shiftList)
   
-  jobsVis <- timevis(
-    jobsView,
-    groups = jobsViewGroups
-  )
-  
-  # Generate data frame for a Machine-based timeline
-  machinesView <- data.frame(
-    # "id" = startValues$`Task ID`,
-    "start" = startValues$`Task Starting Time`,
-    "end" = startValues$`Task Ending Time`,
-    "content" = startValues$`Task Name`,
-    "group" = startValues$`Machine ID`,
-    "style" = startValues$style
-  )
-  
-  machinesViewGroups <- data.frame(
-    id = sort(unique(startValues$`Machine ID`)),
-    content = sort(unique(startValues$`Machine ID`))
-  )
-  
-  machinesVis <- timevis(
-    machinesView,
-    groups = machinesViewGroups
-  )
-  
-  if (!is.null(shiftList)) {
-    jobsVis <- jobsVis %>% addItems(data.frame(
-      "start" = shiftList[, 1],
-      "end" = shiftList[, 2],
-      "type" = "background"))
-    
-    machinesVis <- machinesVis %>% addItems(data.frame(
-      "start" = shiftList[, 1],
-      "end" = shiftList[, 2],
-      "type" = "background"))
-  }
-  
+  # Output schedule
   schedule <- startValues %>% select(-"style") %>%
     mutate(`Task Starting Time` = format(`Task Starting Time`, format="%F %R"),
            `Task Ending Time` = format(`Task Ending Time`, format="%F %R"))
   
-  results <- list("jobsView" = jobsView,
-                  "jobsViewGroups" = jobsViewGroups, 
-                  "jobsVis" = jobsVis,
-                  "machinesView" = machinesView,
-                  "machinesViewGroups" = machinesViewGroups,
-                  "machinesVis" = machinesVis,
-                  "schedule" = schedule)
+  results <- list("jobsView" = jobsTL$view,
+                  "jobsViewGroups" = jobsTL$viewGroups, 
+                  "jobsVis" = jobsTL$vis,
+                  "machinesView" = machinesTL$view,
+                  "machinesViewGroups" = machinesTL$viewGroups,
+                  "machinesVis" = machinesTL$vis,
+                  "schedule" = schedule,
+                  "shiftList" = shiftList)
   
   return(results)
   
@@ -2675,4 +2655,50 @@ ShiftBlocks <- function (day, mShifts) {
   
   return(shiftBlocks)
   
+}
+
+GenerateTimeline <- function (schedule, styles, group, shiftList = NULL) {
+  # Creates a timevis timeline
+  # 
+  # Args:
+  #   schedule: dataframe. See HeadsToSchedule output.
+  # 
+  #   styles: array. CSS style attribute for each element representing a task 
+  #     on the schedule
+  # 
+  #   group: string. 'Job ID' or'Machine ID'
+  # 
+  #   shiftList: matrix. See Shifted Tasks shifts output.
+  # 
+  # Returns:
+  #   List with $view dataframe, $viewGroups dataframe and $vis Gantt chart.
+
+  # Generate data frame for a Job-based timeline
+  view <- data.frame(
+    "taskId" = schedule$`Task ID`,
+    "start" = schedule$`Task Starting Time`,
+    "end" = schedule$`Task Ending Time`,
+    "content" = schedule$`Task Name`,
+    "group" = unname(schedule[group]),
+    "style" = styles
+  )
+  
+  viewGroups <- data.frame(
+    id = unique(unname(schedule[group])),
+    content = unique(unname(schedule[group]))
+  )
+  
+  vis <- timevis(view, groups = viewGroups)
+  
+  if (!is.null(shiftList)) {
+    vis <- vis %>% addItems(data.frame(
+      "start" = shiftList[, 1],
+      "end" = shiftList[, 2],
+      "type" = "background"))
+  }
+  
+  output <- list("view" =  view, "viewGroups" = viewGroups,
+                     "vis" = vis)
+  
+  return(output)
 }

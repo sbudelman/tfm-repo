@@ -98,12 +98,12 @@ server <- function(input, output, session) {
   # initialize reactive values
   schReady <- reactiveVal("false")
   machinesView <- reactiveVal()
-  machinesViewGroups<-reactiveVal()
   machinesVis <- reactiveVal()
   jobsView <- reactiveVal()
-  jobsViewGroups <- reactiveVal()
   jobsVis <- reactiveVal()
   paths <- reactiveVal()
+  shiftList <- reactiveVal()
+  schedule <- reactiveVal()
   
   # Before data is uploaded
   observeEvent(input$jump2data, {
@@ -167,10 +167,10 @@ server <- function(input, output, session) {
     UpdateProgress(0.98, "Generating Gantt")
     
     # View Schedules
-    paths(solution$criticalTree$path)
+    paths(PathsDecoded(solution$criticalTree$path, data$rawTasks))
     schedule <- HeadsToSchedule(solution$heads, data)
     vis <- ScheduleToGantt(schedule, startDate = startDTtry, 
-                           longPath = paths()[[1]])
+                           longPath = paths()[[1]], shifts = data$shifts)
     
     UpdateProgress(1, "Done!")
     
@@ -190,11 +190,11 @@ server <- function(input, output, session) {
     
     # Update reactive values for Gantt charts
     machinesView(vis$machinesView)
-    machinesViewGroups(vis$machinesViewGroups)
     machinesVis(vis$machinesVis)
     jobsView(vis$jobsView)
-    jobsViewGroups(vis$jobsViewGroups)
     jobsVis(vis$jobsVis)
+    shiftList(vis$shiftList)
+    schedule(vis$schedule)
     
     # Summary tab content
     output$summary <- RenderSummary(config, data, solution, paths(), vis, 
@@ -243,12 +243,15 @@ server <- function(input, output, session) {
     
     if (bottleneckMachine() != 0) {
       longPath <- paths()[[bottleneckMachine()]]
-      newMachinesView$style[longPath[longPath <= nrow(machinesView())]] <- 
+      
+      newMachinesView$style[which(newMachinesView$taskId %in% longPath)] <- 
         "background-color: #e28e8c; border-color: #a94442"
     }
     
     machinesView(newMachinesView)
-    machinesVis(timevis(machinesView(), machinesViewGroups()))
+    timeline <- GenerateTimeline(schedule(), machinesView()$style, "Machine ID", 
+                                 shiftList())
+    machinesVis(timeline$vis)
         
   })
   
@@ -259,12 +262,15 @@ server <- function(input, output, session) {
     
     if (bottleneckJob() != 0) {
       longPath <- paths()[[bottleneckJob()]]
-      newJobsView$style[longPath[longPath <= nrow(jobsView())]] <- 
+      
+      newJobsView$style[which(newJobsView$taskId %in% longPath)] <- 
         "background-color: #e28e8c; border-color: #a94442"
     }
     
     jobsView(newJobsView)
-    jobsVis(timevis(jobsView(), jobsViewGroups()))
+    timeline <- GenerateTimeline(schedule(), jobsView()$style, "Job ID", 
+                                 shiftList())
+    jobsVis(timeline$vis)
     
   })
   
