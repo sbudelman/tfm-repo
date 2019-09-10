@@ -43,6 +43,7 @@ DataFromExcel <- function (file) {
   #     $m int. total number of machines
   #     $ti array. task process time vector
   #     $mi array. task machine
+  #     $shifts matrix. 
   #     $rawTasks dataframe. All data related to tasks filled on the excel 
   #       sheet plus internal ids for job, machine and task and any dummy tasks
   #       included (a dummy task with process time of 0 is inserted for every 
@@ -105,10 +106,14 @@ DataFromExcel <- function (file) {
   # Order by task internal id
   tasks <- tasks %>% arrange(taskIntId)
   
+  # Extract shifts' information
+  shifts <- ExtractShifts(df$machines[, 3:9])
+  
   output <- list("n" = n, "m" = m, "ti" = tasks$`Task Runtime`, 
                  "mi" = tasks$machineIntId,
                  "dueDates" = df$jobs$`Job Due Date`,
                  "weights" = df$jobs$`Job Priority`,
+                 "shifts" = shifts,
                  "rawTasks" = tasks)
   
   return(output)
@@ -141,3 +146,56 @@ ReadExcel <- function (file) {
   return(output)
   
 }
+
+ExtractShifts <- function (shiftData) {
+  # Convert shift data defined in the excel template into an appropriate format
+  # to be used by the solver
+  # 
+  # Args: 
+  #   shiftData: dataframe. Columns monday thru sunday, one row per machine,
+  #     indicating its working hours in format HH:MM - HH:MM; HH:MM - HH:MM ...
+  # 
+  # Returns:
+  #   List array, with one shift matrix per machine:
+  #     e.g.: shiftsMachine2 <- output[[2]]$shifts
+  
+  m <- nrow(shiftData)
+  output <- array(list(), m)
+  
+  for (i in 1:m) {
+    shifts <- matrix(NA, ncol = 3)
+    
+    # Monday := 1, Sunday := 7
+    for (j in 1:7) {
+      dayShifts <- cbind(j, ProcessShiftCell(shiftData[i, j]))
+      shifts <- rbind(shifts, dayShifts)
+    }
+    
+    output[[i]]$shifts <- shifts[2:nrow(shifts), ]
+  }
+  
+  return(output)
+}
+
+ProcessShiftCell <- function (strShift) {
+  # Preprocesses a cell with shift info.
+  # 
+  # Args:
+  #   strShift: string. Cell with shift info in format HH:MM - HH:MM; HH:MM - 
+  #   HH:MM ...
+  # 
+  # Returns:
+  #   Matrix. A row per shift, col1 start time, col2 finish time.
+  
+  # Remove spaces then get individual shifts if more than one
+  strArray <- gsub(" ","", strShift) %>% strsplit(";") %>% unlist(.)
+  
+  # Populate shift matrix
+  matrix <- matrix(NA, nrow = length(strArray), ncol = 2)
+  for (i in 1:length(strArray)) {
+    matrix[i, ] <- unlist(strsplit(strArray[i], "-"))
+  }
+  
+  return(matrix)
+}
+
