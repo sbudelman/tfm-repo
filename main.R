@@ -43,7 +43,7 @@ source(file = "shiny/code/functions.R") # Load functions
 source(file = "shiny/code/loadData.R") # Load functions
 
 # Get data from file
-file <- "./data/data1.xlsx"
+file <- "./shiny/www/dataTemplate.xlsx"
 data <- DataFromExcel(file)
 
 # Adjust solver parameters. See Grasp function's documentation on
@@ -70,12 +70,6 @@ PlotEdges(solution$edges, data, paths, objective = solution$objective,
 
 # View Schedules
 schedule <- HeadsToSchedule(solution$heads, data)
-vis <- ScheduleToGantt(schedule, longPath = paths[[1]])
+vis <- ScheduleToGantt(schedule, shifts = data$shifts)
 vis$machinesVis
 vis$jobsVis
-  
-
-
-
-
-
