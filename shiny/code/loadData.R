@@ -66,7 +66,7 @@ DataFromExcel <- function (file) {
   
   # Compute task internal id
   for (job in 1:n) {
-    jobTasks <- tasks %>% filter(jobIntId == job) %>% 
+    jobTasks <- tasks %>% dplyr::filter(jobIntId == job) %>% 
       select(`Predecessor Task ID`, `Task ID`, machineIntId)
     
     machines <- rep(0, m)
@@ -98,7 +98,7 @@ DataFromExcel <- function (file) {
       taskIdx <- which(tasks$`Task ID` == taskId)
       tasks$taskIntId[taskIdx] <- (job - 1)*m + i 
       
-      jobTasks <- jobTasks %>% filter(`Task ID` != taskId)
+      jobTasks <- jobTasks %>% dplyr::filter(`Task ID` != taskId)
     }
     
   }
@@ -134,11 +134,12 @@ ReadExcel <- function (file) {
 
   
   machines <- read_xlsx(file, sheet = "machines") %>% 
-    filter(!is.na(`Machine ID`))
+    dplyr::filter(!is.na(`Machine ID`))
   
-  jobs <- read_xlsx(file, sheet = "jobs") %>% filter(!is.na(`Job ID`))
+  jobs <- read_xlsx(file, sheet = "jobs") %>% dplyr::filter(!is.na(`Job ID`))
   
-  tasks <- read_xlsx(file, sheet = "tasks") %>% filter(!is.na(`Task ID`))
+  tasks <- read_xlsx(file, sheet = "tasks") %>% 
+    dplyr::filter(!is.na(`Task ID`))
   
   output <- list("machines" = machines, "jobs" = jobs, 
        "tasks" = tasks)

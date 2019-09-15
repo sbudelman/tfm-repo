@@ -13,7 +13,7 @@ OutBottlenecks <- function(name, choices) {
 RenderBottlenecks <- function (mode, paths, schedule, n) {
   if (mode == "jsp") {
     # Remove sink (last) node from longest path
-    tasks <- paths[[1]][1:(length(paths[[1]]) - 1)]
+    tasks <- which(schedule$`Task ID` %in% paths[[1]])
     bottlenecks <- paste(
       "<tr>
       <td>Global</td>
@@ -22,7 +22,8 @@ RenderBottlenecks <- function (mode, paths, schedule, n) {
   } else if (mode == "jsptwt") {
     taskNames <- rep(NA, n)
     for (i in 1:n) {
-      taskNames[i] <- paste(schedule$`Task Name`[paths[[i]]], collapse=" &#8594; ")
+      tasks <- which(schedule$`Task ID` %in% paths[[i]])
+      taskNames[i] <- paste(schedule$`Task Name`[tasks], collapse=" &#8594; ")
     }
     bottlenecks <- paste(
       "<tr>

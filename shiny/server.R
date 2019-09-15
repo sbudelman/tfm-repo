@@ -147,6 +147,7 @@ server <- function(input, output, session) {
     config$lsMaxIter <- lsMaxIter()
     config$plsFreq <- plsFreqs()
     config$benchmark <- FALSE
+    config$shiftMode <- shiftMode()
     
     # Create a Progress object
     progress <- shiny::Progress$new()
@@ -169,8 +170,10 @@ server <- function(input, output, session) {
     # View Schedules
     paths(PathsDecoded(solution$criticalTree$path, data$rawTasks))
     schedule <- HeadsToSchedule(solution$heads, data)
-    vis <- ScheduleToGantt(schedule, startDate = startDTtry, 
-                           longPath = paths()[[1]], shifts = data$shifts)
+    vis <- ScheduleToGantt(schedule, data = data, 
+                           predecesors = solution$predecesors, 
+                           toposort = solution$topoSort, 
+                           shiftMode = config$shiftMode)
     
     UpdateProgress(1, "Done!")
     
@@ -280,6 +283,10 @@ server <- function(input, output, session) {
   # Settings tab ===========================
   
   defaultSettings <- tagList(
+    selectInput("shiftMode", "Shift mode:", 
+                choices = list("Push" = "push", "Split" = "split"), 
+                selected = "push"),
+    
       sliderInput("maxTime", "Max search time (secs):", 10, 300, 10),
       
       numericInput("maxIter", "Global max iteration:",
@@ -301,6 +308,13 @@ server <- function(input, output, session) {
   output$settings <- renderUI(defaultSettings)
   
   # Reactive inputs
+  shiftMode <- reactive({
+    if (!is.null(input$shiftMode)) {
+      return(input$shiftMode)
+    }
+    return("push")
+  })
+  
   qualCoef <- reactive({
     if (!is.null(input$qualCoef)) {
       return(input$qualCoef)
@@ -473,6 +487,12 @@ server <- function(input, output, session) {
             "Reset Settings","</strong>"," on the left panel","</p>"))),
         div(class="panel panel-default ",
             div(class="panel-body",
+              h4("Shift mode"),
+              p("Defines strategy to handle shifts:"),
+              tags$ul(
+                tags$li("Push: tasks which cannot be completed within a shift are pushed to the next."),
+                tags$li("Split: tasks are interrupted at the end of the shift and resumed on the next.")
+              ),
               h4("Max search time"),
               p("Maximum time in seconds the solver will spend looking for a schedule. The solver will stop
                 after either this time has passed or the global number of iterations reaches its maximum, whatever

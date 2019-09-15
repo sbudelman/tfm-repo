@@ -2222,7 +2222,7 @@ HeadsToSchedule <- function (heads, data) {
   
   
   # Remove dummy tasks
-  df <- df %>% filter(!is.na(`Task ID`))
+  df <- df %>% dplyr::filter(!is.na(`Task ID`))
   
   return(df)
 }
@@ -2437,8 +2437,9 @@ PlotEdges <- function (edges, data, paths = NULL, objective = NULL,
   }
 }
 
-ScheduleToGantt <- function(schedule, startDate = as.POSIXlt(Sys.time()), 
-                              longPath = NULL, shifts = NULL) {
+ScheduleToGantt <- function(schedule, startTime = as.POSIXlt(Sys.time()), 
+                            longPath = NULL, data = NULL, predecesors = NULL,
+                            toposort = NULL, shiftMode = "push") {
   # Uses timevis library to render schedule created by HeadsToSchedule as Gantt
   # chart. It can be visualized by job or by machine.
   # 
@@ -2460,7 +2461,7 @@ ScheduleToGantt <- function(schedule, startDate = as.POSIXlt(Sys.time()),
   # Change start time format, Add end time
   startValues <- schedule %>%
     mutate(`Task Starting Time`= 
-             startDate + as.difftime(tim = as.numeric(`Task Starting Time`), 
+             startTime + as.difftime(tim = as.numeric(`Task Starting Time`), 
                                      format = "%M", units = "mins"),
            "Task Ending Time"=
              `Task Starting Time` + as.difftime(
@@ -2476,8 +2477,9 @@ ScheduleToGantt <- function(schedule, startDate = as.POSIXlt(Sys.time()),
   
   # Implement shifts if any
   shiftList <- NULL
-  if(!is.null(shifts)) {
-    shifted <- ShiftedTasks(startValues, shifts)
+  if(!is.null(data)) {
+    shifted <- ShiftedTasks(startValues, data, predecesors = predecesors,
+                            toposort = toposort, shiftMode = shiftMode)
     startValues <- shifted$Tasks
     shiftList <- shifted$Shifts
   }
@@ -2507,7 +2509,8 @@ ScheduleToGantt <- function(schedule, startDate = as.POSIXlt(Sys.time()),
   
 }
 
-ShiftedTasks <- function(schedule, shifts, mode = "default") {
+ShiftedTasks <- function(schedule, data, predecesors = NULL,
+                         shiftMode = "push", toposort = NULL) {
   # 
   # 
   # Args:
@@ -2516,79 +2519,49 @@ ShiftedTasks <- function(schedule, shifts, mode = "default") {
   # Returns:
   # 
   
-  schedule <- schedule %>%
+  shiftedTable <- schedule %>%
     mutate(`Task Starting Time` = as.POSIXct(`Task Starting Time`),
            `Task Ending Time` = as.POSIXct(`Task Ending Time`))
   
-  day <- as.Date(min(schedule$`Task Starting Time`))
+  startTime <- min(schedule$`Task Starting Time`)
+  day <- as.Date(startTime)
   
-  mShifts <- shifts[[1]]$shifts
+  mShifts <- data$shifts[[1]]$shifts
   
-  shiftList <- ShiftBlocks(day, mShifts)
+  shiftList <- GetShiftList(day, startTime, mShifts)
   
-  shiftedTable <- schedule
+  if (startTime < shiftList[1, 1]) {
+    timeToStart <- difftime(shiftList[1,1], startTime)
+    
+    shiftedTable <- shiftedTable %>%
+      mutate(`Task Starting Time` = `Task Starting Time` + timeToStart,
+             `Task Ending Time` = `Task Ending Time` + timeToStart)
+  }
   
   shiftIdx <- 1
   
+  # TODO: add exit condition in case a task last longer than a shift
   while (any(shiftedTable$`Task Ending Time` > shiftList[shiftIdx, 2])) {
     
     if (nrow(shiftList) == shiftIdx) {
       
       day <- as.Date(day) + 7
-      shiftList <- rbind(shiftList, ShiftBlocks(day, shifts))
+      shiftList <- rbind(shiftList, GetShiftList(day, startTime, shifts))
       
     }
     
-    
-    shiftedTable <- shiftedTable %>% mutate(
+    if (shiftMode == "split") {
+      shiftedTable <- ShiftSplit(shiftedTable, shiftIdx, shiftList)
       
-      newStart = case_when(
-        
-        `Task Ending Time` < shiftList[shiftIdx, 2] ~ `Task Starting Time`,
-        
-        `Task Ending Time` > shiftList[shiftIdx, 2] &
-          `Task Starting Time` > shiftList[shiftIdx, 2] ~
-          `Task Starting Time` + difftime(shiftList[shiftIdx + 1, 1], 
-                                          shiftList[shiftIdx, 2]),
-        
-        `Task Ending Time` > shiftList[shiftIdx, 2] &
-          `Task Starting Time` < shiftList[shiftIdx, 2] ~
-          `Task Starting Time`
-      ),
-      
-      newEnd = case_when(
-        
-        `Task Ending Time` > shiftList[shiftIdx, 2] &
-          `Task Starting Time` < shiftList[shiftIdx, 2] ~ 
-          as.POSIXct(shiftList[shiftIdx, 2]),
-        
-        TRUE ~ newStart + 60 * `Task Runtime`),
-      
-      split = case_when(
-        
-        `Task Ending Time` > shiftList[shiftIdx, 2] &
-          `Task Starting Time` < shiftList[shiftIdx, 2] ~ TRUE,
-        
-        TRUE ~ FALSE)
-      
-    )
-    
-    shiftedTable <- rbind(shiftedTable,
-                          shiftedTable %>% filter(split == TRUE) %>%
-                            mutate(split = FALSE,
-                              newEnd = as.POSIXct(shiftList[shiftIdx + 1, 1]) + 
-                                60 * `Task Runtime` - 
-                                difftime(newEnd, newStart),
-                              newStart = as.POSIXct(shiftList[shiftIdx + 1, 1])
-                            )
-    )
-    
-    shiftedTable <- shiftedTable %>% 
-      mutate(`Task Starting Time` = newStart,
-             `Task Ending Time` = newEnd,
-             `Task Runtime` = as.numeric(difftime(newEnd, newStart, 
-                                                  units = 'mins'))) %>%
-      select(-newStart, -newEnd, -split)
+    } else if (shiftMode == "push") {
+      rawPredecesors <- rep(0, data$n*data$m)
+      for (i in 1:length(rawPredecesors)) {
+        rawPredecesors[i] <- ifelse(predecesors[i] != 0, 
+                                    data$rawTasks$`Task ID`[predecesors[i]], 0)
+      }
+      shiftedTable <- ShiftPush(shiftedTable, shiftIdx, shiftList, 
+                                rawPredecesors, toposort)
+    }
     
     shiftIdx <- shiftIdx + 1
     
@@ -2600,13 +2573,12 @@ ShiftedTasks <- function(schedule, shifts, mode = "default") {
   
 }
 
-ShiftBlocks <- function (day, mShifts) {
+GetShiftList <- function (day, startTime, mShifts) {
   # Returns a matrix with starting and ending times of shifts for the next
   # seven days, beginning at given day
   # 
   # Args:
-  #   day: str | Date. YYYY-mm-dd. Day from which the shift matrix needs to
-  #   start
+  #   startTime: POSIXct. Start time of the plan.
   # 
   #   mShifts: matrix. Machine shifts (see data$shifts)
   # 
@@ -2621,7 +2593,7 @@ ShiftBlocks <- function (day, mShifts) {
     week <- c(wday:7, 1:(wday-1))
   }
   
-  shiftBlocks <- c()
+  shiftList <- c()
   
   for(weekDay in week) {
     
@@ -2639,7 +2611,7 @@ ShiftBlocks <- function (day, mShifts) {
         tmpDay <- as.Date(tmpDay) + 1
       } 
         
-      shiftBlocks <- rbind(shiftBlocks, c(format(as.POSIXct(
+      shiftList <- rbind(shiftList, c(format(as.POSIXct(
         paste0(day, ' ', mShifts[row, 2], ':00')), 
         '%Y-%m-%d %H:%M:%S'),
         format(as.POSIXct(
@@ -2653,8 +2625,114 @@ ShiftBlocks <- function (day, mShifts) {
     
   }
   
-  return(shiftBlocks)
+  # Remove shifts happening before startTime
+  shiftList <- shiftList[which(shiftList[, 2] > startTime), ]
   
+  return(shiftList)
+  
+}
+
+ShiftSplit <- function(shiftedTable, shiftIdx, shiftList) {
+  # Implements split mode by splitting tasks to fit inside shifts
+  # 
+  # Args:
+  # 
+  # Returns:
+  # 
+  
+  shiftedTable <- shiftedTable %>% mutate(
+    
+    newStart = case_when(
+      
+      `Task Ending Time` <= shiftList[shiftIdx, 2] ~ `Task Starting Time`,
+      
+      `Task Ending Time` > shiftList[shiftIdx, 2] &
+        `Task Starting Time` >= shiftList[shiftIdx, 2] ~
+        `Task Starting Time` + difftime(shiftList[shiftIdx + 1, 1], 
+                                        shiftList[shiftIdx, 2]),
+      
+      `Task Ending Time` > shiftList[shiftIdx, 2] &
+        `Task Starting Time` < shiftList[shiftIdx, 2] ~
+        `Task Starting Time`
+    ),
+    
+    newEnd = case_when(
+      
+      `Task Ending Time` > shiftList[shiftIdx, 2] &
+        `Task Starting Time` < shiftList[shiftIdx, 2] ~ 
+        as.POSIXct(shiftList[shiftIdx, 2]),
+      
+      TRUE ~ newStart + 60 * `Task Runtime`),
+    
+    split = case_when(
+      
+      `Task Ending Time` > shiftList[shiftIdx, 2] &
+        `Task Starting Time` < shiftList[shiftIdx, 2] ~ TRUE,
+      
+      TRUE ~ FALSE)
+    
+  )
+  
+  shiftedTable <- rbind(shiftedTable,
+                        shiftedTable %>% dplyr::filter(split == TRUE) %>%
+                          mutate(split = FALSE,
+                                 newEnd = as.POSIXct(shiftList[shiftIdx + 1, 1]) + 
+                                   60 * `Task Runtime` - 
+                                   difftime(newEnd, newStart),
+                                 newStart = as.POSIXct(shiftList[shiftIdx + 1, 1])
+                          )
+  )
+  
+  shiftedTable <- shiftedTable %>% 
+    mutate(`Task Starting Time` = newStart,
+           `Task Ending Time` = newEnd,
+           `Task Runtime` = as.numeric(difftime(newEnd, newStart, 
+                                                units = 'mins'))) %>%
+    select(-newStart, -newEnd, -split)
+  
+  return(shiftedTable)
+}
+
+ ShiftPush <- function(shiftedTable, shiftIdx, shiftList, predecesors, 
+                      toposort) {
+  # Implements split mode by pushing tasks to fit inside shifts
+  # 
+  # Args:
+  # 
+  # Returns:
+  # 
+   
+  shiftedTable <- shiftedTable %>%
+     mutate(
+       `Task Starting Time` = case_when(
+         
+         `Task Ending Time` <= shiftList[shiftIdx, 2] ~ `Task Starting Time`,
+         `Task Ending Time` > shiftList[shiftIdx, 2] ~ as.POSIXct(shiftList[shiftIdx + 1, 1])
+       ),
+       
+       `Task Ending Time`  = `Task Starting Time` + 60 * `Task Runtime`
+     )
+  
+  # Remove source and sink nodes 
+  topo <- toposort[2:(nrow(toposort)-1), 1]
+  
+  for (i in topo) {
+    if (predecesors[i] == "0") {
+      predEnd <- as.POSIXct(shiftedTable$`Task Starting Time`[i])
+    } else {
+      predIdx <- which(shiftedTable$`Task ID` == predecesors[i])
+      predEnd <- as.POSIXct(shiftedTable$`Task Ending Time`[predIdx])
+    }
+    
+    shiftedTable$`Task Starting Time`[i] <- 
+      max(shiftedTable$`Task Starting Time`[i], predEnd)
+    
+    shiftedTable$`Task Ending Time`[i] <- 
+      shiftedTable$`Task Starting Time`[i] + 
+      60*shiftedTable$`Task Runtime`[i]
+  }
+  
+  return(shiftedTable)
 }
 
 GenerateTimeline <- function (schedule, styles, group, shiftList = NULL) {

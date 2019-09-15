@@ -47,7 +47,7 @@ file <- "./shiny/www/dataTemplate.xlsx"
 data <- DataFromExcel(file)
 
 # Adjust solver parameters. See Grasp function's documentation on
-# ./code/functions
+# shiny/code/functions
 config <- list()
 config$mode <- "jsp"
 config$seed <- 2507
@@ -59,6 +59,7 @@ config$plot <- FALSE
 config$lsMaxIter <- 100
 config$plsFreq <- c(0.4, 0.8)
 config$benchmark <- FALSE
+config$shiftMode <- "push"
 
 # Solve problem
 solution <- Grasp(data, config)
@@ -70,6 +71,10 @@ PlotEdges(solution$edges, data, paths, objective = solution$objective,
 
 # View Schedules
 schedule <- HeadsToSchedule(solution$heads, data)
-vis <- ScheduleToGantt(schedule, shifts = data$shifts)
+vis <- ScheduleToGantt(schedule, data = data, 
+                       predecesors = solution$predecesors, 
+                       toposort = solution$topoSort, 
+                       shiftMode = config$shiftMode)
 vis$machinesVis
 vis$jobsVis
+ 
