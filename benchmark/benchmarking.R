@@ -223,7 +223,8 @@ Experiment3 <- function() {
   config$skipLocalSearch <- TRUE
   
   # Define frequenc cases.
-  plsFreqCases <- list(c(0.5), c(0.4, 0.8), c(0.3, 0.6), c(0.8))
+  # plsFreqCases <- list(c(0.5), c(0.4, 0.8), c(0.3, 0.6), c(0.8))
+  plsFreqCases <- list(c(1.1))
   
   # Total cases to evaluate
   total <- 2 * length(instances) * length(plsFreqCases)
@@ -248,7 +249,8 @@ Experiment3 <- function() {
         
         instance <- rep(names(instances)[i], nrow(run$benchmark))
         
-        plsCase <- paste(pls, collapse = " ")
+        # plsCase <- paste(pls, collapse = " ")
+        plsCase <- "control"
         
         benchmarkTable <- cbind(run$benchmark, instance, plsCase)
         
