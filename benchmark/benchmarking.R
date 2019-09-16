@@ -42,13 +42,16 @@ cl <- makeCluster(4)
 registerDoParallel(cl)
 
 # Log to a socket
-log.socket <- make.socket(port=4000)
+log.socket <- make.socket(host="10.1.1.102", port=4000)
 
 Log <- function(text, ...) {
   msg <- sprintf(paste0(as.character(Sys.time()), ": ", text, "\n"), ...)
   cat(msg)
   write.socket(log.socket, msg)
 }
+
+# For Windows
+# Log <- cat
 
 # Load functions and instances
 source(file = "../shiny/code/functions.R") # Load functions
@@ -364,7 +367,7 @@ idxs2run <- which((idxs-8) %% 5 != 1)
 instances <- js1Instances[idxs[idxs2run]]
 seeds <- c(1603, 2507, 609, 1902, 2405)
 
-# Experiment1(js1Instances[24], seeds)
+Experiment1(js1Instances[25:29], seeds)
 
 # Run in CFD3
 Experiment3(seeds, instances)
