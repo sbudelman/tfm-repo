@@ -35,6 +35,8 @@
 # 
 # ---- Main Script ------------------------------------------------------------
 
+setwd("/home/sam/code/tfm-repo/benchmark")
+
 # To run in parallel 
 library(doParallel)
 library(foreach) 
