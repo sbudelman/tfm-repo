@@ -214,17 +214,17 @@ AddTWT <- function(data) {
 js1Instances <- ReadJobShop1()
 
 #---- Reading Taillard JSP instances ----
-
-tai15.15 <- ReadTaillard("15_15")
-tai20.15 <- ReadTaillard("20_15")
-tai20.20 <- ReadTaillard("20_20")
-
-tai30.15 <- ReadTaillard("30_15")
-tai30.20 <- ReadTaillard("30_20")
-
-tai50.15 <- ReadTaillard("50_15")
-tai50.20 <- ReadTaillard("50_20")
-
-tai100.20 <- ReadTaillard("100_20")
-
-
+# 
+# tai15.15 <- ReadTaillard("15_15")
+# tai20.15 <- ReadTaillard("20_15")
+# tai20.20 <- ReadTaillard("20_20")
+# 
+# tai30.15 <- ReadTaillard("30_15")
+# tai30.20 <- ReadTaillard("30_20")
+# 
+# tai50.15 <- ReadTaillard("50_15")
+# tai50.20 <- ReadTaillard("50_20")
+# 
+# tai100.20 <- ReadTaillard("100_20")
+# 
+# 

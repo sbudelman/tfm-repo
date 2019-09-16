@@ -35,6 +35,22 @@
 # 
 # ---- Main Script ------------------------------------------------------------
 
+# To run in parallel 
+library(doParallel)
+library(foreach) 
+cl <- makeCluster(4)
+registerDoParallel(cl)
+
+# Log to a socket
+log.socket <- make.socket(port=4000)
+
+Log <- function(text, ...) {
+  msg <- sprintf(paste0(as.character(Sys.time()), ": ", text, "\n"), ...)
+  cat(msg)
+  write.socket(log.socket, msg)
+}
+
+# Load functions and instances
 source(file = "../shiny/code/functions.R") # Load functions
 source(file = "./readInstances.R") # Load benchmark instances
 
@@ -69,22 +85,22 @@ Experiment1 <- function(instances, seeds) {
   config$alpha <- 0.5
   
   # Total cases to evaluate
-  total <- length(instances) * length(nbhOperators) * length(seeds)
+  total <- 2 * length(instances) * length(nbhOperators) * length(seeds)
   
-  cat("Starting benchmark experiment 4 ", format(Sys.time(), "%X"), 
+  Log("Starting benchmark experiment 1 ", format(Sys.time(), "%X"), 
       sprintf("%d", total), " expected iterations... \n")
   
   # Counter
   count <- 1
   
-  for (i in 1:length(instances)) {
+  x <- foreach (i=1:length(instances)) %dopar% {
     data <- AddTWT(instances[[i]])
     
-    for (nbhOperator in nbhOperators) {
-      config$nbhOperator <- nbhOperator
+    for (seed in seeds) {
+      config$seed <- seed
       
-      for (seed in seeds) {
-        config$seed <- seed
+      for (nbhOperator in nbhOperators) {
+        config$nbhOperator <- nbhOperator
         
         run <- Grasp(data, config)
         
@@ -94,15 +110,14 @@ Experiment1 <- function(instances, seeds) {
 
         benchmarkTable <- cbind(run$benchmark, seedNum, instance)
         
-        filename <- sprintf("./results/experiment1_twt_%s.csv", 
-                            names(instances)[i])
+        filename <- sprintf("./results/experiment1/%s/experiment1_%s_%s_%d.csv", 
+                            config$mode, config$mode, names(instances)[i], seed)
         
         write.table(benchmarkTable, file = filename, 
                     sep = ",", append = TRUE, quote = FALSE,
-                    col.names = (seed == 1603 & nbhOperator == "cet"), 
-                    row.names = FALSE)
+                    col.names = TRUE, row.names = FALSE)
         
-        cat("Experiment 1 ", names(instances)[i], nbhOperator, seed, 
+        Log("Experiment 1 ", names(instances)[i], nbhOperator, seed, 
             format(Sys.time(), "%X"), sprintf(" %d / %d", count, total), "\n")
         
         count <- count + 1 
@@ -142,52 +157,51 @@ Experiment2 <- function(instances, seeds) {
   # Total cases to evaluate
   total <- 2 * length(instances) * length(alphaCases) * length(seeds)
   
-  cat("Starting benchmark experiment 4 ", format(Sys.time(), "%X"), 
+  Log("Starting benchmark experiment 2 ", format(Sys.time(), "%X"), 
       sprintf("%d", total), " expected iterations... \n")
   
   # Counter
   count <- 1
   
-  for (seed in seeds) {
-    config$seed <- seed
-    
-    for (i in 1:length(instances)) {
+  x <- foreach (i=1:length(instances)) %dopar% {
     data <- AddTWT(instances[[i]])
+  
+    for (seed in seeds) {
+      config$seed <- seed
     
-    for (mode in c("jsp", "jsptwt")) {
-      config$mode <- mode
-      
-      for (alpha in alphaCases) {
+      for (mode in c("jsp", "jsptwt")) {
+        config$mode <- mode
         
-        if (alpha != 0) {
-          config$alpha <- alpha
-        } else {
-          config$alpha <- NULL
+        for (alpha in alphaCases) {
+          
+          if (alpha != 0) {
+            config$alpha <- alpha
+          } else {
+            config$alpha <- NULL
+          }
+          
+          run <- Grasp(data, config)
+          
+          instance <- rep(names(instances)[i], nrow(run$benchmark))
+          
+          benchmarkTable <- cbind(run$benchmark, instance, alpha)
+          
+          filename <- sprintf("./results/experiment2/%s/experiment2_%s_%s_%d.csv", 
+                              config$mode, config$mode, names(instances)[i], seed)
+          
+          write.table(benchmarkTable, file = filename, 
+                      sep = ",", append = TRUE, quote = FALSE,
+                      col.names = TRUE, row.names = FALSE)
+          
+          Log("Experiment 2 ", names(instances)[i], mode, alpha, 
+              format(Sys.time(), "%X"), sprintf(" %d / %d", count, total), "\n")
+          
+          count <- count + 1 
         }
         
-        run <- Grasp(data, config)
-        
-        instance <- rep(names(instances)[i], nrow(run$benchmark))
-        
-        benchmarkTable <- cbind(run$benchmark, instance, alpha)
-        
-        filename <- sprintf("./results/experiment2/%s/experiment2_%s_%s.csv", 
-                            config$mode, config$mode, names(instances)[i])
-        
-        write.table(benchmarkTable, file = filename, 
-                    sep = ",", append = TRUE, quote = FALSE,
-                    col.names = (alpha == 0), 
-                    row.names = FALSE)
-        
-        cat("Experiment 2 ", names(instances)[i], mode, alpha, 
-            format(Sys.time(), "%X"), sprintf(" %d / %d", count, total), "\n")
-        
-        count <- count + 1 
       }
       
-    }
-    
-  } 
+    } 
   }
 }
 
@@ -229,47 +243,46 @@ Experiment3 <- function(instances, seeds) {
   # Counter
   count <- 1
   
-  cat("Starting benchmark experiment 3 ", format(Sys.time(), "%X"), 
+  Log("Starting benchmark experiment 3 ", format(Sys.time(), "%X"), 
       sprintf("%d", total), " expected iterations... \n")
-  
-  for (seed in seeds) {
-    config$seed <- seed
     
-    for (i in 1:length(instances)) {
+  x <- foreach (i=1:length(instances)) %dopar% {
     data <- AddTWT(instances[[i]])
     
-    for (mode in c("jsp", "jsptwt")) {
-      config$mode <- mode
-      
-      for (pls in plsFreqCases) {
+    for (seed in seeds) {
+      config$seed <- seed
+    
+      for (mode in c("jsp", "jsptwt")) {
+        config$mode <- mode
         
-        config$plsFreq <- pls
+        for (pls in plsFreqCases) {
+          
+          config$plsFreq <- pls
+          
+          run <- Grasp(data, config)
+          
+          instance <- rep(names(instances)[i], nrow(run$benchmark))
+          
+          plsCase <- paste(ifelse(pls != c(1.1), pls, "control"), collapse = " ")
+          
+          benchmarkTable <- cbind(run$benchmark, instance, plsCase)
+          
+          filename <- sprintf("./results/experiment3/%s/experiment3_%s_%s_%d.csv", 
+                              config$mode, config$mode, names(instances)[i], seed)
+          
+          write.table(benchmarkTable, file = filename, 
+                      sep = ",", append = TRUE, quote = FALSE,
+                      col.names = TRUE, row.names = FALSE)
+          
+          Log("Experiment 3 ", names(instances)[i], config$mode, plsCase, 
+              format(Sys.time(), "%X"), sprintf(" %d / %d", count, total), "\n")
+          
+          count <- count + 1 
+        }
         
-        run <- Grasp(data, config)
-        
-        instance <- rep(names(instances)[i], nrow(run$benchmark))
-        
-        plsCase <- paste(ifelse(pls != c(1.1), pls, "control"), collapse = " ")
-        
-        benchmarkTable <- cbind(run$benchmark, instance, plsCase)
-        
-        filename <- sprintf("./results/experiment3/%s/experiment3_%s_%s.csv", 
-                            config$mode, config$mode, names(instances)[i])
-        
-        write.table(benchmarkTable, file = filename, 
-                    sep = ",", append = TRUE, quote = FALSE,
-                    col.names = (plsCase == "0.5"), 
-                    row.names = FALSE)
-        
-        cat("Experiment 3 ", names(instances)[i], config$mode, plsCase, 
-            format(Sys.time(), "%X"), sprintf(" %d / %d", count, total), "\n")
-        
-        count <- count + 1 
       }
       
-    }
-    
-  } 
+    } 
   }
 }
 
@@ -309,41 +322,40 @@ Experiment4 <- function(instances, seeds) {
   # Counter
   count <- 1
   
-  cat("Starting benchmark experiment 4 ", format(Sys.time(), "%X"), 
+  Log("Starting benchmark experiment 4 ", format(Sys.time(), "%X"), 
       sprintf("%d", total), " expected iterations... \n")
   
-  for (seed in seeds) {
-    config$seed <- seed
-  
-    for (i in 1:length(instances)) {
+  x <- foreach (i=1:length(instances)) %dopar% {
     data <- AddTWT(instances[[i]])
-      
-    for (rule in dispatchRulesCases) {
-      
-      config$dispatchRule <- rule
-      
-      run <- Grasp(data, config)
-      
-      instance <- rep(names(instances)[i], nrow(run$benchmark))
-      
-      benchmarkTable <- cbind(run$benchmark, instance, rule)
-      
-      filename <- sprintf("./results/experiment4/%s/experiment4_%s_%s.csv", 
-                          config$mode, config$mode, names(instances)[i])
-      
-      write.table(benchmarkTable, file = filename, 
-                  sep = ",", append = TRUE, quote = FALSE,
-                  col.names = (rule == "WSPT"), 
-                  row.names = FALSE)
-      
-      cat("Experiment 4 ", names(instances)[i], config$mode, rule, 
-          format(Sys.time(), "%X"), sprintf(" %d / %d", count, total), "\n")
-      
-      count <- count + 1 
-      
-    }
     
-  } 
+    for (seed in seeds) {
+      config$seed <- seed
+  
+      for (rule in dispatchRulesCases) {
+        
+        config$dispatchRule <- rule
+        
+        run <- Grasp(data, config)
+        
+        instance <- rep(names(instances)[i], nrow(run$benchmark))
+        
+        benchmarkTable <- cbind(run$benchmark, instance, rule)
+        
+        filename <- sprintf("./results/experiment4/%s/experiment4_%s_%s_%d.csv", 
+                            config$mode, config$mode, names(instances)[i], seed)
+        
+        write.table(benchmarkTable, file = filename, 
+                    sep = ",", append = TRUE, quote = FALSE,
+                    col.names = TRUE, row.names = FALSE)
+        
+        Log("Experiment 4 ", names(instances)[i], config$mode, rule, 
+            format(Sys.time(), "%X"), sprintf(" %d / %d", count, total), "\n")
+        
+        count <- count + 1 
+        
+      }
+      
+    } 
   }
 }
 
@@ -352,5 +364,11 @@ idxs2run <- which((idxs-8) %% 5 != 1)
 instances <- js1Instances[idxs[idxs2run]]
 seeds <- c(1603, 2507, 609, 1902, 2405)
 
+# Experiment1(js1Instances[24], seeds)
+
+# Run in CFD3
 Experiment3(seeds, instances)
 Experiment4(seeds, instances)
+
+# If needed, use this command to stop cluster
+stopCluster(cl)
