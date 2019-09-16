@@ -44,8 +44,8 @@ cl <- makeCluster(4)
 registerDoParallel(cl)
 
 # Load functions and instances
-source(file = "../shiny/code/functions.R") # Load functions
-source(file = "./readInstances.R") # Load benchmark instances
+source(file = "../shiny/code/functions.R", local = TRUE) # Load functions
+source(file = "./readInstances.R", local = TRUE) # Load benchmark instances
 
 Experiment1 <- function(instances, seeds) {
   # Objective: 
@@ -87,6 +87,8 @@ Experiment1 <- function(instances, seeds) {
   count <- 1
   
   x <- foreach (i=1:length(instances)) %dopar% {
+    source(file = "../shiny/code/functions.R", local = TRUE) # Load functions
+    source(file = "./readInstances.R", local = TRUE) # Load benchmark instances
     data <- AddTWT(instances[[i]])
     
     for (seed in seeds) {
@@ -157,6 +159,8 @@ Experiment2 <- function(instances, seeds) {
   count <- 1
   
   x <- foreach (i=1:length(instances)) %dopar% {
+    source(file = "../shiny/code/functions.R", local = TRUE) # Load functions
+    source(file = "./readInstances.R", local = TRUE) # Load benchmark instances
     data <- AddTWT(instances[[i]])
   
     for (seed in seeds) {
@@ -240,6 +244,8 @@ Experiment3 <- function(instances, seeds) {
       sprintf("%d", total), " expected iterations... \n")
     
   x <- foreach (i=1:length(instances)) %dopar% {
+    source(file = "../shiny/code/functions.R", local = TRUE) # Load functions
+    source(file = "./readInstances.R", local = TRUE) # Load benchmark instances
     data <- AddTWT(instances[[i]])
     
     for (seed in seeds) {
@@ -319,6 +325,8 @@ Experiment4 <- function(instances, seeds) {
       sprintf("%d", total), " expected iterations... \n")
   
   x <- foreach (i=1:length(instances)) %dopar% {
+    source(file = "../shiny/code/functions.R", local = TRUE) # Load functions
+    source(file = "./readInstances.R", local = TRUE) # Load benchmark instances
     data <- AddTWT(instances[[i]])
     
     for (seed in seeds) {
