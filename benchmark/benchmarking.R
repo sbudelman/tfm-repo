@@ -40,7 +40,7 @@ setwd("/home/sam/code/tfm-repo/benchmark")
 # To run in parallel 
 library(doParallel)
 library(foreach) 
-cl <- makeCluster(4)
+cl <- makeCluster(8)
 registerDoParallel(cl)
 
 # Load functions and instances
@@ -368,8 +368,8 @@ seeds <- c(1603, 2507, 609, 1902, 2405)
 # Experiment1(js1Instances[25:29], seeds)
 
 # Run in CFD3
-Experiment3(seeds, instances)
-Experiment4(seeds, instances)
+Experiment3(instances, seeds)
+Experiment4(instances, seeds)
 
 # If needed, use this command to stop cluster
 stopCluster(cl)
