@@ -28,7 +28,7 @@
 
 # ---- Load Dependencies ------------------------------------------------------
 library(dplyr)
-library(timevis)
+try(library(timevis), silent = TRUE) # Goes silent when testing on SERVER
 
 # ---- GRASP Solver Functions -------------------------------------------------
 
