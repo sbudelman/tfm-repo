@@ -41,18 +41,6 @@ library(foreach)
 cl <- makeCluster(4)
 registerDoParallel(cl)
 
-# Log to a socket
-log.socket <- make.socket(host="10.1.1.102", port=4000)
-
-Log <- function(text, ...) {
-  msg <- sprintf(paste0(as.character(Sys.time()), ": ", text, "\n"), ...)
-  cat(msg)
-  write.socket(log.socket, msg)
-}
-
-# For Windows
-# Log <- cat
-
 # Load functions and instances
 source(file = "../shiny/code/functions.R") # Load functions
 source(file = "./readInstances.R") # Load benchmark instances
@@ -90,7 +78,7 @@ Experiment1 <- function(instances, seeds) {
   # Total cases to evaluate
   total <- 2 * length(instances) * length(nbhOperators) * length(seeds)
   
-  Log("Starting benchmark experiment 1 ", format(Sys.time(), "%X"), 
+  cat("Starting benchmark experiment 1 ", format(Sys.time(), "%X"), 
       sprintf("%d", total), " expected iterations... \n")
   
   # Counter
@@ -120,7 +108,7 @@ Experiment1 <- function(instances, seeds) {
                     sep = ",", append = TRUE, quote = FALSE,
                     col.names = TRUE, row.names = FALSE)
         
-        Log("Experiment 1 ", names(instances)[i], nbhOperator, seed, 
+        cat("Experiment 1 ", names(instances)[i], nbhOperator, seed, 
             format(Sys.time(), "%X"), sprintf(" %d / %d", count, total), "\n")
         
         count <- count + 1 
@@ -160,7 +148,7 @@ Experiment2 <- function(instances, seeds) {
   # Total cases to evaluate
   total <- 2 * length(instances) * length(alphaCases) * length(seeds)
   
-  Log("Starting benchmark experiment 2 ", format(Sys.time(), "%X"), 
+  cat("Starting benchmark experiment 2 ", format(Sys.time(), "%X"), 
       sprintf("%d", total), " expected iterations... \n")
   
   # Counter
@@ -196,7 +184,7 @@ Experiment2 <- function(instances, seeds) {
                       sep = ",", append = TRUE, quote = FALSE,
                       col.names = TRUE, row.names = FALSE)
           
-          Log("Experiment 2 ", names(instances)[i], mode, alpha, 
+          cat("Experiment 2 ", names(instances)[i], mode, alpha, 
               format(Sys.time(), "%X"), sprintf(" %d / %d", count, total), "\n")
           
           count <- count + 1 
@@ -246,7 +234,7 @@ Experiment3 <- function(instances, seeds) {
   # Counter
   count <- 1
   
-  Log("Starting benchmark experiment 3 ", format(Sys.time(), "%X"), 
+  cat("Starting benchmark experiment 3 ", format(Sys.time(), "%X"), 
       sprintf("%d", total), " expected iterations... \n")
     
   x <- foreach (i=1:length(instances)) %dopar% {
@@ -277,7 +265,7 @@ Experiment3 <- function(instances, seeds) {
                       sep = ",", append = TRUE, quote = FALSE,
                       col.names = TRUE, row.names = FALSE)
           
-          Log("Experiment 3 ", names(instances)[i], config$mode, plsCase, 
+          cat("Experiment 3 ", names(instances)[i], config$mode, plsCase, 
               format(Sys.time(), "%X"), sprintf(" %d / %d", count, total), "\n")
           
           count <- count + 1 
@@ -325,7 +313,7 @@ Experiment4 <- function(instances, seeds) {
   # Counter
   count <- 1
   
-  Log("Starting benchmark experiment 4 ", format(Sys.time(), "%X"), 
+  cat("Starting benchmark experiment 4 ", format(Sys.time(), "%X"), 
       sprintf("%d", total), " expected iterations... \n")
   
   x <- foreach (i=1:length(instances)) %dopar% {
@@ -351,7 +339,7 @@ Experiment4 <- function(instances, seeds) {
                     sep = ",", append = TRUE, quote = FALSE,
                     col.names = TRUE, row.names = FALSE)
         
-        Log("Experiment 4 ", names(instances)[i], config$mode, rule, 
+        cat("Experiment 4 ", names(instances)[i], config$mode, rule, 
             format(Sys.time(), "%X"), sprintf(" %d / %d", count, total), "\n")
         
         count <- count + 1 
