@@ -365,7 +365,7 @@ idxs2run <- which((idxs-8) %% 5 != 1)
 instances <- js1Instances[idxs[idxs2run]]
 seeds <- c(1603, 2507, 609, 1902, 2405)
 
-Experiment1(js1Instances[25:29], seeds)
+# Experiment1(js1Instances[25:29], seeds)
 
 # Run in CFD3
 Experiment3(seeds, instances)
