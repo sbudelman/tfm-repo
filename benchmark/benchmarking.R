@@ -38,7 +38,7 @@
 source(file = "../shiny/code/functions.R") # Load functions
 source(file = "./readInstances.R") # Load benchmark instances
 
-Experiment1 <- function() {
+Experiment1 <- function(instances, seeds) {
   # Objective: 
   #   Study the impact of neighborhood operators by applying them individually.
   # 
@@ -50,10 +50,6 @@ Experiment1 <- function() {
   #   5. Due date factor 1.3
   #   6. Quality coefficient set to 1.2
   #   7. 5 runs with different seeds
-  
-  instances <- js1Instances[39:48]
-  
-  seeds <- c(1603)
 
   nbhOperators <- c("cet", "scei", "cet2mt", "ecet")
   
@@ -74,6 +70,9 @@ Experiment1 <- function() {
   
   # Total cases to evaluate
   total <- length(instances) * length(nbhOperators) * length(seeds)
+  
+  cat("Starting benchmark experiment 4 ", format(Sys.time(), "%X"), 
+      sprintf("%d", total), " expected iterations... \n")
   
   # Counter
   count <- 1
@@ -103,7 +102,7 @@ Experiment1 <- function() {
                     col.names = (seed == 1603 & nbhOperator == "cet"), 
                     row.names = FALSE)
         
-        cat(names(instances)[i], nbhOperator, seed, 
+        cat("Experiment 1 ", names(instances)[i], nbhOperator, seed, 
             format(Sys.time(), "%X"), sprintf(" %d / %d", count, total), "\n")
         
         count <- count + 1 
@@ -112,7 +111,7 @@ Experiment1 <- function() {
   } 
 }
 
-Experiment2 <- function() {
+Experiment2 <- function(instances, seeds) {
   # Objective: 
   #   Study the quality of builded solutions using fix and reactive values of 
   #   alpha.
@@ -124,12 +123,9 @@ Experiment2 <- function() {
   #   4. Due date factor 1.3
   #   5. Quality coefficient set to Inf
   
-  instances <- js1Instances[9:48]
-  
   # Adjust solver parameters. See Grasp function's documentation on
   # ../code/functions
   config <- list()
-  config$seed <- 1603
   config$verbose <- 0
   config$qualCoef <- Inf
   config$maxIter <- 1000
@@ -144,12 +140,18 @@ Experiment2 <- function() {
   alphaCases <- seq(0,1,0.1)
   
   # Total cases to evaluate
-  total <- 2 * length(instances) * length(alphaCases)
+  total <- 2 * length(instances) * length(alphaCases) * length(seeds)
+  
+  cat("Starting benchmark experiment 4 ", format(Sys.time(), "%X"), 
+      sprintf("%d", total), " expected iterations... \n")
   
   # Counter
   count <- 1
   
-  for (i in 1:length(instances)) {
+  for (seed in seeds) {
+    config$seed <- seed
+    
+    for (i in 1:length(instances)) {
     data <- AddTWT(instances[[i]])
     
     for (mode in c("jsp", "jsptwt")) {
@@ -177,7 +179,7 @@ Experiment2 <- function() {
                     col.names = (alpha == 0), 
                     row.names = FALSE)
         
-        cat(names(instances)[i], mode, alpha, 
+        cat("Experiment 2 ", names(instances)[i], mode, alpha, 
             format(Sys.time(), "%X"), sprintf(" %d / %d", count, total), "\n")
         
         count <- count + 1 
@@ -186,9 +188,10 @@ Experiment2 <- function() {
     }
     
   } 
+  }
 }
 
-Experiment3 <- function() {
+Experiment3 <- function(instances, seeds) {
   # Objective: 
   #   Study the quality of builded solutions using partial search strategies 
   # 
@@ -202,14 +205,9 @@ Experiment3 <- function() {
   #   7. Fix alpha of 0.5
   #   8. lsMaxIter = 1000
   
-  # To speedup time first run is considering only one instance per size 
-  instIdxs <- seq(9,48,5)
-  instances <- js1Instances[instIdxs]
-  
   # Adjust solver parameters. See Grasp function's documentation on
   # ../code/functions
   config <- list()
-  config$seed <- 1603
   config$verbose <- 0
   config$qualCoef <- Inf
   config$maxIter <- 1000
@@ -223,19 +221,21 @@ Experiment3 <- function() {
   config$skipLocalSearch <- TRUE
   
   # Define frequenc cases.
-  # plsFreqCases <- list(c(0.5), c(0.4, 0.8), c(0.3, 0.6), c(0.8))
-  plsFreqCases <- list(c(1.1))
+  plsFreqCases <- list(c(0.5), c(0.4, 0.8), c(0.3, 0.6), c(0.8), c(1.1))
   
   # Total cases to evaluate
-  total <- 2 * length(instances) * length(plsFreqCases)
+  total <- 2 * length(instances) * length(plsFreqCases) * length(seeds)
   
   # Counter
   count <- 1
   
-  cat("Starting benchmark experiment 3", format(Sys.time(), "%X"), 
-      sprintf(" %d / %d", count, total), " ... \n")
+  cat("Starting benchmark experiment 3 ", format(Sys.time(), "%X"), 
+      sprintf("%d", total), " expected iterations... \n")
   
-  for (i in 1:length(instances)) {
+  for (seed in seeds) {
+    config$seed <- seed
+    
+    for (i in 1:length(instances)) {
     data <- AddTWT(instances[[i]])
     
     for (mode in c("jsp", "jsptwt")) {
@@ -249,8 +249,7 @@ Experiment3 <- function() {
         
         instance <- rep(names(instances)[i], nrow(run$benchmark))
         
-        # plsCase <- paste(pls, collapse = " ")
-        plsCase <- "control"
+        plsCase <- paste(ifelse(pls != c(1.1), pls, "control"), collapse = " ")
         
         benchmarkTable <- cbind(run$benchmark, instance, plsCase)
         
@@ -262,7 +261,7 @@ Experiment3 <- function() {
                     col.names = (plsCase == "0.5"), 
                     row.names = FALSE)
         
-        cat(names(instances)[i], config$mode, plsCase, 
+        cat("Experiment 3 ", names(instances)[i], config$mode, plsCase, 
             format(Sys.time(), "%X"), sprintf(" %d / %d", count, total), "\n")
         
         count <- count + 1 
@@ -271,9 +270,10 @@ Experiment3 <- function() {
     }
     
   } 
+  }
 }
 
-Experiment4 <- function() {
+Experiment4 <- function(instances, seeds) {
   # Objective: 
   #   Study the quality of builded solutions using different dispatch rules 
   # 
@@ -285,14 +285,9 @@ Experiment4 <- function() {
   #   5. Fix alpha of 0.5
   #   6. JSPTWT only
   
-  # To speedup time first run is considering only one instance per size 
-  instIdxs <- seq(9,48,5)
-  instances <- js1Instances[instIdxs]
-  
   # Adjust solver parameters. See Grasp function's documentation on
   # ../code/functions
   config <- list()
-  config$seed <- 1603
   config$mode <- "jsptwt"
   config$verbose <- 0
   config$qualCoef <- Inf
@@ -309,14 +304,18 @@ Experiment4 <- function() {
   dispatchRulesCases <- c("WSPT", "WMDD", "ATC", "WSL+WSPT", "WRA", "COVERT", "WI")
   
   # Total cases to evaluate
-  total <- length(instances) * length(dispatchRulesCases)
+  total <- length(instances) * length(dispatchRulesCases) * length(seeds)
   
   # Counter
   count <- 1
   
-  cat("Starting benchmark experiment 4 ", format(Sys.time(), "%X"), sprintf(" %d / %d", count, total), " ... \n")
+  cat("Starting benchmark experiment 4 ", format(Sys.time(), "%X"), 
+      sprintf("%d", total), " expected iterations... \n")
   
-  for (i in 1:length(instances)) {
+  for (seed in seeds) {
+    config$seed <- seed
+  
+    for (i in 1:length(instances)) {
     data <- AddTWT(instances[[i]])
       
     for (rule in dispatchRulesCases) {
@@ -337,7 +336,7 @@ Experiment4 <- function() {
                   col.names = (rule == "WSPT"), 
                   row.names = FALSE)
       
-      cat(names(instances)[i], config$mode, rule, 
+      cat("Experiment 4 ", names(instances)[i], config$mode, rule, 
           format(Sys.time(), "%X"), sprintf(" %d / %d", count, total), "\n")
       
       count <- count + 1 
@@ -345,4 +344,13 @@ Experiment4 <- function() {
     }
     
   } 
+  }
 }
+
+idxs <-  9:48
+idxs2run <- which((idxs-8) %% 5 != 1)
+instances <- js1Instances[idxs[idxs2run]]
+seeds <- c(1603, 2507, 609, 1902, 2405)
+
+Experiment3(seeds, instances)
+Experiment4(seeds, instances)
