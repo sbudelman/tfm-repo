@@ -361,16 +361,16 @@ Experiment4 <- function(instances, seeds) {
   }
 }
 
-idxs <-  14:48
+idxs <-  33:48
 idxs2run <- which((idxs-8) %% 5 != 1)
 instances <- js1Instances[idxs[idxs2run]]
 seeds <- c(1603, 2507, 609, 1902, 2405)
 
-Experiment1(js1Instances[30:48], seeds)
+# Experiment1(js1Instances[30:48], seeds)
 
 # Run in CFD3
 Experiment3(instances, seeds)
-Experiment4(instances, seeds)
+# Experiment4(instances, seeds)
 
 # If needed, use this command to stop cluster
 stopCluster(cl)
