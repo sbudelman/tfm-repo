@@ -714,7 +714,7 @@ Grasp <- function (data, cfg, UpdateProgress = NULL) {
     if (solution$objective < cfg$qualCoef * globalBest$objective) {
       
       # Do local search if max local search iterations is greater than 0
-      if (!is.null(cfg$skipLocalSearch)) {
+      if (!cfg$skipLocalSearch) {
         iterationBest <- FirstDescentLocalSearch(data, solution, cfg)
       } else {
         iterationBest <- solution
