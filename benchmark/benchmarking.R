@@ -77,6 +77,7 @@ Experiment1 <- function(instances, seeds) {
   config$benchmark <- TRUE
   config$dispRule <- "WEDD"
   config$alpha <- 0.5
+  config$skipLocalSearch <- FALSE
   
   # Total cases to evaluate
   total <- 2 * length(instances) * length(nbhOperators) * length(seeds)
@@ -146,6 +147,7 @@ Experiment2 <- function(instances, seeds) {
   config$plsFreq <- c(1.1)
   config$benchmark <- TRUE
   config$dispRule <- "WEDD"
+  config$skipLocalSearch <- TRUE
 
   # Define alpha cases. 0 indicates reactive strategy.
   alphaCases <- seq(0,1,0.1)
@@ -361,15 +363,15 @@ Experiment4 <- function(instances, seeds) {
   }
 }
 
-idxs <-  33:48
-idxs2run <- which((idxs-8) %% 5 != 1)
-instances <- js1Instances[idxs[idxs2run]]
+# idxs <-  33:48
+# idxs2run <- which((idxs-8) %% 5 != 1)
+# instances <- js1Instances[idxs[idxs2run]]
 seeds <- c(1603, 2507, 609, 1902, 2405)
 
-# Experiment1(js1Instances[30:48], seeds)
+Experiment1(js1Instances[24:48], seeds)
 
 # Run in CFD3
-Experiment3(instances, seeds)
+# Experiment3(instances, seeds)
 # Experiment4(instances, seeds)
 
 # If needed, use this command to stop cluster
