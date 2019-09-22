@@ -363,9 +363,10 @@ Experiment4 <- function(instances, seeds) {
   }
 }
 
-idxs <-  9:48
-idxs2run <- which((idxs-8) %% 5 != 1)
-instances <- js1Instances[idxs[idxs2run]]
+# idxs <-  9:48
+# idxs2run <- which((idxs-8) %% 5 != 1)
+# instances <- js1Instances[idxs[idxs2run]]
+instances <- js1Instances[33:48]
 seeds <- c(1603, 2507, 609, 1902, 2405)
 
 # Experiment1(js1Instances[24:48], seeds)
@@ -374,7 +375,8 @@ seeds <- c(1603, 2507, 609, 1902, 2405)
 # instances <- js1Instances[c(29,32:35,37:40) + 8]
 # seeds <- c(2507, 609, 1902, 2405)
 # Experiment3(instances, seeds)
-Experiment4(instances, seeds)
+# Experiment4(instances, seeds)
+Experiment2(instances, seeds)
 
 # If needed, use this command to stop cluster
 stopCluster(cl)
