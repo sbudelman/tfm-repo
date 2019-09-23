@@ -372,8 +372,8 @@ Experiment4 <- function(instances, seeds) {
 # Experiment1(js1Instances[24:48], seeds)
 
 # Run in CFD3
-instances <- js1Instances[c(39,40) + 8]
-seeds <- c(2507, 609, 1902, 2405)
+instances <- js1Instances[c(27,32,35,37,39,40) + 8]
+seeds <- c(1603)
 Experiment3(instances, seeds)
 # Experiment4(instances, seeds)
 # Experiment2(instances, seeds)
