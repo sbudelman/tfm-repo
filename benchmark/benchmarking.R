@@ -372,11 +372,11 @@ seeds <- c(1603, 2507, 609, 1902, 2405)
 # Experiment1(js1Instances[24:48], seeds)
 
 # Run in CFD3
-# instances <- js1Instances[c(29,32:35,37:40) + 8]
-# seeds <- c(2507, 609, 1902, 2405)
-# Experiment3(instances, seeds)
+instances <- js1Instances[c(23,33,34,38) + 8]
+seeds <- c(2507, 609, 1902, 2405, 1603)
+Experiment3(instances, seeds)
 # Experiment4(instances, seeds)
-Experiment2(instances, seeds)
+# Experiment2(instances, seeds)
 
 # If needed, use this command to stop cluster
 stopCluster(cl)
