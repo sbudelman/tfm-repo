@@ -238,7 +238,7 @@ Experiment3 <- function(instances, seeds) {
   plsFreqCases <- list(c(0.5), c(0.4, 0.8), c(0.3, 0.6), c(0.8), c(1.1))
   
   # Total cases to evaluate
-  total <- 2 * length(instances) * length(plsFreqCases) * length(seeds)
+  total <- length(instances) * length(plsFreqCases) * length(seeds)
   
   # Counter
   count <- 1
@@ -246,45 +246,43 @@ Experiment3 <- function(instances, seeds) {
   cat("Starting benchmark experiment 3 ", format(Sys.time(), "%X"), 
       sprintf("%d", total), " expected iterations... \n")
     
-  x <- foreach (i=1:length(instances)) %dopar% {
-    source(file = "../shiny/code/functions.R", local = TRUE) # Load functions
-    source(file = "./readInstances.R", local = TRUE) # Load benchmark instances
-    data <- AddTWT(instances[[i]])
+  x <- foreach (i=1:length(instances)) %:% 
     
-    for (seed in seeds) {
-      config$seed <- seed
-    
-      for (mode in c("jsp", "jsptwt")) {
-        config$mode <- mode
-        
-        for (pls in plsFreqCases) {
-          
-          config$plsFreq <- pls
-          
-          run <- Grasp(data, config)
-          
-          instance <- rep(names(instances)[i], nrow(run$benchmark))
-          
-          plsCase <- paste(ifelse(pls != c(1.1), pls, "control"), collapse = " ")
-          
-          benchmarkTable <- cbind(run$benchmark, instance, plsCase)
-          
-          filename <- sprintf("./results/experiment3/%s/experiment3_%s_%s_%d.csv", 
-                              config$mode, config$mode, names(instances)[i], seed)
-          
-          write.table(benchmarkTable, file = filename, 
-                      sep = ",", append = TRUE, quote = FALSE,
-                      col.names = TRUE, row.names = FALSE)
-          
-          cat("Experiment 3 ", names(instances)[i], config$mode, plsCase, 
-              format(Sys.time(), "%X"), sprintf(" %d / %d", count, total), "\n")
-          
-          count <- count + 1 
-        }
-        
-      }
+    foreach (seed = seeds) %:%
+    foreach (mode = c("jsp")) %:%
+    foreach (pls = plsFreqCases) %dopar% {
       
-    } 
+      source(file = "../shiny/code/functions.R", local = TRUE) # Load functions
+      source(file = "./readInstances.R", local = TRUE) # Load benchmark instances
+    
+      data <- AddTWT(instances[[i]])
+
+      config$seed <- seed
+
+      config$mode <- mode
+      
+      config$plsFreq <- pls
+      
+      run <- Grasp(data, config)
+      
+      instance <- rep(names(instances)[i], nrow(run$benchmark))
+      
+      plsCase <- paste(ifelse(pls != c(1.1), pls, "control"), collapse = " ")
+      
+      benchmarkTable <- cbind(run$benchmark, instance, plsCase)
+      
+      filename <- sprintf("./results/experiment3/%s/experiment3_%s_%s_%d.csv", 
+                          config$mode, config$mode, names(instances)[i], seed)
+      
+      write.table(benchmarkTable, file = filename, 
+                  sep = ",", append = TRUE, quote = FALSE,
+                  col.names = TRUE, row.names = FALSE)
+      
+      cat("Experiment 3 ", names(instances)[i], config$mode, plsCase, 
+          format(Sys.time(), "%X"), sprintf(" %d / %d", count, total), "\n")
+      
+      count <- count + 1 
+     
   }
 }
 
