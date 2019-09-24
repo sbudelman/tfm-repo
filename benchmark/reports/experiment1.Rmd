@@ -46,7 +46,7 @@ The following list summarizes the condition of relevant parameters:
 dir <- "../results/experiment1/jsp"
 df <- list.files(path=dir, pattern="*.csv", full.names = TRUE) %>% 
   lapply(read_csv) %>% 
-  bind_rows 
+  bind_rows() 
 
 # Include instance sizes and best values
 bests <- c(666, 655, 597, 590, 593,
@@ -123,11 +123,10 @@ p
 dfNSizesBg <- dfNSizes %>% select(-nbhOperator) # Background bars
 
 # Nsizes boxplot
-p <- ggplot(dfNSizes, aes(x = Nsize, fill = nbhOperator)) +
+p <- ggplot(dfNSizes, aes(x = Nsize, fill = size)) +
   geom_bar(data = dfNSizesBg, fill = "grey", alpha = .5) +
   geom_bar() +
   facet_wrap(~ nbhOperator) +
-  guides(fill = FALSE) +  # to remove the legend
   theme_bw()              # for clean look overall
 p
 ```
@@ -185,7 +184,7 @@ p <- ggplot(dfIterBest, aes(y = minObj, x = size , fill = nbhOperator)) +
 p
 ```
 
-```{r fig7, fig.cap="JSPTWT Total number of neighbors by operator and instance size", message=FALSE, warning=FALSE}
+```{r fig7, fig.cap="JSPTWT Total number of neighbors by operator and instance size. Vertical axis log scale.", message=FALSE, warning=FALSE}
 # Count neighborhood sizes
 dfNSizes <- df %>% filter(neighborIdx == 1)
 
@@ -195,6 +194,7 @@ dfNagg <- dfNSizes %>% select(size, nbhOperator, Nsize) %>% group_by(size, nbhOp
 # Nsizes boxplot
 p <- ggplot(dfNagg, aes(x = size, y = totalN, fill = nbhOperator)) +
   geom_bar(stat = "identity", position = position_dodge()) +
+  scale_y_log10() +
   theme_bw()              # for clean look overall
 p
 ```
@@ -204,11 +204,10 @@ p
 dfNSizesBg <- dfNSizes %>% select(-nbhOperator) # Background bars
 
 # Nsizes boxplot
-p <- ggplot(dfNSizes, aes(x = Nsize, fill = nbhOperator)) +
+p <- ggplot(dfNSizes, aes(x = Nsize, fill = size)) +
   geom_bar(data = dfNSizesBg, fill = "grey", alpha = .5) +
   geom_bar() +
   facet_wrap(~ nbhOperator) +
-  guides(fill = FALSE) +  # to remove the legend
   theme_bw()              # for clean look overall
 p
 ```

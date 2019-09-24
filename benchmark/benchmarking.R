@@ -327,40 +327,37 @@ Experiment4 <- function(instances, seeds) {
   cat("Starting benchmark experiment 4 ", format(Sys.time(), "%X"), 
       sprintf("%d", total), " expected iterations... \n")
   
-  x <- foreach (i=1:length(instances)) %dopar% {
-    source(file = "../shiny/code/functions.R", local = TRUE) # Load functions
-    source(file = "./readInstances.R", local = TRUE) # Load benchmark instances
-    data <- AddTWT(instances[[i]])
-    
-    for (seed in seeds) {
-      config$seed <- seed
-  
-      for (rule in dispatchRulesCases) {
-        
-        config$dispatchRule <- rule
-        
-        run <- Grasp(data, config)
-        
-        instance <- rep(names(instances)[i], nrow(run$benchmark))
-        
-        benchmarkTable <- cbind(run$benchmark, instance, rule)
-        
-        filename <- sprintf("./results/experiment4/%s/experiment4_%s_%s_%d.csv", 
-                            config$mode, config$mode, names(instances)[i], seed)
-        
-        write.table(benchmarkTable, file = filename, 
-                    sep = ",", append = TRUE, quote = FALSE,
-                    col.names = TRUE, row.names = FALSE)
-        
-        cat("Experiment 4 ", names(instances)[i], config$mode, rule, 
-            format(Sys.time(), "%X"), sprintf(" %d / %d", count, total), "\n")
-        
-        count <- count + 1 
-        
-      }
-      
-    } 
-  }
+  x <- foreach (i=1:length(instances)) %:%
+        foreach (seed = seeds) %:%
+        foreach (rule = dispatchRulesCases) %dopar% {
+          source(file = "../shiny/code/functions.R", local = TRUE) # Load functions
+          source(file = "./readInstances.R", local = TRUE) # Load benchmark instances
+            
+            data <- AddTWT(instances[[i]])
+            
+            config$seed <- seed
+            
+            config$dispRule <- rule
+            
+            run <- Grasp(data, config)
+            
+            instance <- rep(names(instances)[i], nrow(run$benchmark))
+            
+            benchmarkTable <- cbind(run$benchmark, instance, rule)
+            
+            filename <- sprintf("./results/experiment4/%s/experiment4_%s_%s_%d.csv", 
+                                config$mode, config$mode, names(instances)[i], seed)
+            
+            write.table(benchmarkTable, file = filename,
+                        sep = ",", append = TRUE, quote = FALSE,
+                        col.names = TRUE, row.names = FALSE)
+            
+            cat("Experiment 4 ", names(instances)[i], config$mode, rule, 
+                format(Sys.time(), "%X"), sprintf(" %d / %d", count, total), "\n")
+            
+            count <- count + 1 
+            
+          }
 }
 
 # idxs <-  9:48
@@ -369,14 +366,10 @@ Experiment4 <- function(instances, seeds) {
 # instances <- js1Instances[33:48]
 # seeds <- c(1603, 2507, 609, 1902, 2405)
 
-# Experiment1(js1Instances[24:48], seeds)
-
 # Run in CFD3
-instances <- js1Instances[c(27,32,35,37) + 8]
-seeds <- c(1603)
-Experiment3(instances, seeds)
-# Experiment4(instances, seeds)
-# Experiment2(instances, seeds)
+instances <- js1Instances[9:48]
+seeds <- c(1603, 2507, 609, 1902, 2405)
+Experiment4(instances, seeds)
 
 # If needed, use this command to stop cluster
 stopCluster(cl)
