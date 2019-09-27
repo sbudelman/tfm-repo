@@ -41,7 +41,7 @@ setwd("/home/sam/code/tfm-repo/benchmark")
 library(doParallel)
 library(foreach) 
 cores <- detectCores()
-cl <- makeCluster(ceiling(0.75*cores))
+cl <- makeCluster(ceiling(0.5*cores))
 registerDoParallel(cl)
 
 # Load functions and instances
@@ -430,7 +430,7 @@ Experiment5 <- function(instances, seeds) {
 }
 
 # Run in CFD3
-instances <- js1Instances[10:48]
+instances <- js1Instances[15:48]
 # seeds <- c(1603, 2507, 609, 1902, 2405)
 seeds <- c(1603, 2507, 609)
 Experiment5(instances, seeds)
