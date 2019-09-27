@@ -358,16 +358,82 @@ Experiment4 <- function(instances, seeds) {
           }
 }
 
-# idxs <-  9:48
-# idxs2run <- which((idxs-8) %% 5 != 1)
-# instances <- js1Instances[idxs[idxs2run]]
-# instances <- js1Instances[33:48]
-# seeds <- c(1603, 2507, 609, 1902, 2405)
+Experiment5 <- function(instances, seeds) {
+  # Objective: 
+  #   Study the solver's perfomrance wuth tunned parameters.
+  # 
+  # Parameters:
+  #   1. Alpha = 0.5. No reactive alpha.
+  #   2. No partial local search
+  #   3. Standard number of iterations (1000)
+  #   4. For JSPTWT use WMDD dispatch rule
+  #   5. Due date factor 1.3
+  #   6. Quality coefficient set to 1.2
+  #   7. CET+2MT neighborhood operator
+  
+  # Adjust solver parameters. See Grasp function's documentation on
+  # ../code/functions
+  config <- list()
+  config$verbose <- 0
+  config$qualCoef <- 1.2
+  config$maxIter <- 1000
+  config$maxTime <- 10000
+  config$plot <- FALSE
+  config$lsMaxIter <- 1000
+  config$plsFreq <- c(1.1)
+  config$benchmark <- TRUE
+  config$dispRule <- "WMDD"
+  config$alpha <- 0.5
+  config$skipLocalSearch <- FALSE
+  config$nbhOperator <- "cet2mt"
+  
+  # Total cases to evaluate
+  total <- 2 * length(instances) * length(seeds)
+  
+  cat("Starting benchmark experiment 5 ", format(Sys.time(), "%X"), 
+      sprintf("%d", total), " expected iterations... \n")
+  
+  # Counter
+  count <- 1
+  
+  x <- foreach (i=1:length(instances)) %:%
+    foreach (seed = seeds) %:%
+    foreach (mode = c("jsp", "jsptwt")) %dopar% {
+      source(file = "../shiny/code/functions.R", local = TRUE) # Load functions
+      source(file = "./readInstances.R", local = TRUE) # Load benchmark instances
+      
+      data <- AddTWT(instances[[i]])
+  
+      config$seed <- seed
+      config$mode <- mode
+      
+      run <- Grasp(data, config)
+      
+      seedNum <- rep(seed, nrow(run$benchmark))
+      
+      instance <- rep(names(instances)[i], nrow(run$benchmark))
+      
+      benchmarkTable <- cbind(run$benchmark, seedNum, instance)
+      
+      filename <- sprintf("./results/experiment5/%s/experiment5_%s_%s_%d.csv", 
+                          config$mode, config$mode, names(instances)[i], seed)
+      
+      write.table(benchmarkTable, file = filename, 
+                  sep = ",", append = TRUE, quote = FALSE,
+                  col.names = TRUE, row.names = FALSE)
+      
+      cat("Experiment 5 ", names(instances)[i], seed, 
+          format(Sys.time(), "%X"), sprintf(" %d / %d", count, total), "\n")
+      
+      count <- count + 1 
+    }
+}
 
 # Run in CFD3
 instances <- js1Instances[9:48]
-seeds <- c(1603, 2507, 609, 1902, 2405)
-Experiment4(instances, seeds)
+# seeds <- c(1603, 2507, 609, 1902, 2405)
+seeds <- c(1603, 2507, 609)
+Experiment5(instances, seeds)
 
 # If needed, use this command to stop cluster
 stopCluster(cl)
