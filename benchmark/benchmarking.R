@@ -430,9 +430,9 @@ Experiment5 <- function(instances, seeds) {
 }
 
 # Run in CFD3
-instances <- js1Instances[25:48]
+instances <- js1Instances[c(48,43,38,33)]
 # seeds <- c(1603, 2507, 609, 1902, 2405)
-seeds <- c(1603, 2507)
+seeds <- c(1603)
 Experiment5(instances, seeds)
 
  # If needed, use this command to stop cluster
