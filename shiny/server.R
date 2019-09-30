@@ -63,8 +63,9 @@ server <- function(input, output, session) {
     
     file(ifelse(!is.null(inFile()), inFile()$datapath, sampleFile()))
     
-    d$jobs <- datatable(data = read_xlsx(file(), sheet = "jobs", 
-                                         col_types = "text"))
+    types <- c("text","text","date","numeric")
+    jobs <- read_xlsx(file(), sheet = "jobs", col_types = types)
+    d$jobs <- datatable(data = jobs)
     
     d$machines <- datatable(data = read_xlsx(file(), sheet = "machines",
                                              col_types = "text"))
@@ -131,6 +132,7 @@ server <- function(input, output, session) {
     schReady("false")
     
     data <- DataFromExcel(file())
+    data$dueDates <- ConvertDueDates(data, startDTtry)
     
     # Adjust solver parameters. See Grasp function's documentation on
     # ./code/functions

@@ -1687,8 +1687,27 @@ Objective <- function (completionTimes, data, cfg) {
   # Returns:
   #   Number. Objective value.
   
+  doMakespan <- FALSE
+  
   # Calculate objective value depending on the mode
-  if (cfg$mode == "jsp") {
+  if (cfg$mode == "jsptwt") {
+    
+    tardiness <- pmax(completionTimes - data$dueDates, 0)
+    objective <- sum(data$weights*tardiness)
+    
+    if (objective == 0) {
+      doMakespan <- TRUE
+    }
+    
+  } else if (cfg$mode == "jsp") {
+    
+    doMakespan <- TRUE
+    
+  } else {
+    stop("Undefined problem mode")
+  }
+  
+  if (doMakespan) {
     # Index of job which has the last task to complete
     idx <- which.max(completionTimes)
     
@@ -1697,14 +1716,6 @@ Objective <- function (completionTimes, data, cfg) {
     
     # Makespan
     objective <- completionTimes[idx]
-    
-  } else if (cfg$mode == "jsptwt") {
-    
-    tardiness <- pmax(completionTimes - data$dueDates, 0)
-    objective <- sum(data$weights*tardiness)
-    
-  } else {
-    stop("Undefined problem mode")
   }
   
   return(objective)
@@ -2693,7 +2704,7 @@ ShiftSplit <- function(shiftedTable, shiftIdx, shiftList) {
   return(shiftedTable)
 }
 
- ShiftPush <- function(shiftedTable, shiftIdx, shiftList, predecesors, 
+ShiftPush <- function(shiftedTable, shiftIdx, shiftList, predecesors, 
                       toposort) {
   # Implements split mode by pushing tasks to fit inside shifts
   # 
@@ -2779,4 +2790,55 @@ GenerateTimeline <- function (schedule, styles, group, shiftList = NULL) {
                      "vis" = vis)
   
   return(output)
+}
+
+
+ConvertDueDates <- function (data, startTime) {
+  # 
+  # Args:
+  #   
+  #   data: list. See GRASP.
+  # 
+  #   mShifts: matrix. Machine shifts (see data$shifts)
+  # 
+  # Returns:
+  #   An array with converted due dates in minutes, ready to be used as
+  #   GRASP input
+  
+  day <- as.Date(startTime)
+  shiftList <- GetShiftList(day, startTime, data$shifts[[1]][[1]])
+  
+  latestDueDate <- max(data$rawDueDates)
+  
+  vectorShifts <- as.vector(t(shiftList))
+  beforeDueDate <- which(vectorShifts < latestDueDate)
+  
+  while (length(beforeDueDate) == length(vectorShifts)) {
+    day <- day + 7
+    shiftList <- GetShiftList(day, startTime, data$shifts[[1]][[1]])
+    vectorShifts <- as.vector(t(shiftList))
+  }
+  
+  convDueDates <- rep(0, length(data$rawDueDates))
+  for (i in 1:length(data$rawDueDates)) {
+    bDueDate <- which(vectorShifts < data$rawDueDates[i])
+    
+    shiftsToSubstract <- vectorShifts[bDueDate]
+    if (length(bDueDate) %% 2 != 0) {
+      shiftsToSubstract <- c(shiftsToSubstract, 
+                             as.character(data$rawDueDates[i]))
+    }
+    
+    if (shiftsToSubstract[1] < startTime) {
+      shiftsToSubstract[1] <- as.character(startTime)
+    }
+    
+    stsMatrix <- matrix(shiftsToSubstract, byrow = TRUE, ncol = 2)
+    
+    convDueDates[i] <- sum(difftime(stsMatrix[ ,2], stsMatrix[ ,1], 
+                                units = "mins"))
+  }
+  
+  return(convDueDates)
+  
 }

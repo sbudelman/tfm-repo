@@ -111,7 +111,7 @@ DataFromExcel <- function (file) {
   
   output <- list("n" = n, "m" = m, "ti" = tasks$`Task Runtime`, 
                  "mi" = tasks$machineIntId,
-                 "dueDates" = df$jobs$`Job Due Date`,
+                 "rawDueDates" = df$jobs$`Job Due Date`,
                  "weights" = df$jobs$`Job Priority`,
                  "shifts" = shifts,
                  "rawTasks" = tasks)
