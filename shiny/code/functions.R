@@ -2714,7 +2714,7 @@ ShiftSplit <- function(shiftedTable, shiftIdx, shiftList) {
      )
   
   # Remove source and sink nodes 
-  topo <- toposort[2:(nrow(toposort)-1), 1]
+  topo <- toposort[2:(length(predecesors) + 1), 1]
   
   for (i in topo) {
     if (predecesors[i] == "0") {

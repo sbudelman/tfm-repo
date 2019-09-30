@@ -148,6 +148,7 @@ server <- function(input, output, session) {
     config$plsFreq <- plsFreqs()
     config$benchmark <- FALSE
     config$shiftMode <- shiftMode()
+    config$skipLocalSearch <- FALSE
     
     # Create a Progress object
     progress <- shiny::Progress$new()
@@ -165,8 +166,7 @@ server <- function(input, output, session) {
     # that it can update the progress indicator.
     solution <- Grasp(data, config, UpdateProgress)
     
-    UpdateProgress(0.98, "Generating Gantt")
-    
+     
     # View Schedules
     paths(PathsDecoded(solution$criticalTree$path, data$rawTasks))
     schedule <- HeadsToSchedule(solution$heads, data)
