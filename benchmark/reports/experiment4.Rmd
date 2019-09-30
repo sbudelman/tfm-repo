@@ -1,0 +1,126 @@
+---
+title: 'Experiment 4: dispatch rules'
+author: "Samuel Udelman"
+date: "September 2, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r message=FALSE, warning=FALSE}
+library(ggplot2)
+library(dplyr)
+library(readr)
+library(tidyr)
+
+# Colors
+ggColor <- function(n) {
+  hues = seq(15, 375, length = n + 1)
+  hcl(h = hues, l = 65, c = 100)[1:n]
+}
+
+```
+
+## Objective
+
+When building solutions for the _JSPTWT_, accounting for due dates and job priorities is fundamental to get good quality schedules. Dispatch rules are meant to incorporate these criteria into the selection process. This experiment compares the implementation of 7 rules known to be good performers for the _JSPTWT_: *WSPT*, *WMDD*, *ATC*, *WSL*, *WSPT*, *WRA*, *COVERT* and *WI*.
+
+## Parameters
+The following list summarizes the condition of relevant parameters:
+
+1. No partial local search during construction stage
+2. Run for 1000 iterations
+3. Fix alpha = 0.5
+5. Due date factor 1.3
+6. Quality coefficient set to Inf
+
+## Results
+```{r message=FALSE, warning=FALSE}
+# Function to substitute whitespaces in csv files
+CleanCSV <- function(file) {
+  lines <- readLines(file)
+  
+  # Remove extra column names
+  remove <- which(grepl("objective", lines))
+  if (length(remove) > 1) {
+    lines <- lines[-remove[-1]]
+  }
+  
+  # Remove local search data
+  lines <- lines[which(!grepl("cet", lines))]
+  
+  # Replace whitespaces
+  cleanLines <- gsub(" ", "-", lines, fixed = TRUE)
+  
+  textfile <- textConnection(cleanLines)
+  table <- read.csv2(textfile, sep = ",")
+  
+  return(table)
+}
+```
+
+### JSPTWT
+
+```{r message=FALSE, warning=FALSE}
+# Load data
+dir <- "../results/experiment4/jsptwt"
+df <- list.files(path=dir, pattern="*.csv", full.names = TRUE) %>% 
+  lapply(CleanCSV) %>% 
+  bind_rows 
+
+dir <- "../results/experiment2/jsptwt"
+dfWEDD <- list.files(path=dir, pattern="*.csv", full.names = TRUE) %>% 
+  lapply(CleanCSV) %>% 
+  bind_rows 
+
+dfWEDD <- 
+  dfWEDD %>% 
+  filter(alpha == 0.5) %>%
+  select(-alpha) %>%
+  mutate(rule = "WEDD")
+
+# Include instance sizes and best values
+bests <- c(2299, 1762, 1951, 1917, 1878,
+           5810, 5765, 5475, 5608, 6618,
+           11978, 10542, 11557, 13107, 12330,
+           1169, 899, 929, 948, 805, 
+           3560, 4227, 3777, 3539, 3313,
+           8946, 9090, 9091, 8744, 8626,
+           27671, 30301, 25902, 27901, 29652,
+           2957, 2290, 2122, 1676, 2078)
+
+sizes <- c(rep("10x5", 5), rep("15x5", 5), rep("20x5", 5),
+           rep("10x10", 5), rep("15x10", 5), rep("20x10", 5),
+           rep("30x10", 5), rep("15x15", 5))
+
+df <- rbind(df, dfWEDD)
+
+df <- df %>% filter(!is.na(globalIter)) %>% 
+  select(objective, globalIter, instance, rule) %>%
+  mutate(best = bests[as.numeric(gsub("[^0-9.]", "", instance))], 
+         size = sizes[as.numeric(gsub("[^0-9.]", "", instance))],
+         normObjective = as.numeric(objective)/best)
+```
+
+```{r fig1, fig.cap="JSPTWT Distribution of normalized objective values per operator", warning=FALSE}
+# Objective boxplot
+p <- ggplot(df, aes(y = normObjective, x = size , fill = rule)) + 
+  geom_hline(yintercept = 1, linetype="dashed") +
+  geom_boxplot() +
+  coord_fixed(ratio=0.35) +
+  theme_bw()              # for clean look overall
+
+p
+```
+
+```{r message=FALSE, warning=FALSE}
+comparison <-
+  df %>%
+  select(rule, size, normObjective) %>% 
+  group_by(size, rule) %>% 
+  summarise_at("normObjective", funs(mean, min, sd))
+
+write.csv2(comparison, "comparison.csv", sep=",", row.names = FALSE)
+```
