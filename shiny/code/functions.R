@@ -1688,6 +1688,7 @@ Objective <- function (completionTimes, data, cfg) {
   #   Number. Objective value.
   
   doMakespan <- FALSE
+  objective <- 0
   
   # Calculate objective value depending on the mode
   if (cfg$mode == "jsptwt") {
@@ -1703,7 +1704,6 @@ Objective <- function (completionTimes, data, cfg) {
     
   } else if (cfg$mode == "jsp") {
     
-    ojective <- 0
     doMakespan <- TRUE
     
   } else {
