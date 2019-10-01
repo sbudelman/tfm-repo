@@ -1697,10 +1697,13 @@ Objective <- function (completionTimes, data, cfg) {
     
     if (objective == 0) {
       doMakespan <- TRUE
+    } else {
+      objective <- objective + sum(data$ti)
     }
     
   } else if (cfg$mode == "jsp") {
     
+    ojective <- 0
     doMakespan <- TRUE
     
   } else {
@@ -1715,7 +1718,7 @@ Objective <- function (completionTimes, data, cfg) {
     latestTask <- data$m*idx 
     
     # Makespan
-    objective <- completionTimes[idx]
+    objective <- objective + completionTimes[idx]
   }
   
   return(objective)
