@@ -45,21 +45,25 @@ source(file = "shiny/code/loadData.R") # Load functions
 # Get data from file
 file <- "./shiny/www/dataTemplate.xlsx"
 data <- DataFromExcel(file)
+data$dueDates <- ConvertDueDates(data, Sys.time())
 
 # Adjust solver parameters. See Grasp function's documentation on
 # shiny/code/functions
 config <- list()
-config$mode <- "jsp"
+config$mode <- "jsptwt"
 config$seed <- 2507
-config$verbose <- 1
+config$verbose <- 0
 config$qualCoef <- 1.2
 config$maxIter <- 10
 config$maxTime <- 100
 config$plot <- FALSE
 config$lsMaxIter <- 100
-config$plsFreq <- c(0.4, 0.8)
+config$plsFreq <- c(1.1)
 config$benchmark <- FALSE
 config$shiftMode <- "push"
+config$alpha <- 0.5
+config$dispRule <- 'WMDD'
+config$skipLocalSearch <- FALSE
 
 # Solve problem
 solution <- Grasp(data, config)
@@ -74,7 +78,7 @@ schedule <- HeadsToSchedule(solution$heads, data)
 vis <- ScheduleToGantt(schedule, data = data, 
                        predecesors = solution$predecesors, 
                        toposort = solution$topoSort, 
-                       shiftMode = config$shiftMode)
+                       shiftMode = config$shiftMode,
+                       machineSeq = solution$machineSeq)
 vis$machinesVis
 vis$jobsVis
- 
