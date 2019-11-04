@@ -62,16 +62,14 @@ server <- function(input, output, session) {
     } 
     
     file(ifelse(!is.null(inFile()), inFile()$datapath, sampleFile()))
+
+    dTable <- ReadExcel(file())
     
-    types <- c("text","text","date","numeric")
-    jobs <- read_xlsx(file(), sheet = "jobs", col_types = types)
-    d$jobs <- datatable(data = jobs)
+    d$jobs <- datatable(data = dTable$jobs)
     
-    d$machines <- datatable(data = read_xlsx(file(), sheet = "machines",
-                                             col_types = "text"))
+    d$machines <- datatable(data = dTable$machines)
     
-    d$tasks <- datatable(data = read_xlsx(file(), sheet = "tasks",
-                                          col_types = "text"))
+    d$tasks <- datatable(data = dTable$tasks)
     
     return(d)
   })
