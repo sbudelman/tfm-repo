@@ -1,0 +1,24 @@
+Notes
+
+Template:
+
+- Easier way to add machines (id and name selection)
+- Errors if several machines on the same job (?)
+- Errors if field missing
+- Errors if predecesors missing (?)
+
+Loading file:
+
+- Accept .xlx 
+- dataframe with only selected columns
+- Remove empty rows 
+- Dismissed unused machines
+
+App:
+
+- Error message if a task last longer than longest shift. Automatically change to split mode.
+
+
+Solver:
+
+- Allow several predecesors (conjunctive) constraints

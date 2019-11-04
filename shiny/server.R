@@ -132,8 +132,9 @@ server <- function(input, output, session) {
     schReady("false")
     
     data <- DataFromExcel(file())
-    data$dueDates <- ConvertDueDates(data, startDTtry)
     
+    data$dueDates <- ConvertDueDates(data, startDTtry)
+
     # Adjust solver parameters. See Grasp function's documentation on
     # ./code/functions
     config <- list()
@@ -143,11 +144,13 @@ server <- function(input, output, session) {
     config$seed <- 2507
     config$verbose <- 0
     config$qualCoef <- qualCoef()
-    config$maxIter <- maxIter()
-    config$maxTime <- maxTime()
+    # config$maxIter <- maxIter()
+    # config$maxTime <- maxTime()
+    config$maxIter <- 50
+    config$maxTime <- 10
     config$plot <- FALSE
     config$lsMaxIter <- lsMaxIter()
-    config$plsFreq <- plsFreqs()
+    config$plsFreq <- 1.1
     config$benchmark <- FALSE
     config$shiftMode <- shiftMode()
     config$skipLocalSearch <- FALSE
@@ -172,7 +175,7 @@ server <- function(input, output, session) {
     # View Schedules
     paths(PathsDecoded(solution$criticalTree$path, data$rawTasks))
     schedule <- HeadsToSchedule(solution$heads, data)
-    vis <- ScheduleToGantt(schedule, data = data, 
+    vis <- ScheduleToGantt(schedule, startTime = startDTtry, data = data, 
                            predecesors = solution$predecesors, 
                            toposort = solution$topoSort, 
                            shiftMode = config$shiftMode)
@@ -211,7 +214,7 @@ server <- function(input, output, session) {
         paste("Schedule_",Sys.Date(),".xlsx", sep="")
       },
       content = function(file) {
-        write_xlsx(schedule, path = file)
+        write_xlsx(vis$schedule, path = file)
       }
     )
     
@@ -303,8 +306,8 @@ server <- function(input, output, session) {
       checkboxGroupInput("plsFreqs", 
                          label = "Partial local search frequency:", 
                          choices = list("20%" = 0.2, "40%" = 0.4, 
-                                        "60%" = 0.6, "80%" = 0.8),
-                         selected = c(0.4, 0.8), inline = TRUE)
+                                        "60%" = 0.6, "80%" = 0.8, "None" = 1.1),
+                         selected = c(1.1), inline = TRUE)
     )
   
   output$settings <- renderUI(defaultSettings)
@@ -393,7 +396,11 @@ server <- function(input, output, session) {
                                   HTML(paste("<p>To just run an example click on <strong>Load Sample</strong>",
                                              "button on the left and then <strong>Setup Plan</strong></p>"))),
                               withTags(
-                                div(class ="panel panel-default",
+                                div(class ="panel panel-default welcome-panel",
+                                    h1("Welcome!"),
+                                    p(HTML("Use this tool to produce highly efficient production plans. While other planning softwares simply pile up tasks as they come in (First In - First Out approach), <strong>our system will optimize for the shortest or leanest schedule possible </strong> (see below).")),
+                                    p(HTML("This is a <strong>BETA version</strong>, still under heavy development. Comments and suggestions are very much welcome, please contact us at <a href = 'mailto: sam@zyba.com'>sam@zyba.com</a>.")),
+                                    h3("Get started"),
                                     ol(class="inst-list",
                                        li(HTML(paste(i18n()$t("Download Excel spreadsheet template")," ",
                                                      downloadButton("downloadTemplate", i18n()$t("Download Template"), 
@@ -401,8 +408,29 @@ server <- function(input, output, session) {
                                        li(i18n()$t("Fill in Excel spreadsheet with your data")), 
                                        li(HTML(paste(i18n()$t("Use panel on the left to")," <strong>", 
                                                      i18n()$t("upload your file"), "</strong>"))),
-                                       li(i18n()$t("Go to Plan tab or click on Setup Plan"))
-                                    ))
+                                       li(i18n()$t("Go to Plan tab or click on Setup Plan"))),
+                                    h3("How does it work"),
+                                    p("Assume you have a certain number of jobs (orders) consisting in tasks that need to be processed by several machines (resources). These tasks must happen in a given sequence and of course resources can only do one task at a time."),
+                                    ol(class="inst-list",
+                                       li("Use an Excel template to input the data regarding jobs, machines and tasks involved in your planning. Within the template you can also specified due dates for each job, priorities, task duration and so on. Insert a starting date time and create the plan. "),
+                                       img(src='img/hw_001.png', align = "center", width = "100%"),
+                                       li("Upload the template to the program and setup a plan. You can optimize either by using ASAP strategy (complete the plan as soon as possible) or by minimizing the number of late jobs according to their due dates."),
+                                       img(src='img/hw_002.png', align = "center", width = "100%"),
+                                       li("After a few moments you will see the resulting schedule on the screen!"),
+                                       img(src='img/hw_003.png', align = "center", width = "100%"),
+                                       li("Check Gantt charts by job and machine, and review the critical path in order to inform your planning decisions."),
+                                       img(src='img/hw_004.png', align = "center", width = "100%"),
+                                       li("Download your schedule or adapt your data and repeat the process to get a new plan!"),
+                                       img(src='img/hw_005.png', align = "center", width = "100%")),
+                                    div(class="alert alert-warning",
+                                      h3("Current limitations"),
+                                      p("(That will be overcome in future releases)"),
+                                      ol(class="inst-list",
+                                         li("Only one resource per task"),
+                                         li("Only one predecesor per task"),
+                                         li("All resources working in the same shift"))
+                                        )
+                                    )
                               )),
              conditionalPanel(condition = "output.dataLoaded",
                               h3(textOutput("filename1")),
@@ -431,7 +459,7 @@ server <- function(input, output, session) {
         
         radioButtons("mode", label = HTML(paste(i18n()$t("Optimize for:"),"<a href='#optiStrategies'>?</a>")),
                      choiceValues = list("jsp", "jsptwt"),
-                     choiceNames = list(i18n()$t("Makespan"), i18n()$t("Due Dates")), 
+                     choiceNames = list(i18n()$t("ASAP"), i18n()$t("Due Dates")), 
                      selected = "jsp"),
         
         tags$div(class="input-help",

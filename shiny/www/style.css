@@ -51,3 +51,7 @@
 .navbar-right > li > a {
   padding: 15px 10px;
 }
+
+.welcome-panel {
+  padding: 10px 40px;
+}

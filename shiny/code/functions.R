@@ -587,14 +587,31 @@ FirstDescentLocalSearch <- function (data, solution, cfg, isPartial = FALSE) {
           latest <- NULL
         }
         
-        newSolution$criticalTree <- CriticalTree(data, newSolution$predecesors,
-                                                 cfg, latest)
+        #ERROR HANDLING
+        newSolution$criticalTree <- tryCatch(
+          CriticalTree(data, newSolution$predecesors,
+                       cfg, latest),
+          error=function(e) e
+        )
         
-        if (cfg$verbose > 2) {
-          cat("Critical tree succesfully generated\n")
+        if(!inherits(newSolution$criticalTree, "error")){
+          
+          if (cfg$verbose > 2) {
+            cat("Critical tree succesfully generated\n")
+          }
+          
+          #REAL WORK
+          bestSolution <- newSolution
         }
         
-        bestSolution <- newSolution
+        # newSolution$criticalTree <- CriticalTree(data, newSolution$predecesors,
+        #                                          cfg, latest)
+        
+        # if (cfg$verbose > 2) {
+        #   cat("Critical tree succesfully generated\n")
+        # }
+        
+        # bestSolution <- newSolution
         break
       }
       
@@ -1239,7 +1256,7 @@ MachineSequency <- function (data, topoSort) {
   machSeq <- matrix(0, n*m, 2)
   
   # Initialize predecesor machine seq buffer
-  pm <- rep(0, n)
+  pm <- rep(0, m)
   
   # Exclude auxiliary nodes from topological sort array
   topoSortNodes <- topoSort[topoSort[, 1] > 0 & topoSort[, 1] <= n*m, 1]
@@ -2839,16 +2856,17 @@ ConvertDueDates <- function (data, startTime) {
   
   day <- as.Date(startTime)
   shiftList <- GetShiftList(day, startTime, data$shifts[[1]][[1]])
-  
+
   latestDueDate <- max(data$rawDueDates)
-  
+
   vectorShifts <- as.vector(t(shiftList))
   beforeDueDate <- which(vectorShifts < latestDueDate)
-  
+
   while (length(beforeDueDate) == length(vectorShifts)) {
     day <- day + 7
     shiftList <- GetShiftList(day, startTime, data$shifts[[1]][[1]])
-    vectorShifts <- as.vector(t(shiftList))
+    vectorShifts <- c(vectorShifts, as.vector(t(shiftList)))
+    beforeDueDate <- which(vectorShifts < latestDueDate)
   }
   
   convDueDates <- rep(0, length(data$rawDueDates))
@@ -2860,7 +2878,7 @@ ConvertDueDates <- function (data, startTime) {
       shiftsToSubstract <- c(shiftsToSubstract, 
                              as.character(data$rawDueDates[i]))
     }
-    
+
     if (shiftsToSubstract[1] < startTime) {
       shiftsToSubstract[1] <- as.character(startTime)
     }
