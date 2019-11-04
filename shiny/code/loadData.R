@@ -131,15 +131,15 @@ ReadExcel <- function (file) {
   #     $machines
   #     $jobs
   #     $tasks
-
   
-  machines <- read_xlsx(file, sheet = "machines") %>% 
+  machines <- read_excel(file, sheet = "machines") %>% 
     dplyr::filter(!is.na(`Machine ID`))
   
-  jobs <- read_xlsx(file, sheet = "jobs") %>% dplyr::filter(!is.na(`Job ID`))
+  jobs <- read_excel(file, sheet = "jobs") %>% dplyr::filter(!is.na(`Job ID`))
   
-  tasks <- read_xlsx(file, sheet = "tasks") %>% 
+  tasks <- read_excel(file, sheet = "tasks") %>% 
     dplyr::filter(!is.na(`Task ID`))
+
   
   output <- list("machines" = machines, "jobs" = jobs, 
        "tasks" = tasks)
