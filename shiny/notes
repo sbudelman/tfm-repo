@@ -9,10 +9,10 @@ Template:
 
 Loading file:
 
-- Accept .xlx 
-- dataframe with only selected columns
-- Remove empty rows 
-- Dismissed unused machines
+x Accept .xlx 
+x dataframe with only selected columns
+x Remove empty rows 
+x Dismissed unused machines
 
 App:
 
